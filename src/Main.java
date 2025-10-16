@@ -3,7 +3,7 @@ public class Main {
         System.out.println("=== Sillah (صلة) Preventive Health System ===");
 
         // Create a user
-        User user = new User("Shou Alomran");
+        User user = new User("Shoug Alomran");
 
         // Add family members
         FamilyMember f1 = new FamilyMember("Father", 45, "SCD");
@@ -27,6 +27,6 @@ public class Main {
         Appointment appointment = bookingSystem.bookAppointment(user, clinic);
         System.out.println("Appointment booked for " + appointment.getUser().getName() +
                 " at " + appointment.getClinic().getName());
-                System.out.println("=== End of Simulation ===");
+        System.out.println("=== End of Simulation ===");
     }
 }
