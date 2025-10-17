@@ -1,7 +1,7 @@
 import java.util.Scanner;
 
 public class Main {
-    private static final String TITLE = "=== Sillah (صلة) Preventive Health System ===";
+    private static final String title = "=== Sillah (صلة) Preventive Health System ===";
 
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
@@ -16,7 +16,7 @@ public class Main {
                 runHighRiskDemo(); // high-risk alert scenario
             } else if ("3".equals(choice)) {
                 AwarenessHub hub = new AwarenessHub();
-                hub.start(input); // use the SAME scanner
+                hub.start(input); 
             } else if ("0".equals(choice)) {
                 System.out.println("Goodbye!");
                 break;
@@ -28,13 +28,12 @@ public class Main {
             System.out.println("Press ENTER to return to the menu...");
             input.nextLine();
         }
-
         input.close();
     }
 
     private static void printMenu() {
         System.out.println();
-        System.out.println(TITLE);
+        System.out.println(title);
         System.out.println("Select a demo scenario:");
         System.out.println("  1) Low/No Risk family (baseline)");
         System.out.println("  2) High Risk family (>=2 SCD relatives under 50)");
@@ -79,7 +78,7 @@ public class Main {
 
     // Shared method: risk check → recommend clinic → book appointment
     private static void runFlow(User user) {
-        System.out.println(TITLE);
+        System.out.println(title);
 
         AlertSystem alertSystem = new AlertSystem();
         String alert = alertSystem.checkRisk(user);
