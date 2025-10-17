@@ -1,32 +1,31 @@
+// File: Main.java
 public class Main {
     public static void main(String[] args) {
-        System.out.println("=== Sillah (صلة) Preventive Health System ===");
+        Message msg = new Message(Lang.EN); // change to Lang.AR for Arabic
+        System.out.println(msg.title());
 
-        // Create a user
         User user = new User("Shoug Alomran");
 
-        // Add family members
-        FamilyMember f1 = new FamilyMember("Father", 45, "SCD");
-        FamilyMember f2 = new FamilyMember("Brother", 30, "Healthy");
-        user.addFamilyMember(f1);
-        user.addFamilyMember(f2);
+        FamilyMember father = new FamilyMember("Father", 55, "SCD");
+        father.addHealthEvent(new HealthEvent("Hypertension", 50, "Mild blood pressure increase"));
 
-        // Check risk
+        FamilyMember brother = new FamilyMember("Brother", 30);
+        brother.addHealthEvent(new HealthEvent("Healthy", 0, "No recorded conditions"));
+
+        user.addFamilyMember(father);
+        user.addFamilyMember(brother);
+
         AlertSystem alertSystem = new AlertSystem();
         String alert = alertSystem.checkRisk(user);
         System.out.println(alert);
 
-        // Show available clinics
         BookingSystem bookingSystem = new BookingSystem();
         Clinic clinic = bookingSystem.findClinic("Riyadh Heart Center");
-        if (clinic != null) {
-            System.out.println("Recommended Clinic: " + clinic.getName());
-        }
-
-        // Book appointment
+        System.out.println(msg.recommendedClinic() + clinic.getName());
         Appointment appointment = bookingSystem.bookAppointment(user, clinic);
-        System.out.println("Appointment booked for " + appointment.getUser().getName() +
-                " at " + appointment.getClinic().getName());
-        System.out.println("=== End of Simulation ===");
+        System.out.println("Appointment booked for " + appointment.getUser().getName()
+                + " at " + appointment.getClinic().getName());
+
+        System.out.println(msg.end());
     }
 }

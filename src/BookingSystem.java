@@ -1,16 +1,15 @@
 public class BookingSystem {
-
     public Clinic findClinic(String name) {
-        // In a real system, this would search a database.
-        // Here, we return a sample clinic for demo purposes.
-        if (name.equalsIgnoreCase("Riyadh Heart Center")) {
+        if (name != null && name.equalsIgnoreCase("Riyadh Heart Center"))
             return new Clinic("Riyadh Heart Center", "Riyadh");
-        } else {
-            return new Clinic("General Health Clinic", "Riyadh");
-        }
+        return new Clinic("General Health Clinic", "Riyadh");
     }
 
+    // Book an appointment for the user at the specified clinic while validating
+    // inputs
     public Appointment bookAppointment(User user, Clinic clinic) {
+        if (user == null || clinic == null)
+            throw new IllegalArgumentException("User and clinic are required");
         System.out.println("Booking appointment...");
         return new Appointment(user, clinic);
     }
