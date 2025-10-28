@@ -23,19 +23,19 @@ public class AwarenessHub {
         }
     }
 
-    private void showTopics(Scanner sc) {
+    private void showTopics(Scanner input) {
         System.out.println("\nAvailable Topics:");
         System.out.println("1) Understanding Sickle Cell Disease");
         System.out.println("2) Importance of Genetic Screening");
         System.out.println("3) Healthy Heart Tips");
         System.out.print("Select topic: ");
-        String t = sc.nextLine().trim();
+        String choice = input.nextLine().trim();
 
-        if ("1".equals(t)) {
+        if ("1".equals(choice)) {
             System.out.println("SCD affects red blood cells and can be hereditary...");
-        } else if ("2".equals(t)) {
+        } else if ("2".equals(choice)) {
             System.out.println("Genetic screening helps detect hereditary risks early.");
-        } else if ("3".equals(t)) {
+        } else if ("3".equals(choice)) {
             System.out.println("Maintain a balanced diet, exercise, and regular checkups.");
         } else {
             System.out.println("Invalid topic.");

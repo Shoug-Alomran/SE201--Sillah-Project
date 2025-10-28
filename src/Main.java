@@ -16,7 +16,7 @@ public class Main {
                 runHighRiskDemo(); // high-risk alert scenario
             } else if ("3".equals(choice)) {
                 AwarenessHub hub = new AwarenessHub();
-                hub.start(input); 
+                hub.start(input);
             } else if ("0".equals(choice)) {
                 System.out.println("Goodbye!");
                 break;

@@ -1,4 +1,3 @@
-// File: AlertSystem.java
 public class AlertSystem {
 
     public String checkRisk(User user) {

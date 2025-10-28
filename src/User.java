@@ -1,14 +1,10 @@
-
-// File: User.java
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class User {
     private String name;
     private List<FamilyMember> familyMembers = new ArrayList<>();
 
-    // Valdiation
+    // Validation
     public User(String name) {
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("Name required");
