@@ -65,3 +65,59 @@ This project demonstrates the full **software engineering lifecycle**, from requ
 1. Clone this repository:
    ```bash
    git clone https://github.com/yourusername/SE201-Sillah.git
+
+## Simulation Scenarios and Outputs
+
+---
+
+### Scenario 1: Low / No Risk Family
+=== Sillah (صلة) Preventive Health System ===
+--- Demo: Low/No Risk Family ---
+=== Sillah (صلة) Preventive Health System ===
+No immediate hereditary risk detected.
+Recommended Clinic: Riyadh Heart Center
+Booking appointment...
+Appointment booked for Shoug Alomran at Riyadh Heart Center
+=== End of Simulation ===
+
+---
+
+### Scenario 2: High Risk Family (two or more SCD relatives under 50)
+=== Sillah (صلة) Preventive Health System ===
+--- Demo: HIGH Risk Family ---
+=== Sillah (صلة) Preventive Health System ===
+High Risk: Multiple early SCD cases detected. Please schedule a preventive screening.
+Recommended Clinic: Riyadh Heart Center
+Booking appointment...
+Appointment booked for Shoug Alomran at Riyadh Heart Center
+=== End of Simulation ===
+
+---
+
+### Scenario 3: Awareness Hub Simulation
+=== Awareness Hub ===
+1) View Educational Topics
+2) Preventive Checklist
+0) Back to main menu
+Enter choice: 1
+
+Available Topics:
+1) Understanding Sickle Cell Disease
+2) Importance of Genetic Screening
+3) Healthy Heart Tips
+Select topic: 2
+Genetic screening helps detect hereditary risks early.
+
+Press ENTER to return to the menu...
+
+=== Awareness Hub ===
+1) View Educational Topics
+2) Preventive Checklist
+0) Back to main menu
+Enter choice: 2
+
+=== Preventive Checklist ===
+[✓] Add family members to your health tree
+[ ] Schedule your first screening
+[ ] Read one Awareness article
+Progress: 1/3 completed
