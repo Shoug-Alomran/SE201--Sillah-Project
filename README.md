@@ -20,6 +20,31 @@ This project demonstrates the full **software engineering lifecycle**, from requ
 - **Aljoharah Albawardi**
 
 ---
+## Credits
+
+**Team Leader & Developer – Shoug Fawaz Alomran**  
+Led the overall project development and documentation for *Sillah (صلة)*.  
+Responsibilities included:
+- Created and implemented the complete **Java prototype**, including the Family Health Tree, Alert System, Booking System, and Awareness Hub.  
+- Designed the **Use Case Diagram** and coordinated updates across UML artifacts.  
+- Compiled all deliverables into the final **master report**, integrating team diagrams, documents, and results.  
+- Conducted **testing simulations**, ensured functionality matched user stories, and finalized the GitHub repository.  
+
+**Aljawarah Alsaleh**  
+- Designed the **System Sequence Diagrams (SSDs)** and **Class Diagram**.  
+- Worked on the **Risk Alert Module design** and contributed to visual refinements.  
+- Developed the **front-end graphical interface** and **team logo** using Figma and Sigma tools.  
+
+**Aljawhara Alruzuq**  
+- Authored the complete **Non-Functional Requirements (Phase II) document**.  
+- Designed the **Activity Diagram** and worked on the **Awareness Hub structure**.  
+- Collaborated on the **front-end interface** and **logo design** to align visual identity with system functionality.  
+
+**Aljoharah Albawardi**  
+- Created the **System Architecture Diagram** and defined the **3-Tier MVC structure**.  
+- Designed **Clinic Locator mockups** and contributed to UI and presentation materials.  
+
+---
 
 ## Objectives
 - Promote early **preventive screening** through family history analysis.  
