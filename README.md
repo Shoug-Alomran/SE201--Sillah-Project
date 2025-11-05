@@ -5,7 +5,7 @@
 
 [![Deploy MkDocs site to GitHub Pages](https://github.com/shoug-alomran/SE201--Sillah-Project/actions/workflows/deploy.yml/badge.svg)](https://github.com/shoug-alomran/SE201--Sillah-Project/actions/workflows/deploy.yml)
 
-**📘 View Project Documentation:**  
+** View Project Documentation:**  
 ➡️ [https://shoug-alomran.github.io/SE201--Sillah-Project/](https://shoug-alomran.github.io/SE201--Sillah-Project/)
 
 ---
