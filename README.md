@@ -3,6 +3,11 @@
 ### Preventive Family Health Risk Detection System  
 *SE201 – Introduction to Software Engineering Project*
 
+[![Deploy MkDocs site to GitHub Pages](https://github.com/shoug-alomran/SE201--Sillah-Project/actions/workflows/deploy.yml/badge.svg)](https://github.com/shoug-alomran/SE201--Sillah-Project/actions/workflows/deploy.yml)
+
+**📘 View Project Documentation:**  
+➡️ [https://shoug-alomran.github.io/SE201--Sillah-Project/](https://shoug-alomran.github.io/SE201--Sillah-Project/)
+
 ---
 
 ## Overview
@@ -29,6 +34,7 @@ Responsibilities included:
 - Designed the **Use Case Diagram** and coordinated updates across UML artifacts.  
 - Compiled all deliverables into the final **master report**, integrating team diagrams, documents, and results.  
 - Conducted **testing simulations**, ensured functionality matched user stories, and finalized the GitHub repository.  
+- Developed the **entire MkDocs documentation site** and automated deployment to **GitHub Pages**.  
 
 **Aljawarah Alsaleh**  
 - Designed the **System Sequence Diagrams (SSDs)** and **Class Diagram**.  
@@ -83,66 +89,12 @@ Responsibilities included:
 | IDE | Visual Studio Code |
 | Version Control | Git & GitHub |
 | UML Design | Lucidchart / Draw.io |
+| Documentation | MkDocs (Material Theme) |
+| Deployment | GitHub Actions + Pages |
 
 ---
 
 ## How to Run the Prototype
 1. Clone this repository:
    ```bash
-   git clone https://github.com/yourusername/SE201-Sillah.git
-
-## Simulation Scenarios and Outputs
-
----
-
-### Scenario 1: Low / No Risk Family
-=== Sillah (صلة) Preventive Health System ===
---- Demo: Low/No Risk Family ---
-=== Sillah (صلة) Preventive Health System ===
-No immediate hereditary risk detected.
-Recommended Clinic: Riyadh Heart Center
-Booking appointment...
-Appointment booked for Shoug Alomran at Riyadh Heart Center
-=== End of Simulation ===
-
----
-
-### Scenario 2: High Risk Family (two or more SCD relatives under 50)
-=== Sillah (صلة) Preventive Health System ===
---- Demo: HIGH Risk Family ---
-=== Sillah (صلة) Preventive Health System ===
-High Risk: Multiple early SCD cases detected. Please schedule a preventive screening.
-Recommended Clinic: Riyadh Heart Center
-Booking appointment...
-Appointment booked for Shoug Alomran at Riyadh Heart Center
-=== End of Simulation ===
-
----
-
-### Scenario 3: Awareness Hub Simulation
-=== Awareness Hub ===
-1) View Educational Topics
-2) Preventive Checklist
-0) Back to main menu
-Enter choice: 1
-
-Available Topics:
-1) Understanding Sickle Cell Disease
-2) Importance of Genetic Screening
-3) Healthy Heart Tips
-Select topic: 2
-Genetic screening helps detect hereditary risks early.
-
-Press ENTER to return to the menu...
-
-=== Awareness Hub ===
-1) View Educational Topics
-2) Preventive Checklist
-0) Back to main menu
-Enter choice: 2
-
-=== Preventive Checklist ===
-[✓] Add family members to your health tree
-[ ] Schedule your first screening
-[ ] Read one Awareness article
-Progress: 1/3 completed
+   git clone https://github.com/shoug-alomran/SE201--Sillah-Project.git
