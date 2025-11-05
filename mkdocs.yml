@@ -1,4 +1,4 @@
-site_name: SE201 – Sillah (صلة) Family Health Management System
+site_name: SE201 - Sillah (صلة) Family Health Management System
 site_description: Full SE201 Software Engineering Project Documentation
 site_url: https://shoug-alomran.github.io/SE201-Sillah-Project/
 
@@ -7,7 +7,6 @@ theme:
   language: en
   features:
     - navigation.top
-    - navigation.sections
     - content.code.copy
   palette:
     - media: "(prefers-color-scheme: light)"
@@ -31,21 +30,24 @@ nav:
   - Requirements: requirements.md
   - Design: design.md
   - Prototype & Testing: prototype.md
+  - Report:
+      - View & Download: report/index.md
   - Conclusion: conclusion.md
   - References: references.md
   - Team: team.md
   - Code:
       - Main: code/main.md
-      - User: code/user.md
-      - Family Member: code/familymember.md
-      - Booking System: code/booking.md
-      - Alert System: code/alertsystem.md
-      - Awareness Hub: code/awarenesshub.md
-      - Message: code/message.md
-      - Clinic: code/clinic.md
-      - Health Event: code/healthevent.md
+      - AlertSystem: code/alertsystem.md
       - Appointment: code/appointment.md
-      - Simulation: code/code-simulation.md
+      - AwarenessHub: code/awarenesshub.md
+      - BookingSystem: code/bookingsystem.md
+      - Clinic: code/clinic.md
+      - FamilyMember: code/familymember.md
+      - HealthEvent: code/healthevent.md
+      - Message: code/message.md
+      - User: code/user.md
+
+
 
 markdown_extensions:
   - admonition
