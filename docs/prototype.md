@@ -60,6 +60,7 @@ Appointment booked successfully!
 Reminder set for: 2025-11-09 at 10:30 AM
 ```
 ### 4.3.1 Awareness Hub Example
+```bash
 --- Awareness Hub ---
 
 1) Understanding Heart Disease
@@ -71,15 +72,17 @@ Select an article to read: 2
 
 > Regular checkups help in early detection of hereditary risks
   and ensure timely medical intervention.
+```
 
 ### 4.3.2 Alert Example
+```bash
 --- Alerts ---
 
 Upcoming Appointment: Family Member (FM01)
 Clinic: Al-Noor Cardiology Center
 Date: 2025-11-10
 Reminder: Tomorrow at 10:30 AM
-
+```
 ## 4.4 System Screenshots
 
 This section includes a visual demonstration of the *Sillah (صلة) Family Health Management System* prototype.  
@@ -93,9 +96,6 @@ Each figure represents a specific part of the system workflow captured during th
 | **Figure 4.4** | Awareness Hub Display presenting selectable educational health topics. | `awareness-hub.png` | Provides interactive reading of awareness articles. |
 | **Figure 4.5** | Future GUI Mockup demonstrating the proposed visual layout for the next system version. | `future-gui.png` | Illustrates potential upgrade from CLI to GUI. |
 
-> **Note:** Place all corresponding images inside the folder `docs/img/` and ensure file names match those in the table above for proper linking in MkDocs.
-
-You can include inline references below each figure like this:
 
 ```markdown
 ![Main Menu Interface](/img/main-menu.png)
@@ -113,39 +113,58 @@ You can include inline references below each figure like this:
 ![Future GUI Mockup](/img/future-gui.png)
 *Figure 4.5: Proposed GUI Design (Future Enhancement)*
 
-## 4.4 Prototype Execution and Results
+## 4.4 System Screenshots
 
-Below are the console interactions demonstrating key functionalities of the **Sillah (صلة)** Preventive Health Management System.
+This section visually demonstrates the *Sillah (صلة) Family Health Management System* prototype.  
+All images are stored in `docs/img/`. Paths use angle brackets to handle spaces/punctuation.
 
-### Figure 4.1: System Startup Interface
-![Sillah System Startup](/img/figure4-1.png)
+![Figure 4.1 Low Risk Family Simulation](<img/Figure 4.1 Low Risk Family Simulation.png>)
+*Figure 4.1 – Low/No Risk Family Simulation.*
 
-### Figure 4.2: Low/No Risk Family Simulation
-![Low/No Risk Family](/img/figure4-2.png)
+![Figure 4.1 Main Menu](<img/Figure 4.1 Main Menu.png>)
+*Figure 4.1 (Alt) – Main Menu Interface.*
 
-### Figure 4.3: High Risk Family Simulation
-![High Risk Family](/img/figure4-3.png)
+![Figure 4.2 Low Risk Demo](<img/Figure 4.2 Low Risk Demo.png>)
+*Figure 4.2 – Low Risk Demo Output.*
 
-### Figure 4.4: Awareness Hub Main Menu
-![Awareness Hub Main Menu](/img/figure4-4.png)
+![Figure 4.3 High Risk Demo](<img/Figure 4.3 High Risk Demo.png>)
+*Figure 4.3 – High Risk Demo Output.*
 
-### Figure 4.5: Educational Topics Menu
-![Educational Topics Menu](/img/figure4-5.png)
+![Figure 4.3 High-Risk Family Scenario Output](<img/Figure 4.3 High-Risk Family Scenario Output.png>)
+*Figure 4.3 (Alt) – High-Risk Family Scenario Output.*
 
-### Figure 4.6: Educational Topic – Sickle Cell Disease
-![Sickle Cell Topic](/img/figure4-6.png)
+![Figure 4.4 Awareness Hub Menu](<img/Figure 4.4 Awareness Hub Menu.png>)
+*Figure 4.4 – Awareness Hub Main Menu.*
 
-### Figure 4.7: Educational Topic – Genetic Screening
-![Genetic Screening Topic](/img/figure4-7.png)
+![Figure 4.5 Awareness Hub Selection](<img/Figure 4.5 Awareness Hub Selection.png>)
+*Figure 4.5 – Awareness Hub Selection Screen.*
 
-### Figure 4.8: Educational Topic – Healthy Heart Tips
-![Healthy Heart Tips](/img/figure4-8.png)
+![Figure 4.6 Awareness Hub – Educational Topics Menu](<img/Figure 4.6 Awareness Hub – Educational Topics Menu.png>)
+*Figure 4.6 – Educational Topics Menu.*
 
-### Figure 4.9: Preventive Checklist View
-![Preventive Checklist](/img/figure4-9.png)
+![Figure 4.7 Educational Topic – Understanding Sickle Cell Disease](<img/Figure 4.7 Educational Topic – Understanding Sickle Cell Disease.png>)
+*Figure 4.7 – Educational Topic – Sickle Cell Disease.*
 
-### Figure 4.10: Preventive Checklist Progress
-![Checklist Progress](/img/figure4-10.png)
+![Figure 4.8 Educational Topics Menu – Topic Selection Prompt](<img/Figure 4.8 Educational Topics Menu – Topic Selection Prompt.png>)
+*Figure 4.8 – Topic Selection Prompt.*
 
-### Figure 4.11: Exit Interface
-![Exit Interface](/img/figure4-11.png)
+![Figure 4.9 Educational Topic – Importance of Genetic Screening](<img/Figure 4.9 Educational Topic – Importance of Genetic Screening.png>)
+*Figure 4.9 – Educational Topic – Genetic Screening.*
+
+![Figure 4.10 Educational Topic – Healthy Heart Tips](<img/Figure 4.10 Educational Topic – Healthy Heart Tips.png>)
+*Figure 4.10 – Educational Topic – Healthy Heart Tips.*
+
+![Figure 4.11 Awareness Hub – Healthy Heart Tips Display](<img/Figure 4.11 Awareness Hub – Healthy Heart Tips Display.png>)
+*Figure 4.11 – Healthy Heart Tips Display.*
+
+![Figure 4.12 Educational Topic – Importance of Genetic Screening Output](<img/Figure 4.12 Educational Topic – Importance of Genetic Screening Output.png>)
+*Figure 4.12 – Genetic Screening Output Screen.*
+
+![Figure 4.13 Preventive Checklist Display in Awareness Hub](<img/Figure 4.13 Preventive Checklist Display in Awareness Hub.png>)
+*Figure 4.13 – Preventive Checklist Display.*
+
+![Figure 4.14 System Exit Interface – End of Program Execution](<img/Figure 4.14 System Exit Interface – End of Program Execution.png>)
+*Figure 4.14 – Exit / End of Program Execution.*
+
+![Figure 4.15 Preventive Checklist Progress Update – Task Completion Status](<img/Figure 4.15 Preventive Checklist Progress Update – Task Completion Status.png>)
+*Figure 4.15 – Preventive Checklist Progress / Completion Status.*
