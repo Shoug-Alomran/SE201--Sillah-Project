@@ -98,19 +98,19 @@ Each figure represents a specific part of the system workflow captured during th
 You can include inline references below each figure like this:
 
 ```markdown
-![Main Menu Interface](img/main-menu.png)
+![Main Menu Interface](/img/main-menu.png)
 *Figure 4.1: Main Menu Interface of the Sillah System*
 
-![Appointment Booking Interface](img/booking-interface.png)
+![Appointment Booking Interface](/img/booking-interface.png)
 *Figure 4.2: Appointment Booking Process*
 
-![Alert Output](img/alert-output.png)
+![Alert Output](/img/alert-output.png)
 *Figure 4.3: Example of Alert System Notification*
 
-![Awareness Hub](img/awareness-hub.png)
+![Awareness Hub](/img/awareness-hub.png)
 *Figure 4.4: Awareness Hub Display*
 
-![Future GUI Mockup](img/future-gui.png)
+![Future GUI Mockup](/img/future-gui.png)
 *Figure 4.5: Proposed GUI Design (Future Enhancement)*
 
 ## 4.4 Prototype Execution and Results
@@ -118,34 +118,34 @@ You can include inline references below each figure like this:
 Below are the console interactions demonstrating key functionalities of the **Sillah (صلة)** Preventive Health Management System.
 
 ### Figure 4.1: System Startup Interface
-![Sillah System Startup](img/figure4-1.png)
+![Sillah System Startup](/img/figure4-1.png)
 
 ### Figure 4.2: Low/No Risk Family Simulation
-![Low/No Risk Family](img/figure4-2.png)
+![Low/No Risk Family](/img/figure4-2.png)
 
 ### Figure 4.3: High Risk Family Simulation
-![High Risk Family](img/figure4-3.png)
+![High Risk Family](/img/figure4-3.png)
 
 ### Figure 4.4: Awareness Hub Main Menu
-![Awareness Hub Main Menu](img/figure4-4.png)
+![Awareness Hub Main Menu](/img/figure4-4.png)
 
 ### Figure 4.5: Educational Topics Menu
-![Educational Topics Menu](img/figure4-5.png)
+![Educational Topics Menu](/img/figure4-5.png)
 
 ### Figure 4.6: Educational Topic – Sickle Cell Disease
-![Sickle Cell Topic](img/figure4-6.png)
+![Sickle Cell Topic](/img/figure4-6.png)
 
 ### Figure 4.7: Educational Topic – Genetic Screening
-![Genetic Screening Topic](img/figure4-7.png)
+![Genetic Screening Topic](/img/figure4-7.png)
 
 ### Figure 4.8: Educational Topic – Healthy Heart Tips
-![Healthy Heart Tips](img/figure4-8.png)
+![Healthy Heart Tips](/img/figure4-8.png)
 
 ### Figure 4.9: Preventive Checklist View
-![Preventive Checklist](img/figure4-9.png)
+![Preventive Checklist](/img/figure4-9.png)
 
 ### Figure 4.10: Preventive Checklist Progress
-![Checklist Progress](img/figure4-10.png)
+![Checklist Progress](/img/figure4-10.png)
 
 ### Figure 4.11: Exit Interface
-![Exit Interface](img/figure4-11.png)
+![Exit Interface](/img/figure4-11.png)
