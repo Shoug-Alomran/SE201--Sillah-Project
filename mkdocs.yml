@@ -4,6 +4,7 @@ site_url: https://shoug-alomran.github.io/SE201--Sillah-Project/
 
 theme:
   name: material
+  logo: img/tree.png
   language: en
   features:
     - navigation.top

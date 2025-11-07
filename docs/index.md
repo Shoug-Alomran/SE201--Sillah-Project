@@ -1,3 +1,4 @@
+![Tree Logo](img/tree.png)
 # SE201 – Sillah (صلة): Family Health Management System
 
 ### Prince Sultan University
