@@ -7,154 +7,78 @@ All requirements were gathered from the proposal, user interviews, and system go
 
 ## 2.1 Functional Requirements
 
-<details open>
-<summary><strong>FR 1 – User Registration and Login</strong></summary>
-
-- The system shall allow new users to register using a username, password, and contact details.  
-- The system shall verify credentials for returning users.  
-- The system shall allow password reset via registered email.
-</details>
-
-<details>
-<summary><strong>FR 2 – Family Member Management</strong></summary>
-
-- Users shall be able to add, edit, and remove family members.  
-- Each record shall include name, age, relationship, and medical history.
-</details>
-
-<details>
-<summary><strong>FR 3 – Appointment Booking and Scheduling</strong></summary>
-
-- Users shall book, update, or cancel appointments with available clinics.  
-- The system shall display available dates and times dynamically.
-</details>
-
-<details>
-<summary><strong>FR 4 – Clinic Management</strong></summary>
-
-- Clinics can register with working hours and available services.  
-- The system shall store clinic profiles for user search and booking.
-</details>
-
-<details>
-<summary><strong>FR 5 – Health Event Recording</strong></summary>
-
-- Users shall record medical events (e.g., check-ups, test results).  
-- The system shall store events per family member for future analysis.
-</details>
-
-<details>
-<summary><strong>FR 6 – Alert and Reminder System</strong></summary>
-
-- The system shall automatically generate alerts for upcoming appointments or due check-ups.  
-- Users shall receive alert messages within the application.
-</details>
-
-<details>
-<summary><strong>FR 7 – Awareness Hub</strong></summary>
-
-- The system shall provide verified educational articles and tips.  
-- Administrators shall be able to update awareness content.
-</details>
-
-<details>
-<summary><strong>FR 8 – Risk Detection Logic</strong></summary>
-
-- The system shall analyze stored family data to detect hereditary patterns.  
-- When a pattern is detected, the user shall receive a preventive alert.
-</details>
-
-<details>
-<summary><strong>FR 9 – Messaging and Notifications</strong></summary>
-
-- The system shall enable in-app messages between users and clinics.  
-- Each message shall include sender ID, receiver ID, timestamp, and content.
-</details>
-
-<details>
-<summary><strong>FR 10 – System Administration</strong></summary>
-
-- Admin users shall manage registered clinics, articles, and accounts.  
-- Admins shall be able to generate reports on system usage.
-</details>
+| ID | Requirement | Description | Priority |
+|:--:|:-------------|:-------------|:-----------:|
+| **FR-01** | **User Registration and Login** | The system shall allow new users to register and returning users to log in securely. | High |
+| **FR-02** | **Add Family Member** | Users can record family members with name, relation, age, and health condition. | High |
+| **FR-03** | **Add Health Event** | Users can specify a condition (e.g., SCD, hypertension) and age of onset. | High |
+| **FR-04** | **Generate Risk Alert** | The system automatically analyzes data and generates hereditary risk alerts. | High |
+| **FR-05** | **Book Clinic Appointment** | Users can select an available clinic and confirm booking. | Medium |
+| **FR-06** | **View Awareness Content** | Users can access educational material and preventive checklists in the Awareness Hub. | Medium |
+| **FR-07** | **View Alert History** | Users can view and track previous alerts. | Low |
+| **FR-08** | **Risk Detection Logic** | The system shall identify patterns such as ≥2 relatives with SCD under age 50 and classify risk level. | High |
+| **FR-09** | **Messaging / Notifications** | The system shall display alert and confirmation messages within the interface. | Medium |
+| **FR-10** | **Administrator Management** | Administrators can manage awareness content, clinics, and users. | Medium |
 
 ---
 
 ## 2.2 Non-Functional Requirements
 
-<details open>
-<summary><strong>Performance and Efficiency (NFR 1-5)</strong></summary>
+The following Non-Functional Requirements (NFRs) ensure that the *Sillah (صلة) Family Health Management System* prototype is usable, reliable, and secure for all user types.  
+Items marked **[Conceptual]** are considered future or production-level requirements.
 
-| # | Requirement |
-|:--:|:-------------|
-| 1 | System response time shall be ≤ 2 seconds for booking or alert operations. |
-| 2 | The application shall support at least 100 concurrent users. |
-| 3 | Database queries shall be optimized using indexed keys. |
-| 4 | CPU usage shall remain below 80 % under peak load. |
-| 5 | System startup time shall not exceed 5 seconds. |
-</details>
+---
 
-<details>
-<summary><strong>Usability and Accessibility (NFR 6-11)</strong></summary>
+### 2.2.1 Usability Requirements
 
-| # | Requirement |
-|:--:|:-------------|
-| 6 | Interface shall be intuitive with consistent layout and icons. |
-| 7 | Buttons and text fields shall be labeled clearly. |
-| 8 | System shall support both English and Arabic interfaces. |
-| 9 | Font size and color contrast shall meet WCAG AA standards. |
-| 10 | All alerts must be visible and accessible from the home dashboard. |
-| 11 | Help tooltips shall be available for major features. |
-</details>
+| ID | Requirement | Description | Priority |
+|:--:|:-------------|:-------------|:-----------:|
+| **UR-01** | **Mobile-First Responsive Design** | Interface must be optimized for mobile and desktop layouts. | Critical |
+| **UR-02** | **WCAG 2.1 Level AA Accessibility** | Must follow international accessibility standards for readability and navigation. | High |
+| **UR-03** | **Task Completion Efficiency** | Users should complete key actions (add family, book appointment) in under 5 minutes. | High |
+| **UR-04** | **Bilingual Interface (Arabic & English)** | Full Arabic and English language support with correct RTL layout. | High |
+| **UR-05** | **Clear Error Messages & Guidance** | Errors must be polite, descriptive, and placed near the input fields. | High |
+| **UR-06** | **Intuitive Information Architecture** | Navigation and structure must be logical and easy to follow. | High |
+| **UR-07** | **Consistent Design System** | Icons, colors, and fonts must follow a uniform design pattern. | Medium |
+| **UR-08** | **Onboarding & First-Time UX** | First-time users should see short instructions explaining each feature. | Medium |
+| **UR-09** | **Plain-Language Readability** | All on-screen text must be written in clear, non-technical language. | Medium |
+| **UR-10** | **Visual Feedback & System Status** | The system must show feedback (e.g., “Booking successful”) after user actions. | Medium |
+| **UR-11** | **Help & Support Access** | Quick-help tooltips and “Help” links must be accessible from all screens. | Low |
+| **UR-12** | **System Usability Scale (SUS)** | The prototype shall score ≥ 80 % on usability evaluation during testing. | Low |
 
-<details>
-<summary><strong>Reliability and Availability (NFR 12-15)</strong></summary>
+---
 
-| # | Requirement |
-|:--:|:-------------|
-| 12 | System uptime shall be ≥ 99 %. |
-| 13 | Automatic backup shall occur every 24 hours. |
-| 14 | In case of failure, data recovery shall occur within 5 minutes. |
-| 15 | Error logs shall be stored securely and reviewed weekly. |
-</details>
+### 2.2.2 Reliability Requirements
 
-<details>
-<summary><strong>Security and Privacy (NFR 16-22)</strong></summary>
+| ID | Requirement | Description | Priority |
+|:--:|:-------------|:-------------|:-----------:|
+| **RR-01** | **Availability & Uptime [Conceptual]** | The production system should maintain ≥ 99.5 % uptime. | Critical |
+| **RR-02** | **Backup & Disaster Recovery [Conceptual]** | Automatic backups and recovery within 5 minutes in case of failure. | Critical |
+| **RR-03** | **Graceful Degradation & Fault Tolerance** | The system should continue functioning partially even if one module fails. | High |
+| **RR-04** | **Data Accuracy & Integrity** | Risk calculations and family data must remain accurate and consistent. | Critical |
+| **RR-05** | **Browser & Device Compatibility** | The system must run correctly on Chrome, Safari, and Edge browsers. | High |
+| **RR-06** | **Performance Under Load [Conceptual]** | Response time under 2 s for up to 100 concurrent users. | Medium |
+| **RR-07** | **Content Consistency & Currency** | Awareness Hub content must remain accurate and updated. | Medium |
+| **RR-08** | **Session Reliability & State** | Sessions should persist during temporary connection drops. | Medium |
+| **RR-09** | **API Reliability & Error Handling** | API calls should handle errors gracefully and retry if needed. | Medium |
+| **RR-10** | **Notification Delivery Reliability** | Alerts and reminders must always be delivered successfully. | Medium |
 
-| # | Requirement |
-|:--:|:-------------|
-| 16 | Passwords shall be encrypted using SHA-256. |
-| 17 | Role-based access control shall restrict unauthorized actions. |
-| 18 | Sensitive data (health records) must be stored encrypted. |
-| 19 | System shall enforce automatic logout after 15 minutes idle. |
-| 20 | Audit trail shall record all admin changes. |
-| 21 | System shall comply with local Saudi data-protection laws. |
-| 22 | All communication shall occur via secure HTTPS protocol. |
-</details>
+---
 
-<details>
-<summary><strong>Maintainability and Scalability (NFR 23-27)</strong></summary>
+### 2.2.3 Security Requirements
 
-| # | Requirement |
-|:--:|:-------------|
-| 23 | Code shall follow modular OOP design. |
-| 24 | Documentation shall be updated after every major release. |
-| 25 | System shall support adding new modules without core changes. |
-| 26 | Testing suite shall include unit and integration tests. |
-| 27 | Database schema shall support future cloud migration. |
-</details>
-
-<details>
-<summary><strong>Portability and Compatibility (NFR 28-32)</strong></summary>
-
-| # | Requirement |
-|:--:|:-------------|
-| 28 | System shall run on Windows, macOS, and Linux with JDK ≥ 17. |
-| 29 | Database engine shall be interchangeable (MySQL / PostgreSQL). |
-| 30 | Front-end GUI shall be built using portable Java FX. |
-| 31 | Exported reports shall be readable in common browsers. |
-| 32 | System packaging shall use standard .jar distribution. |
-</details>
+| ID | Requirement | Description | Priority |
+|:--:|:-------------|:-------------|:-----------:|
+| **SR-01** | **Encryption at Rest [Conceptual]** | All sensitive health data stored in the database must be encrypted. | Critical |
+| **SR-02** | **Encryption in Transit [Conceptual]** | All communication between client and server must use HTTPS/TLS. | Critical |
+| **SR-03** | **Authentication** | Users must log in securely using unique credentials. | Critical |
+| **SR-04** | **Role-Based Access Control (RBAC)** | Access must be restricted by role (Citizen, Provider, Admin). | Critical |
+| **SR-05** | **Consent Management** | Users must explicitly agree to data collection before use. | High |
+| **SR-06** | **Audit Logging** | System must track all admin edits and major data changes. | High |
+| **SR-07** | **Input Validation & Sanitization** | Prevent invalid data entry and block malicious input (e.g., XSS). | High |
+| **SR-08** | **Privacy by Design – Data Minimization** | Only essential data is stored, following Saudi PDPL compliance. | High |
+| **SR-09** | **Secure Password Reset** | Password resets require identity verification and token validation. | High |
+| **SR-10** | **Awareness Hub Content Security** | Educational materials must be editable only by administrators. | Medium |
 
 ---
 

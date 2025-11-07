@@ -71,9 +71,6 @@ To enhance functionality and user experience, the following improvements are rec
 6. **Analytics Dashboard:** Add health-trend visualizations for early risk detection.  
 7. **Localization:** Provide complete bilingual support (Arabic / English) for inclusivity.  
 
-> **Figure 1:** Future System Expansion – Placeholder for Architecture Mockup  
-> 📁 Place your image file as `../img/future-architecture.png`
-
 ---
 
 ## 5.6 Team Reflection

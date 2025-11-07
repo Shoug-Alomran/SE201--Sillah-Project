@@ -30,11 +30,11 @@ nav:
   - Requirements: requirements.md
   - Design: design.md
   - Prototype & Testing: prototype.md
-  - Report:
-      - View & Download: report.md
   - Conclusion: conclusion.md
   - References: references.md
   - Team: team.md
+  - Report:
+      - View & Download: report/report.md
   - Code:
       - Main: code/main.md
       - AlertSystem: code/alertsystem.md

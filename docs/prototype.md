@@ -85,33 +85,42 @@ Reminder: Tomorrow at 10:30 AM
 ```
 ## 4.4 System Screenshots
 
-This section includes a visual demonstration of the *Sillah (صلة) Family Health Management System* prototype.  
-Each figure represents a specific part of the system workflow captured during the execution phase.
+This section visually demonstrates the *Sillah (صلة) Family Health Management System* prototype in action.  
+Each figure corresponds to a major function captured during the execution phase, illustrating the system’s flow, user interactions, and educational features.
 
-| Figure | Description | Suggested File Name | Notes |
-|:--------|:-------------|:--------------------|:------|
-| **Figure 4.1** | Main Menu Interface showing all system options available to the user. | `main-menu.png` | Displayed when the program starts. |
-| **Figure 4.2** | Appointment Booking Interface showing user input prompts and confirmation message. | `booking-interface.png` | Confirms data entry for family member, clinic, and time. |
-| **Figure 4.3** | Alert Output displaying the generated reminder message for an upcoming appointment. | `alert-output.png` | Automatically created after booking confirmation. |
-| **Figure 4.4** | Awareness Hub Display presenting selectable educational health topics. | `awareness-hub.png` | Provides interactive reading of awareness articles. |
-| **Figure 4.5** | Future GUI Mockup demonstrating the proposed visual layout for the next system version. | `future-gui.png` | Illustrates potential upgrade from CLI to GUI. |
+---
+
+| **Figure** | **Description** | **File Name** | **Notes** |
+|:-----------:|:----------------|:--------------|:-----------|
+| **Figure 4.1** | **Main Menu Interface** displaying all primary options available to the user. | `main-menu.png` | Displayed at system startup; allows access to all modules. |
+| **Figure 4.2** | **Appointment Booking Interface** showing input prompts and booking confirmation. | `booking-interface.png` | Demonstrates data entry for family member, clinic, and appointment details. |
+| **Figure 4.3** | **Alert Output** displaying a generated reminder message for an upcoming appointment. | `alert-output.png` | Automatically triggered post-booking to simulate real-time reminders. |
+| **Figure 4.4** | **Awareness Hub Display** presenting selectable health topics and educational checklists. | `awareness-hub.png` | Encourages user awareness and preventive actions. |
+| **Figure 4.5** | **Future GUI Mockup** showcasing a proposed visual interface upgrade. | `future-gui.png` | Illustrates next-phase enhancement from CLI to GUI. |
+
+---
 
 
 ```markdown
-![Main Menu Interface](/img/main-menu.png)
+![Main Menu Interface](img/main-menu.png)
 *Figure 4.1: Main Menu Interface of the Sillah System*
 
-![Appointment Booking Interface](/img/booking-interface.png)
+
+![Appointment Booking Interface](img/booking-interface.png)
 *Figure 4.2: Appointment Booking Process*
 
-![Alert Output](/img/alert-output.png)
+
+![Alert Output](img/alert-output.png)
 *Figure 4.3: Example of Alert System Notification*
 
-![Awareness Hub](/img/awareness-hub.png)
+
+![Awareness Hub](img/awareness-hub.png)
 *Figure 4.4: Awareness Hub Display*
 
-![Future GUI Mockup](/img/future-gui.png)
+
+![Future GUI Mockup](img/future-gui.png)
 *Figure 4.5: Proposed GUI Design (Future Enhancement)*
+
 
 ## 4.4 System Screenshots
 
@@ -121,50 +130,67 @@ All images are stored in `docs/img/`. Paths use angle brackets to handle spaces/
 ![Figure 4.1 Low Risk Family Simulation](<img/Figure 4.1 Low Risk Family Simulation.png>)
 *Figure 4.1 – Low/No Risk Family Simulation.*
 
+
 ![Figure 4.1 Main Menu](<img/Figure 4.1 Main Menu.png>)
 *Figure 4.1 (Alt) – Main Menu Interface.*
+
 
 ![Figure 4.2 Low Risk Demo](<img/Figure 4.2 Low Risk Demo.png>)
 *Figure 4.2 – Low Risk Demo Output.*
 
+
 ![Figure 4.3 High Risk Demo](<img/Figure 4.3 High Risk Demo.png>)
 *Figure 4.3 – High Risk Demo Output.*
+
 
 ![Figure 4.3 High-Risk Family Scenario Output](<img/Figure 4.3 High-Risk Family Scenario Output.png>)
 *Figure 4.3 (Alt) – High-Risk Family Scenario Output.*
 
+
 ![Figure 4.4 Awareness Hub Menu](<img/Figure 4.4 Awareness Hub Menu.png>)
+
 *Figure 4.4 – Awareness Hub Main Menu.*
+
 
 ![Figure 4.5 Awareness Hub Selection](<img/Figure 4.5 Awareness Hub Selection.png>)
 *Figure 4.5 – Awareness Hub Selection Screen.*
 
+
 ![Figure 4.6 Awareness Hub – Educational Topics Menu](<img/Figure 4.6 Awareness Hub – Educational Topics Menu.png>)
 *Figure 4.6 – Educational Topics Menu.*
+
 
 ![Figure 4.7 Educational Topic – Understanding Sickle Cell Disease](<img/Figure 4.7 Educational Topic – Understanding Sickle Cell Disease.png>)
 *Figure 4.7 – Educational Topic – Sickle Cell Disease.*
 
+
 ![Figure 4.8 Educational Topics Menu – Topic Selection Prompt](<img/Figure 4.8 Educational Topics Menu – Topic Selection Prompt.png>)
 *Figure 4.8 – Topic Selection Prompt.*
+
 
 ![Figure 4.9 Educational Topic – Importance of Genetic Screening](<img/Figure 4.9 Educational Topic – Importance of Genetic Screening.png>)
 *Figure 4.9 – Educational Topic – Genetic Screening.*
 
+
 ![Figure 4.10 Educational Topic – Healthy Heart Tips](<img/Figure 4.10 Educational Topic – Healthy Heart Tips.png>)
 *Figure 4.10 – Educational Topic – Healthy Heart Tips.*
+
 
 ![Figure 4.11 Awareness Hub – Healthy Heart Tips Display](<img/Figure 4.11 Awareness Hub – Healthy Heart Tips Display.png>)
 *Figure 4.11 – Healthy Heart Tips Display.*
 
+
 ![Figure 4.12 Educational Topic – Importance of Genetic Screening Output](<img/Figure 4.12 Educational Topic – Importance of Genetic Screening Output.png>)
 *Figure 4.12 – Genetic Screening Output Screen.*
+
 
 ![Figure 4.13 Preventive Checklist Display in Awareness Hub](<img/Figure 4.13 Preventive Checklist Display in Awareness Hub.png>)
 *Figure 4.13 – Preventive Checklist Display.*
 
+
 ![Figure 4.14 System Exit Interface – End of Program Execution](<img/Figure 4.14 System Exit Interface – End of Program Execution.png>)
 *Figure 4.14 – Exit / End of Program Execution.*
+
 
 ![Figure 4.15 Preventive Checklist Progress Update – Task Completion Status](<img/Figure 4.15 Preventive Checklist Progress Update – Task Completion Status.png>)
 *Figure 4.15 – Preventive Checklist Progress / Completion Status.*

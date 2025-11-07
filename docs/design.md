@@ -20,8 +20,8 @@ This layered design improves maintainability and simplifies testing.
 3. **Integration Layer:**  
    Represents future connectivity with external systems like a database, notification services, or APIs.
 
-> **Figure 1:** System Architecture Overview  
-> *(Insert your architecture diagram image here – e.g., “architecture-diagram.png”)*
+![Figure 1: System Architecture Overview](img/architecture-diagram.png)
+*Figure 1 – System Architecture Overview.*
 
 The three layers communicate through well-defined interfaces.  
 For instance, the `BookingSystem` acts as the mediator between the user’s requests and the domain entities like `Clinic` and `Appointment`.
@@ -76,14 +76,26 @@ The main actors include:
 7. Message clinics for inquiries or appointment changes.  
 8. Manage system content (administrator only).
 
-> **Figure 3:** Use Case Diagram  
-> *(Insert your use case diagram here – e.g., “use-case-diagram.png”)*
+![Figure 3: Use Case Diagram](img/use-case-diagram.png)
+*Figure 3 – Use Case Diagram of the Sillah (صلة) System.*
 
 Each use case in the diagram illustrates how users and clinics interact with the core subsystems, highlighting the sequence of communication between modules.
 
 ---
 
-## 3.4 Sequence Design
+## 3.4 Activity Diagram
+
+The activity diagram illustrates the **workflow of the system**, showing how users interact with the system through a series of actions and decision paths.  
+It visualizes the main user flow — from logging in and managing family data to generating alerts and booking appointments.
+
+![Figure 4: Activity Diagram](img/activity-diagram.png)
+*Figure 4 – Activity Diagram of the Sillah (صلة) System.*
+
+This diagram captures the logical flow of operations and decision-making within the *Sillah* system, emphasizing the dynamic behavior between key functions such as risk detection, alert generation, and appointment scheduling.
+
+---
+
+## 3.5 Sequence Design
 
 To illustrate the system flow, consider the **appointment booking scenario**, which demonstrates the interaction between key classes.
 
@@ -101,7 +113,7 @@ This design ensures proper communication between independent modules and prevent
 
 ---
 
-## 3.5 Design Principles Applied
+## 3.6 Design Principles Applied
 
 The following software engineering principles were applied throughout the project:
 
@@ -116,7 +128,7 @@ The following software engineering principles were applied throughout the projec
 
 ---
 
-## 3.6 Requirements-to-Design Mapping
+## 3.7 Requirements-to-Design Mapping
 
 | Requirement | Corresponding Design Component |
 |:-------------|:-------------------------------|
@@ -132,7 +144,7 @@ This mapping ensures every functional requirement from Phase II is represented b
 
 ---
 
-## 3.7 Key Design Decisions
+## 3.8 Key Design Decisions
 
 1. **Layered Architecture:** Improves separation of concerns and future scalability.  
 2. **Centralized Control via BookingSystem:** Simplifies scheduling logic and error handling.  
@@ -143,7 +155,7 @@ This mapping ensures every functional requirement from Phase II is represented b
 
 ---
 
-## 3.8 Future Enhancements
+## 3.9 Future Enhancements
 
 The current design provides a functional, console-based prototype.  
 The following improvements are recommended for future development:
@@ -155,12 +167,9 @@ The following improvements are recommended for future development:
 - Extend the system to include **mobile app support** for Android and iOS.  
 - Include **data analytics** for public health insights.
 
-> **Figure 5:** Suggested Extended Architecture  
-> *(Insert your future system diagram – e.g., “future-architecture.png”)*
-
 ---
 
-## 3.9 Summary
+## 3.10 Summary
 
 The *Sillah (صلة)* Family Health Management System was designed to reflect robust, scalable, and maintainable software engineering principles.  
 Each component was structured for clarity and reusability, ensuring that future developers can extend the system easily with minimal coupling.
