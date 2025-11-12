@@ -106,9 +106,11 @@ To illustrate the system flow, consider the **appointment booking scenario**, wh
 4. The **AlertSystem** automatically schedules a reminder for the appointment.  
 5. The user receives confirmation through a message and alert notification.
 
-> **Figure 4:** Sequence Diagram – Appointment Booking Flow  
-> *(Insert your sequence diagram here – e.g., “sequence-diagram.png”)*
+![Figure 5: Sequence Diagram](img/SSQ- Add Family Members and Health History.png)
+![Figure 5: Sequence Diagram](img/SSQ- Book Clinic Appointment.png)
+![Figure 5: Sequence Diagram](img/SSQ- Receive Smart Risk Alerts.png)
 
+*Figure 5 - Sequence Diagram – Appointment Booking Flow .*
 This design ensures proper communication between independent modules and prevents data duplication.
 
 ---

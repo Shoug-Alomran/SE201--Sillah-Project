@@ -1464,13 +1464,10 @@
                 <h3>3.4 UML Design</h3>
 
                 <h4>3.4.1 Use Case Diagram</h4>
-                <div class="diagram-placeholder">
-                    [Use Case Diagram: Shows interaction between three actors (Citizens, Healthcare Providers, System
-                    Administrators) and the Sillah system with use cases including: Add Family Members and Health
-                    History, Search for Certified Clinics, User Registration and Login, View and Edit Family Tree,
-                    Access Educational Resources, Book Clinic Appointment, View Personal Dashboard, View Preventive
-                    Checklist, Receive Smart Risk Alerts, View Hereditary Risk Report, and Manage system operations]
-                </div>
+                <img src="../img/use-case-diagram.png" alt="Use Case Diagram"
+                    style="width:85%; border-radius:10px; margin:16px 0;">
+
+
 
                 <p><strong>Actors:</strong></p>
                 <ul>
@@ -1623,16 +1620,29 @@
                 </table>
 
                 <h4>3.4.3 Activity Diagram</h4>
-                <div class="diagram-placeholder">
-                    [Activity Diagram: Workflow showing user journey from login → add family member → system analyzes
-                    data → generates risk alert → user views alert → books appointment → receives confirmation]
-                </div>
+                <img src="../img/activity-diagram.png" alt="Activity Diagram"
+                    style="width:85%; border-radius:10px; margin:16px 0;">
 
                 <h4>3.4.4 Sequence Diagrams</h4>
-                <div class="diagram-placeholder">
-                    [Sequence Diagrams for: 1) Add Family Member, 2) Generate Risk Alert, 3) Book Clinic Appointment -
-                    showing interactions between User, UI, Controller, Business Logic, and Data Store]
+                <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:20px; margin:20px 0;">
+                    <div style="text-align:center;">
+                        <img src="img/SSQ-Add-Family-Members-and-Health-History.png"
+                            alt="Sequence Diagram - Add Family Members and Health History"
+                            style="width:85%; border-radius:10px;">
+                        <p class="caption"><strong>Figure 3.4.4(a):</strong> Add Family Members and Health History</p>
+                    </div>
+                    <div style="text-align:center;">
+                        <img src="img/SSQ-Book-Clinic-Appointment.png" alt="Sequence Diagram - Book Clinic Appointment"
+                            style="width:85%; border-radius:10px;">
+                        <p class="caption"><strong>Figure 3.4.4(b):</strong> Book Clinic Appointment</p>
+                    </div>
+                    <div style="text-align:center;">
+                        <img src="img/SSQ-Receive-Smart-Risk-Alerts.png"
+                            alt="Sequence Diagram - Receive Smart Risk Alerts" style="width:85%; border-radius:10px;">
+                        <p class="caption"><strong>Figure 3.4.4(c):</strong> Receive Smart Risk Alerts</p>
+                    </div>
                 </div>
+
 
                 <h4>3.4.5 Class Diagram</h4>
                 <div class="diagram-placeholder">
@@ -1641,11 +1651,11 @@
                 </div>
 
                 <h4>3.4.6 System Architecture Diagram</h4>
-                <div class="diagram-placeholder">
-                    [Architecture Diagram: Three layers (Presentation, Business, Data) with components including Clinic
-                    Locator Interface, Family Health Tree Interface, Risk Dashboard, Awareness Hub, Risk Calculation
-                    Engine, Alert Notification Service, Family History Analyzer, User Profiles Database, Family History
-                    Database, Certified Clinics Database, Educational Content Store]
+                <div class="diagram">
+                    <img src="../img/architecture-diagram.png" alt="System Architecture Diagram"
+                        style="width:85%; border-radius:10px; margin:16px 0;">
+                    <p class="caption"><strong>Figure:</strong> Three-layer architecture showing Presentation, Business,
+                        and Data layers.</p>
                 </div>
             </section>
 
