@@ -1,96 +1,114 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, User, Mail, Phone, AlertTriangle, Heart, Users, FileText, Calendar } from 'lucide-react';
+import { ArrowLeft, User, Mail, Phone, AlertTriangle, Heart, Users, FileText, Calendar, Copy } from 'lucide-react';
 import { format } from 'date-fns';
-
-// Mock Data
-const mockPatient = {
-  id: 1,
-  full_name: 'Ahmed Mohammed',
-  email: 'ahmed.mohammed@example.com',
-  phone_number: '+966 50 123 4567',
-  user_type: 'patient'
-};
-
-const mockFamilyMembers = [
-  {
-    id: 1,
-    full_name: 'Ali Ahmed',
-    relation: 'Father',
-    date_of_birth: '1960-03-15',
-    has_scd: true,
-    age_at_diagnosis: 42,
-    medical_notes: 'Diagnosed with sickle cell disease'
-  },
-  {
-    id: 2,
-    full_name: 'Maryam Hassan',
-    relation: 'Mother',
-    date_of_birth: '1965-07-20',
-    has_scd: false,
-    age_at_diagnosis: null,
-    medical_notes: 'No hereditary conditions'
-  },
-  {
-    id: 3,
-    full_name: 'Fatima Ahmed',
-    relation: 'Sister',
-    date_of_birth: '1992-05-10',
-    has_scd: true,
-    age_at_diagnosis: 35,
-    medical_notes: 'Early onset sickle cell disease'
-  }
-];
-
-const mockHealthRecords = [
-  {
-    id: 1,
-    diagnosis: 'Hypertension',
-    diagnosis_date: '2023-05-15',
-    age_at_diagnosis: 30,
-    treatment: 'Medication and lifestyle changes',
-    medications: ['Lisinopril 10mg', 'Aspirin 81mg'],
-    notes: 'Regular monitoring required',
-    is_hereditary_condition: true
-  },
-  {
-    id: 2,
-    diagnosis: 'Type 2 Diabetes',
-    diagnosis_date: '2024-02-20',
-    age_at_diagnosis: 31,
-    treatment: 'Diet control and Metformin',
-    medications: ['Metformin 500mg'],
-    notes: 'Blood sugar levels improving',
-    is_hereditary_condition: true
-  }
-];
-
-const mockAppointments = [
-  {
-    id: 1,
-    clinic_name: 'City Health Clinic',
-    appointment_date: '2025-11-20',
-    appointment_time: '10:00 AM',
-    reason: 'Annual checkup',
-    status: 'Scheduled'
-  },
-  {
-    id: 2,
-    clinic_name: 'Heart Care Center',
-    appointment_date: '2025-10-15',
-    appointment_time: '2:30 PM',
-    reason: 'Follow-up consultation',
-    status: 'Completed'
-  }
-];
+import { useParams, useNavigate } from 'react-router-dom';
+import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { db } from '../../firebase/config';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function PatientDetail() {
-  const [patient] = useState(mockPatient);
-  const [familyMembers] = useState(mockFamilyMembers);
-  const [healthRecords] = useState(mockHealthRecords);
-  const [appointments] = useState(mockAppointments);
+  const { patientId } = useParams();
+  const navigate = useNavigate();
+  const { userProfile } = useAuth();
+  
+  const [patient, setPatient] = useState(null);
+  const [familyMembers, setFamilyMembers] = useState([]);
+  const [healthRecords, setHealthRecords] = useState([]);
+  const [appointments, setAppointments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  const scdEarlyOnset = familyMembers.filter(m => m.has_scd && m.age_at_diagnosis < 50);
-  const riskLevel = scdEarlyOnset.length >= 2 ? 'High' : scdEarlyOnset.length === 1 ? 'Moderate' : familyMembers.some(m => m.has_scd) ? 'Low' : 'None';
+  // Fetch patient data from Firebase
+  useEffect(() => {
+    const fetchPatientData = async () => {
+      try {
+        setLoading(true);
+        
+        // Fetch patient profile
+        const patientDoc = await getDoc(doc(db, 'users', patientId));
+        if (patientDoc.exists()) {
+          setPatient({ id: patientId, ...patientDoc.data() });
+        } else {
+          setError('Patient not found');
+          return;
+        }
+
+        // Fetch family members
+        const familyQuery = query(
+          collection(db, 'family_members'),
+          where('patient_id', '==', patientId)
+        );
+        const familySnapshot = await getDocs(familyQuery);
+        const familyData = familySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setFamilyMembers(familyData);
+
+        // Fetch health records
+        const healthQuery = query(
+          collection(db, 'health_records'),
+          where('patient_id', '==', patientId)
+        );
+        const healthSnapshot = await getDocs(healthQuery);
+        const healthData = healthSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setHealthRecords(healthData);
+
+        // Fetch appointments
+        const appointmentsQuery = query(
+          collection(db, 'appointments'),
+          where('patient_id', '==', patientId)
+        );
+        const appointmentsSnapshot = await getDocs(appointmentsQuery);
+        const appointmentsData = appointmentsSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setAppointments(appointmentsData);
+
+      } catch (err) {
+        console.error('Error fetching patient data:', err);
+        setError('Failed to load patient data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (patientId) {
+      fetchPatientData();
+    }
+  }, [patientId]);
+
+  const copyPatientId = () => {
+    navigator.clipboard.writeText(patientId);
+    // You can add a toast notification here if you have one
+    alert('Patient ID copied to clipboard!');
+  };
+
+  const calculateAge = (dob) => {
+    if (!dob) return 'Unknown';
+    const birthDate = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
+  const calculateRiskLevel = () => {
+    const scdFamilyMembers = familyMembers.filter(m => m.has_scd);
+    const earlyOnset = scdFamilyMembers.filter(m => m.age_at_diagnosis && m.age_at_diagnosis < 50);
+    
+    if (earlyOnset.length >= 2) return 'High';
+    if (earlyOnset.length === 1) return 'Moderate';
+    if (scdFamilyMembers.length > 0) return 'Low';
+    return 'None';
+  };
 
   const getRiskColor = (level) => {
     const colors = {
@@ -102,23 +120,45 @@ export default function PatientDetail() {
     return colors[level] || colors['None'];
   };
 
-  const calculateAge = (dob) => {
-    const birthDate = new Date(dob);
-    const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-    return age;
-  };
+  if (loading) {
+    return (
+      <div className="patient-detail-page">
+        <div className="patient-detail-container">
+          <div className="loading-spinner">Loading patient data...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="patient-detail-page">
+        <div className="patient-detail-container">
+          <div className="error-message">{error}</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!patient) {
+    return (
+      <div className="patient-detail-page">
+        <div className="patient-detail-container">
+          <div className="error-message">Patient not found</div>
+        </div>
+      </div>
+    );
+  }
+
+  const riskLevel = calculateRiskLevel();
+  const scdEarlyOnset = familyMembers.filter(m => m.has_scd && m.age_at_diagnosis && m.age_at_diagnosis < 50);
 
   return (
     <div className="patient-detail-page">
       <div className="patient-detail-container">
         {/* Header */}
         <div className="patient-detail-header">
-          <button className="back-btn" onClick={() => window.history.back()}>
+          <button className="back-btn" onClick={() => navigate('/patients')}>
             <ArrowLeft className="back-icon" />
             Back to Patients
           </button>
@@ -129,11 +169,11 @@ export default function PatientDetail() {
                 <User className="avatar-icon" />
               </div>
               <div className="patient-details">
-                <h1 className="patient-name">{patient.full_name}</h1>
+                <h1 className="patient-name">{patient.full_name || 'Unknown Patient'}</h1>
                 <div className="patient-contact">
                   <div className="contact-item">
                     <Mail className="contact-icon" />
-                    <span>{patient.email}</span>
+                    <span>{patient.email || 'No email'}</span>
                   </div>
                   {patient.phone_number && (
                     <div className="contact-item">
@@ -144,6 +184,34 @@ export default function PatientDetail() {
                 </div>
               </div>
             </div>
+            
+            {/* PATIENT ID DISPLAY - FOR DOCTORS TO COPY */}
+            {userProfile?.user_type === 'doctor' && (
+              <div className="patient-id-display-box">
+                <label className="patient-id-display-label">
+                  🆔 PATIENT ID (Use this to prescribe medications)
+                </label>
+                <div className="patient-id-display-content">
+                  <input
+                    type="text"
+                    value={patientId}
+                    readOnly
+                    className="patient-id-display-input"
+                  />
+                  <button 
+                    onClick={copyPatientId}
+                    className="copy-id-btn-large"
+                  >
+                    <Copy size={16} />
+                    Copy ID
+                  </button>
+                </div>
+                <p className="patient-id-helper-text">
+                  Paste this Patient ID in the Medications page when prescribing
+                </p>
+              </div>
+            )}
+
             {riskLevel && riskLevel !== 'None' && (
               <span className={`risk-badge ${getRiskColor(riskLevel)}`}>
                 {riskLevel} Risk
@@ -187,10 +255,15 @@ export default function PatientDetail() {
           <div className="summary-card">
             <div className="summary-card-content">
               <div className="summary-info">
-                <p className="summary-label">Early Onset</p>
-                <p className="summary-value">{scdEarlyOnset.length}</p>
+                <p className="summary-label">Upcoming Appointments</p>
+                <p className="summary-value">
+                  {appointments.filter(apt => 
+                    apt.status === 'Scheduled' && 
+                    new Date(apt.appointment_date) >= new Date()
+                  ).length}
+                </p>
               </div>
-              <Heart className="summary-icon" style={{ color: '#ec4899', opacity: 0.2 }} />
+              <Calendar className="summary-icon" style={{ color: '#10b981', opacity: 0.2 }} />
             </div>
           </div>
         </div>
@@ -247,7 +320,9 @@ export default function PatientDetail() {
                     <div className="family-member-body">
                       <div className="member-detail-row">
                         <span className="detail-label">Age:</span>
-                        <span className="detail-value">{calculateAge(member.date_of_birth)} years</span>
+                        <span className="detail-value">
+                          {member.date_of_birth ? `${calculateAge(member.date_of_birth)} years` : 'Unknown'}
+                        </span>
                       </div>
                       <div className="member-detail-row">
                         <span className="detail-label">Health Status:</span>

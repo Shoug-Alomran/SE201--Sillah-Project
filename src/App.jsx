@@ -12,6 +12,7 @@ import Clinics from "./Prototype/Pages/Clinics.jsx";
 import FamilyTree from "./Prototype/Pages/FamilyTree.jsx";
 import MyHealth from "./Prototype/Pages/MyHealth.jsx";
 import PatientDetail from "./Prototype/Pages/PatientDetail.jsx";
+import Medications from './Prototype/Pages/Medications';
 import Patients from "./Prototype/Pages/Patients.jsx";
 import RiskAssessment from "./Prototype/Pages/RiskAssessment.jsx";
 import Alerts from "./Prototype/Pages/Alerts.jsx";
@@ -48,6 +49,15 @@ function App() {
           <ProtectedRoute>
             <Layout currentPageName="Appointments">
               <Appointments />
+            </Layout>
+          </ProtectedRoute>
+        } />
+        
+        {/* FIXED: Medications route with Layout and ProtectedRoute */}
+        <Route path="/medications" element={
+          <ProtectedRoute>
+            <Layout currentPageName="Medications">
+              <Medications />
             </Layout>
           </ProtectedRoute>
         } />
@@ -110,7 +120,8 @@ function App() {
           </ProtectedRoute>
         } />
         
-        <Route path="/patient-detail" element={
+        {/* FIXED: Added :patientId parameter to capture the patient ID from URL */}
+        <Route path="/patient-detail/:patientId" element={
           <ProtectedRoute>
             <RoleBasedRoute allowedRoles={['doctor']}>
               <Layout currentPageName="PatientDetail">

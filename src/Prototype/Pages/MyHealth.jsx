@@ -1,285 +1,267 @@
 import React, { useState, useEffect } from "react";
-import { Users, Plus, Search, Edit, Trash2, Heart, AlertCircle, Activity } from "lucide-react";
+import { Heart, Plus, Calendar, Pill, FileText, Edit, Trash2, Activity } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import { collection, query, where, getDocs, addDoc, updateDoc, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../../firebase/config";
 
-export default function FamilyTree() {
+export default function MyHealth() {
   const { currentUser } = useAuth();
-  const [familyMembers, setFamilyMembers] = useState([]);
+  const [healthRecords, setHealthRecords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
-  const [editingMember, setEditingMember] = useState(null);
+  const [editingRecord, setEditingRecord] = useState(null);
 
   const [formData, setFormData] = useState({
-    name: "",
-    relationship: "",
-    age: "",
-    health_status: "healthy",
-    conditions: [],
-    diagnosis_age: "",
-    medical_notes: ""
+    condition_name: "",
+    diagnosis_date: "",
+    current_medications: "",
+    doctor_name: "",
+    treatment_plan: "",
+    notes: "",
+    is_chronic: false
   });
 
-  const hereditaryConditions = [
-    "Sickle Cell Disease",
-    "Type 2 Diabetes",
-    "High Cholesterol",
-    "Hypertension (High Blood Pressure)",
-    "Heart Disease",
-    "Breast Cancer",
-    "Colon Cancer",
-    "Alzheimer's Disease",
-    "Asthma",
-    "Stroke",
-    "Obesity",
-    "Osteoporosis",
-    "Mental Health Conditions"
-  ];
-
   useEffect(() => {
-    fetchFamilyMembers();
+    fetchHealthRecords();
   }, [currentUser]);
 
-  async function fetchFamilyMembers() {
+  async function fetchHealthRecords() {
     if (!currentUser) {
-      setError("Please log in to view family members");
+      setError("Please log in to view health records");
       setLoading(false);
       return;
     }
 
     try {
       setLoading(true);
-      const membersRef = collection(db, "family_members");
-      const q = query(membersRef, where("user_id", "==", currentUser.uid));
+      const recordsRef = collection(db, "personal_health_records");
+      const q = query(recordsRef, where("user_id", "==", currentUser.uid));
       const querySnapshot = await getDocs(q);
 
-      const members = [];
+      const records = [];
       querySnapshot.forEach((doc) => {
-        members.push({ id: doc.id, ...doc.data() });
+        records.push({ id: doc.id, ...doc.data() });
       });
 
-      setFamilyMembers(members);
+      // Sort by diagnosis date (newest first)
+      records.sort((a, b) => new Date(b.diagnosis_date) - new Date(a.diagnosis_date));
+      setHealthRecords(records);
       setError(null);
     } catch (err) {
-      console.error("Error fetching family members:", err);
-      setError("Unable to load family members");
+      console.error("Error fetching health records:", err);
+      setError("Unable to load health records");
     } finally {
       setLoading(false);
     }
   }
 
-  const handleAddMember = async (e) => {
+  const handleAddRecord = async (e) => {
     e.preventDefault();
 
     try {
-      const newMember = {
+      const newRecord = {
         user_id: currentUser.uid,
-        name: formData.name,
-        relationship: formData.relationship,
-        age: parseInt(formData.age),
-        health_status: formData.health_status,
-        conditions: formData.conditions,
-        diagnosis_age: formData.diagnosis_age ? parseInt(formData.diagnosis_age) : null,
-        medical_notes: formData.medical_notes,
-        created_at: new Date().toISOString()
+        condition_name: formData.condition_name,
+        diagnosis_date: formData.diagnosis_date,
+        current_medications: formData.current_medications,
+        doctor_name: formData.doctor_name,
+        treatment_plan: formData.treatment_plan,
+        notes: formData.notes,
+        is_chronic: formData.is_chronic,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
       };
 
-      if (editingMember) {
-        await updateDoc(doc(db, "family_members", editingMember.id), newMember);
-        setFamilyMembers(familyMembers.map(m => 
-          m.id === editingMember.id ? { ...newMember, id: editingMember.id } : m
+      if (editingRecord) {
+        await updateDoc(doc(db, "personal_health_records", editingRecord.id), {
+          ...newRecord,
+          created_at: editingRecord.created_at // Keep original creation date
+        });
+        setHealthRecords(healthRecords.map(r => 
+          r.id === editingRecord.id ? { ...newRecord, id: editingRecord.id, created_at: editingRecord.created_at } : r
         ));
-        alert("Family member updated successfully!");
+        alert("Health record updated successfully!");
       } else {
-        const docRef = await addDoc(collection(db, "family_members"), newMember);
-        setFamilyMembers([...familyMembers, { id: docRef.id, ...newMember }]);
-        alert("Family member added successfully!");
+        const docRef = await addDoc(collection(db, "personal_health_records"), newRecord);
+        setHealthRecords([{ id: docRef.id, ...newRecord }, ...healthRecords]);
+        alert("Health record added successfully!");
       }
 
       setFormData({
-        name: "",
-        relationship: "",
-        age: "",
-        health_status: "healthy",
-        conditions: [],
-        diagnosis_age: "",
-        medical_notes: ""
+        condition_name: "",
+        diagnosis_date: "",
+        current_medications: "",
+        doctor_name: "",
+        treatment_plan: "",
+        notes: "",
+        is_chronic: false
       });
       setShowAddModal(false);
-      setEditingMember(null);
+      setEditingRecord(null);
     } catch (err) {
-      console.error("Error saving family member:", err);
-      alert("Failed to save family member");
+      console.error("Error saving health record:", err);
+      alert("Failed to save health record");
     }
   };
 
-  const handleEdit = (member) => {
-    setEditingMember(member);
+  const handleEdit = (record) => {
+    setEditingRecord(record);
     setFormData({
-      name: member.name,
-      relationship: member.relationship,
-      age: member.age.toString(),
-      health_status: member.health_status,
-      conditions: member.conditions || [],
-      diagnosis_age: member.diagnosis_age ? member.diagnosis_age.toString() : "",
-      medical_notes: member.medical_notes || ""
+      condition_name: record.condition_name,
+      diagnosis_date: record.diagnosis_date,
+      current_medications: record.current_medications || "",
+      doctor_name: record.doctor_name || "",
+      treatment_plan: record.treatment_plan || "",
+      notes: record.notes || "",
+      is_chronic: record.is_chronic || false
     });
     setShowAddModal(true);
   };
 
-  const handleDelete = async (memberId) => {
-    if (!confirm("Are you sure you want to delete this family member?")) return;
+  const handleDelete = async (recordId) => {
+    if (!confirm("Are you sure you want to delete this health record?")) return;
 
     try {
-      await deleteDoc(doc(db, "family_members", memberId));
-      setFamilyMembers(familyMembers.filter(m => m.id !== memberId));
-      alert("Family member deleted successfully!");
+      await deleteDoc(doc(db, "personal_health_records", recordId));
+      setHealthRecords(healthRecords.filter(r => r.id !== recordId));
+      alert("Health record deleted successfully!");
     } catch (err) {
-      console.error("Error deleting family member:", err);
-      alert("Failed to delete family member");
+      console.error("Error deleting health record:", err);
+      alert("Failed to delete health record");
     }
   };
 
-  const handleConditionToggle = (condition) => {
-    if (formData.conditions.includes(condition)) {
-      setFormData({
-        ...formData,
-        conditions: formData.conditions.filter(c => c !== condition)
-      });
-    } else {
-      setFormData({
-        ...formData,
-        conditions: [...formData.conditions, condition]
-      });
-    }
+  const formatDate = (dateString) => {
+    if (!dateString) return "Not specified";
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   };
-
-  const filteredMembers = familyMembers.filter(member =>
-    member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    member.relationship.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   if (loading) {
     return (
-      <div className="family-tree-page">
-        <div className="family-tree-container">
-          <h1 className="family-tree-title">Family Health Tree</h1>
-          <p>Loading family members...</p>
+      <div className="my-health-page">
+        <div className="my-health-container">
+          <h1 className="my-health-title">My Health Records</h1>
+          <p>Loading your health records...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="family-tree-page">
-      <div className="family-tree-container">
-        <header className="family-tree-header">
+    <div className="my-health-page">
+      <div className="my-health-container">
+        <header className="my-health-header">
           <div>
-            <h1 className="family-tree-title">Family Health Tree</h1>
-            <p className="family-tree-subtitle">Manage your family's health history</p>
+            <h1 className="my-health-title">
+              <Heart className="title-icon" />
+              My Health Records
+            </h1>
+            <p className="my-health-subtitle">Your personal medical history and current treatments</p>
           </div>
           <button
             onClick={() => {
-              setEditingMember(null);
+              setEditingRecord(null);
               setFormData({
-                name: "",
-                relationship: "",
-                age: "",
-                health_status: "healthy",
-                conditions: [],
-                diagnosis_age: "",
-                medical_notes: ""
+                condition_name: "",
+                diagnosis_date: "",
+                current_medications: "",
+                doctor_name: "",
+                treatment_plan: "",
+                notes: "",
+                is_chronic: false
               });
               setShowAddModal(true);
             }}
-            className="add-member-btn"
+            className="add-record-btn"
           >
             <Plus className="btn-icon" />
-            Add Family Member
+            Add Health Record
           </button>
         </header>
 
-        <div className="search-bar">
-          <Search className="search-icon" />
-          <input
-            type="text"
-            placeholder="Search family members..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
-          />
-        </div>
-
-        {familyMembers.length === 0 ? (
+        {healthRecords.length === 0 ? (
           <div className="empty-state">
-            <Users className="empty-icon" />
-            <p className="empty-title">No Family Members Added Yet</p>
-            <p className="empty-text">Start building your family health tree by adding family members.</p>
+            <Heart className="empty-icon" />
+            <p className="empty-title">No Health Records Yet</p>
+            <p className="empty-text">
+              Start tracking your personal health history by adding your diagnoses, medications, and treatments.
+            </p>
             <button onClick={() => setShowAddModal(true)} className="empty-action-btn">
               <Plus className="empty-action-icon" />
-              Add Your First Family Member
+              Add Your First Health Record
             </button>
           </div>
         ) : (
-          <div className="family-members-grid">
-            {filteredMembers.map((member) => (
-              <div key={member.id} className="family-member-card">
-                <div className="member-card-header">
-                  <div className="member-info-section">
-                    <h3 className="member-name">{member.name}</h3>
-                    <p className="member-relationship">{member.relationship}</p>
-                    <p className="member-age">Age: {member.age} years</p>
+          <div className="health-records-grid">
+            {healthRecords.map((record) => (
+              <div key={record.id} className="health-record-card">
+                <div className="health-card-header">
+                  <div className="health-card-header-left">
+                    <h3 className="health-condition-name">{record.condition_name}</h3>
+                    <div className="health-diagnosis-date">
+                      <Calendar size={14} />
+                      <span>Diagnosed: {formatDate(record.diagnosis_date)}</span>
+                    </div>
                   </div>
-                  <div className="member-actions">
-                    <button onClick={() => handleEdit(member)} className="edit-btn-icon" title="Edit">
-                      <Edit style={{ width: "1.25rem", height: "1.25rem" }} />
+                  <div className="health-card-header-right">
+                    <button 
+                      onClick={() => handleEdit(record)} 
+                      className="health-edit-btn" 
+                      title="Edit"
+                    >
+                      <Edit size={18} />
                     </button>
-                    <button onClick={() => handleDelete(member.id)} className="delete-btn-icon" title="Delete">
-                      <Trash2 style={{ width: "1.25rem", height: "1.25rem" }} />
+                    <button 
+                      onClick={() => handleDelete(record.id)} 
+                      className="health-delete-btn" 
+                      title="Delete"
+                    >
+                      <Trash2 size={18} />
                     </button>
                   </div>
                 </div>
 
-                <div className="member-card-body">
-                  <div className="health-status-section">
-                    <p className="health-label">Health Status:</p>
-                    <span
-                      className={`health-status-badge ${
-                        member.health_status === "healthy" ? "status-healthy" :
-                        member.health_status === "at_risk" ? "status-at-risk" :
-                        "status-diagnosed"
-                      }`}
-                    >
-                      {member.health_status === "healthy" && <Heart style={{ width: "1rem", height: "1rem" }} />}
-                      {member.health_status === "at_risk" && <AlertCircle style={{ width: "1rem", height: "1rem" }} />}
-                      {member.health_status === "diagnosed" && <Activity style={{ width: "1rem", height: "1rem" }} />}
-                      {member.health_status === "healthy" ? "No Condition" :
-                       member.health_status === "at_risk" ? "At Risk" : "Has Condition(s)"}
-                    </span>
-                  </div>
-
-                  {member.conditions && member.conditions.length > 0 && (
-                    <div className="conditions-section">
-                      <p className="conditions-label">Conditions:</p>
-                      <div className="conditions-list">
-                        {member.conditions.map((condition, index) => (
-                          <span key={index} className="condition-badge">{condition}</span>
-                        ))}
-                      </div>
+                <div className="health-card-content">
+                  {record.is_chronic && (
+                    <div className="chronic-badge">
+                      <Activity size={14} />
+                      <span>Chronic Condition</span>
                     </div>
                   )}
 
-                  {member.diagnosis_age && (
-                    <p className="diagnosis-info">Diagnosed at: {member.diagnosis_age} years</p>
+                  {record.doctor_name && (
+                    <div className="health-info-row">
+                      <strong>Doctor:</strong>
+                      <span>{record.doctor_name}</span>
+                    </div>
                   )}
 
-                  {member.medical_notes && (
-                    <div className="medical-notes-section">
-                      <p className="notes-label">Medical Notes:</p>
-                      <p className="notes-text">{member.medical_notes}</p>
+                  {record.current_medications && (
+                    <div className="health-medications-section">
+                      <div className="section-header">
+                        <Pill size={16} />
+                        <strong>Current Medications:</strong>
+                      </div>
+                      <p className="medication-text">{record.current_medications}</p>
+                    </div>
+                  )}
+
+                  {record.treatment_plan && (
+                    <div className="health-treatment-section">
+                      <div className="section-header">
+                        <FileText size={16} />
+                        <strong>Treatment Plan:</strong>
+                      </div>
+                      <p className="treatment-text">{record.treatment_plan}</p>
+                    </div>
+                  )}
+
+                  {record.notes && (
+                    <div className="health-notes-section">
+                      <strong>Notes:</strong>
+                      <p className="notes-text">{record.notes}</p>
                     </div>
                   )}
                 </div>
@@ -294,117 +276,96 @@ export default function FamilyTree() {
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h2 className="modal-title">
-                {editingMember ? "Edit Family Member" : "Add Family Member"}
+                {editingRecord ? "Edit Health Record" : "Add Health Record"}
               </h2>
               <button onClick={() => setShowAddModal(false)} className="modal-close">×</button>
             </div>
 
-            <form onSubmit={handleAddMember} className="modal-body">
+            <form onSubmit={handleAddRecord} className="modal-body">
               <div className="form-content">
                 <div className="form-field">
-                  <label htmlFor="name" className="form-label">Name *</label>
+                  <label htmlFor="condition_name" className="form-label">Condition/Diagnosis *</label>
                   <input
-                    id="name"
+                    id="condition_name"
                     type="text"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    value={formData.condition_name}
+                    onChange={(e) => setFormData({ ...formData, condition_name: e.target.value })}
                     className="form-input"
+                    placeholder="e.g., Type 2 Diabetes, Hypertension"
                     required
                   />
                 </div>
 
                 <div className="form-field">
-                  <label htmlFor="relationship" className="form-label">Relationship *</label>
-                  <select
-                    id="relationship"
-                    value={formData.relationship}
-                    onChange={(e) => setFormData({ ...formData, relationship: e.target.value })}
-                    className="form-input"
-                    required
-                  >
-                    <option value="">Select relationship</option>
-                    <option value="Father">Father</option>
-                    <option value="Mother">Mother</option>
-                    <option value="Brother">Brother</option>
-                    <option value="Sister">Sister</option>
-                    <option value="Son">Son</option>
-                    <option value="Daughter">Daughter</option>
-                    <option value="Grandfather">Grandfather</option>
-                    <option value="Grandmother">Grandmother</option>
-                    <option value="Uncle">Uncle</option>
-                    <option value="Aunt">Aunt</option>
-                    <option value="Cousin">Cousin</option>
-                  </select>
-                </div>
-
-                <div className="form-field">
-                  <label htmlFor="age" className="form-label">Age *</label>
+                  <label htmlFor="diagnosis_date" className="form-label">Diagnosis Date *</label>
                   <input
-                    id="age"
-                    type="number"
-                    value={formData.age}
-                    onChange={(e) => setFormData({ ...formData, age: e.target.value })}
+                    id="diagnosis_date"
+                    type="date"
+                    value={formData.diagnosis_date}
+                    onChange={(e) => setFormData({ ...formData, diagnosis_date: e.target.value })}
                     className="form-input"
                     required
                   />
                 </div>
 
                 <div className="form-field">
-                  <label htmlFor="health_status" className="form-label">Health Status *</label>
-                  <select
-                    id="health_status"
-                    value={formData.health_status}
-                    onChange={(e) => setFormData({ ...formData, health_status: e.target.value })}
+                  <label htmlFor="doctor_name" className="form-label">Doctor/Healthcare Provider</label>
+                  <input
+                    id="doctor_name"
+                    type="text"
+                    value={formData.doctor_name}
+                    onChange={(e) => setFormData({ ...formData, doctor_name: e.target.value })}
                     className="form-input"
-                    required
-                  >
-                    <option value="healthy">No Condition</option>
-                    <option value="at_risk">At Risk</option>
-                    <option value="diagnosed">Has Hereditary Condition(s)</option>
-                  </select>
+                    placeholder="Dr. John Smith"
+                  />
                 </div>
 
-                {formData.health_status === "diagnosed" && (
-                  <>
-                    <div className="form-field">
-                      <label className="form-label">Select Conditions *</label>
-                      <div className="conditions-checkbox-grid">
-                        {hereditaryConditions.map((condition) => (
-                          <label key={condition} className="condition-checkbox-label">
-                            <input
-                              type="checkbox"
-                              checked={formData.conditions.includes(condition)}
-                              onChange={() => handleConditionToggle(condition)}
-                            />
-                            <span>{condition}</span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="form-field">
-                      <label htmlFor="diagnosis_age" className="form-label">Age at Diagnosis</label>
-                      <input
-                        id="diagnosis_age"
-                        type="number"
-                        value={formData.diagnosis_age}
-                        onChange={(e) => setFormData({ ...formData, diagnosis_age: e.target.value })}
-                        className="form-input"
-                      />
-                    </div>
-                  </>
-                )}
-
                 <div className="form-field">
-                  <label htmlFor="medical_notes" className="form-label">Medical Notes</label>
+                  <label htmlFor="current_medications" className="form-label">Current Medications</label>
                   <textarea
-                    id="medical_notes"
-                    value={formData.medical_notes}
-                    onChange={(e) => setFormData({ ...formData, medical_notes: e.target.value })}
+                    id="current_medications"
+                    value={formData.current_medications}
+                    onChange={(e) => setFormData({ ...formData, current_medications: e.target.value })}
                     className="form-input form-textarea"
                     rows="3"
-                    placeholder="Any additional medical information..."
+                    placeholder="List your current medications (e.g., Metformin 500mg twice daily, Lisinopril 10mg once daily)"
                   />
+                </div>
+
+                <div className="form-field">
+                  <label htmlFor="treatment_plan" className="form-label">Treatment Plan</label>
+                  <textarea
+                    id="treatment_plan"
+                    value={formData.treatment_plan}
+                    onChange={(e) => setFormData({ ...formData, treatment_plan: e.target.value })}
+                    className="form-input form-textarea"
+                    rows="3"
+                    placeholder="Describe your current treatment plan, lifestyle changes, or therapies"
+                  />
+                </div>
+
+                <div className="form-field">
+                  <label htmlFor="notes" className="form-label">Additional Notes</label>
+                  <textarea
+                    id="notes"
+                    value={formData.notes}
+                    onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                    className="form-input form-textarea"
+                    rows="2"
+                    placeholder="Any additional information about this condition"
+                  />
+                </div>
+
+                <div className="form-field">
+                  <label className="checkbox-label">
+                    <input
+                      type="checkbox"
+                      checked={formData.is_chronic}
+                      onChange={(e) => setFormData({ ...formData, is_chronic: e.target.checked })}
+                      className="form-checkbox"
+                    />
+                    <span>This is a chronic condition (ongoing/long-term)</span>
+                  </label>
                 </div>
               </div>
 
@@ -413,12 +374,11 @@ export default function FamilyTree() {
                   type="button"
                   onClick={() => setShowAddModal(false)}
                   className="cancel-btn"
-                  style={{ padding: "0.75rem 1.5rem", borderRadius: "0.5rem" }}
                 >
                   Cancel
                 </button>
                 <button type="submit" className="save-btn">
-                  {editingMember ? "Update Member" : "Add Member"}
+                  {editingRecord ? "Update Record" : "Add Record"}
                 </button>
               </div>
             </form>

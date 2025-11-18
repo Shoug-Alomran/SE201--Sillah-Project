@@ -317,9 +317,29 @@ export default function Patients() {
                       {patient.family_members_count !== 1 ? "s" : ""}
                     </p>
                   </div>
+                  
+                  {/* PATIENT ID DISPLAY - FIXED: Added this section */}
+                  <div className="patient-id-section">
+                    <div className="patient-id-label">PATIENT ID FOR PRESCRIBING:</div>
+                    <div className="patient-id-copy-box">
+                      <div className="patient-id-code">{patient.id}</div>
+                      <button 
+                        onClick={() => {
+                          navigator.clipboard.writeText(patient.id);
+                          alert('Patient ID copied to clipboard!');
+                        }}
+                        className="copy-id-btn-small"
+                        title="Copy Patient ID"
+                      >
+                        📋
+                      </button>
+                    </div>
+                  </div>
+                  
                   <div className="patient-family-count-section">
+                    {/* FIXED: Changed from ?id= to / for URL parameters */}
                     <button
-                      onClick={() => navigate(`/patient-detail?id=${patient.id}`)}
+                      onClick={() => navigate(`/patient-detail/${patient.id}`)}
                       className="view-patient-details-btn"
                     >
                       View Details
