@@ -101,25 +101,59 @@ Each figure corresponds to a major function captured during the execution phase,
 ---
 
 
-```markdown
-![Main Menu Interface](img/main-menu.png)
-*Figure 4.1: Main Menu Interface of the Sillah System*
+![Login Interface](<img/login.png>)
+*Figure 4.16: User Login Interface*
 
+![Doctor Portal Dashboard](<img/doctor_portal_dashboard.png>)
+*Figure 4.17: Healthcare Provider Dashboard*
 
-![Appointment Booking Interface](img/booking-interface.png)
-*Figure 4.2: Appointment Booking Process*
+![Doctor Patient List](<img/doctor_patient_list.png>)
+*Figure 4.18: Patient Management Interface*
 
+![Doctor Prescribe Medication Form](<img/doctor_prescribe_medication_form.png>)
+*Figure 4.19: Medication Prescription Interface*
 
-![Alert Output](img/alert-output.png)
-*Figure 4.3: Example of Alert System Notification*
+![Doctor Active Medications List](<img/doctor_active_medications_list.png>)
+*Figure 4.20: Active Medications Management*
 
+![Doctor Appointment List](<img/doctor_appointment_list.png>)
+*Figure 4.21: Healthcare Provider Appointments*
 
-![Awareness Hub](img/awareness-hub.png)
-*Figure 4.4: Awareness Hub Display*
+![Patient Portal Dashboard](<img/patient_portal_dashboard.png>)
+*Figure 4.22: Patient Portal Dashboard*
 
+![Patient Risk Assessment](<img/patient_risk_assessment.png>)
+*Figure 4.23: Comprehensive Risk Assessment*
 
-![Future GUI Mockup](img/future-gui.png)
-*Figure 4.5: Proposed GUI Design (Future Enhancement)*
+![Patient Family Health Tree](<img/patient_family_health_tree.png>)
+*Figure 4.24: Family Health Tree Interface*
+
+![Patient Medical Alerts](<img/patient_medical_alerts.png>)
+*Figure 4.25: Medical Alert System*
+
+![Patient My Appointments](<img/patient_my_appointments.png>)
+*Figure 4.26: Patient Appointment Management*
+
+![Patient Nearby Clinics](<img/patient_nearby_clinics.png>)
+*Figure 4.27: Nearby Clinics Finder*
+
+![Patient Health Records Empty](<img/patient_health_records_empty.png>)
+*Figure 4.28: Health Records Interface*
+
+![Patient Add Health Record Form](<img/patient_add_health_record_form.png>)
+*Figure 4.29: Add Health Record Form*
+
+![Patient Awareness Hub](<img/patient_awareness_hub.png>)
+*Figure 4.30: Awareness Hub Interface*
+
+![Patient Profile Family Overview](<img/patient_profile_family_overview.png>)
+*Figure 4.31: Family Health Overview*
+
+![Signup Doctor](<img/signup_doctor.png>)
+*Figure 4.32: Healthcare Provider Registration*
+
+![Signup Patient](<img/signup_patient.png>)
+*Figure 4.33: Patient Registration*
 
 
 ## 4.4 System Screenshots
