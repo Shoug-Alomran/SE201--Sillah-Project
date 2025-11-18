@@ -1,0 +1,43 @@
+{
+  "name": "PatientHealthRecord",
+  "type": "object",
+  "properties": {
+    "diagnosis": {
+      "type": "string",
+      "description": "Medical diagnosis"
+    },
+    "diagnosis_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of diagnosis"
+    },
+    "age_at_diagnosis": {
+      "type": "number",
+      "description": "Age when diagnosed"
+    },
+    "treatment": {
+      "type": "string",
+      "description": "Treatment plan"
+    },
+    "medications": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Current medications"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Medical notes"
+    },
+    "is_hereditary_condition": {
+      "type": "boolean",
+      "default": false,
+      "description": "Is this a hereditary condition"
+    }
+  },
+  "required": [
+    "diagnosis",
+    "diagnosis_date"
+  ]
+}

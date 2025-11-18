@@ -1,0 +1,55 @@
+{
+  "name": "Clinic",
+  "type": "object",
+  "properties": {
+    "clinic_name": {
+      "type": "string",
+      "description": "Name of the clinic"
+    },
+    "specialty": {
+      "type": "string",
+      "enum": [
+        "Cardiology",
+        "Genetics",
+        "General Practice",
+        "Hematology"
+      ],
+      "description": "Medical specialty"
+    },
+    "location": {
+      "type": "string",
+      "description": "City or area"
+    },
+    "address": {
+      "type": "string",
+      "description": "Full address"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Contact phone number"
+    },
+    "rating": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 5,
+      "description": "Clinic rating"
+    },
+    "available_slots": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Available appointment times"
+    },
+    "is_certified": {
+      "type": "boolean",
+      "default": true,
+      "description": "Is certified for genetic screening"
+    }
+  },
+  "required": [
+    "clinic_name",
+    "specialty",
+    "location"
+  ]
+}
