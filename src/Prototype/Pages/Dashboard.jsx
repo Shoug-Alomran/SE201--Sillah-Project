@@ -143,20 +143,18 @@ export default function Dashboard() {
       <div className="dashboard-container">
         {/* Welcome Header */}
         <div className="dashboard-header">
-          <div className="welcome-section">
-            <h1 className="welcome-title">Welcome back, {userProfile?.full_name || 'User'}</h1>
-            <p className="welcome-subtitle">
-              {isDoctor ? 'Healthcare Provider Portal' : 'Family Health Portal'}
-            </p>
-          </div>
-          <div className="date-display">
+          <h1 className="dashboard-title">Welcome back, {userProfile?.full_name || 'User'}</h1>
+          <p className="dashboard-subtitle">
+            {isDoctor ? 'Healthcare Provider Portal' : 'Family Health Portal'}
+          </p>
+          <p className="dashboard-welcome">
             {new Date().toLocaleDateString('en-US', { 
               weekday: 'long', 
               year: 'numeric', 
               month: 'long', 
               day: 'numeric' 
             })}
-          </div>
+          </p>
         </div>
 
         {/* Statistics Grid */}
@@ -165,46 +163,50 @@ export default function Dashboard() {
             // DOCTOR STATS
             <>
               <div className="stat-card">
-                <div className="stat-icon-wrapper">
-                  <Users className="stat-icon" />
-                </div>
-                <div className="stat-content">
-                  <h3 className="stat-value">{stats.patientCount}</h3>
-                  <p className="stat-label">Patients Assigned</p>
-                  <p className="stat-description">Active patients under your care</p>
-                </div>
-              </div>
-
-              <div className="stat-card">
-                <div className="stat-icon-wrapper">
-                  <Calendar className="stat-icon" />
-                </div>
-                <div className="stat-content">
-                  <h3 className="stat-value">{stats.appointmentCount}</h3>
-                  <p className="stat-label">Upcoming Appointments</p>
-                  <p className="stat-description">Scheduled for next 30 days</p>
+                <div className="stat-card-content">
+                  <div className="stat-info">
+                    <p className="stat-label">Patients Assigned</p>
+                    <h3 className="stat-value">{stats.patientCount}</h3>
+                  </div>
+                  <div className="stat-icon-wrapper from-blue-500">
+                    <Users className="stat-icon" />
+                  </div>
                 </div>
               </div>
 
               <div className="stat-card">
-                <div className="stat-icon-wrapper">
-                  <AlertTriangle className="stat-icon" />
-                </div>
-                <div className="stat-content">
-                  <h3 className="stat-value highlight-risk">{stats.highRiskCount}</h3>
-                  <p className="stat-label">High Risk Cases</p>
-                  <p className="stat-description">Requiring immediate attention</p>
+                <div className="stat-card-content">
+                  <div className="stat-info">
+                    <p className="stat-label">Upcoming Appointments</p>
+                    <h3 className="stat-value">{stats.appointmentCount}</h3>
+                  </div>
+                  <div className="stat-icon-wrapper from-purple-500">
+                    <Calendar className="stat-icon" />
+                  </div>
                 </div>
               </div>
 
               <div className="stat-card">
-                <div className="stat-icon-wrapper">
-                  <Users className="stat-icon" />
+                <div className="stat-card-content">
+                  <div className="stat-info">
+                    <p className="stat-label">High Risk Cases</p>
+                    <h3 className="stat-value">{stats.highRiskCount}</h3>
+                  </div>
+                  <div className="stat-icon-wrapper from-green-500">
+                    <AlertTriangle className="stat-icon" />
+                  </div>
                 </div>
-                <div className="stat-content">
-                  <h3 className="stat-value">{stats.familyMembersCount}</h3>
-                  <p className="stat-label">Family Members Tracked</p>
-                  <p className="stat-description">Across all patient families</p>
+              </div>
+
+              <div className="stat-card">
+                <div className="stat-card-content">
+                  <div className="stat-info">
+                    <p className="stat-label">Family Members Tracked</p>
+                    <h3 className="stat-value">{stats.familyMembersCount}</h3>
+                  </div>
+                  <div className="stat-icon-wrapper from-teal-500">
+                    <Users className="stat-icon" />
+                  </div>
                 </div>
               </div>
             </>
@@ -212,142 +214,116 @@ export default function Dashboard() {
             // PATIENT STATS
             <>
               <div className="stat-card">
-                <div className="stat-icon-wrapper">
-                  <Users className="stat-icon" />
-                </div>
-                <div className="stat-content">
-                  <h3 className="stat-value">{stats.familyMembersCount}</h3>
-                  <p className="stat-label">Family Members</p>
-                  <p className="stat-description">In your family tree</p>
-                </div>
-              </div>
-
-              <div className="stat-card">
-                <div className="stat-icon-wrapper">
-                  <Calendar className="stat-icon" />
-                </div>
-                <div className="stat-content">
-                  <h3 className="stat-value">{stats.appointmentCount}</h3>
-                  <p className="stat-label">Upcoming Appointments</p>
-                  <p className="stat-description">Your scheduled visits</p>
+                <div className="stat-card-content">
+                  <div className="stat-info">
+                    <p className="stat-label">Family Members</p>
+                    <h3 className="stat-value">{stats.familyMembersCount}</h3>
+                  </div>
+                  <div className="stat-icon-wrapper from-blue-500">
+                    <Users className="stat-icon" />
+                  </div>
                 </div>
               </div>
 
               <div className="stat-card">
-                <div className="stat-icon-wrapper">
-                  <FileText className="stat-icon" />
-                </div>
-                <div className="stat-content">
-                  <h3 className="stat-value">{stats.highRiskCount}</h3>
-                  <p className="stat-label">Health Records</p>
-                  <p className="stat-description">Your medical history</p>
+                <div className="stat-card-content">
+                  <div className="stat-info">
+                    <p className="stat-label">Upcoming Appointments</p>
+                    <h3 className="stat-value">{stats.appointmentCount}</h3>
+                  </div>
+                  <div className="stat-icon-wrapper from-purple-500">
+                    <Calendar className="stat-icon" />
+                  </div>
                 </div>
               </div>
 
               <div className="stat-card">
-                <div className="stat-icon-wrapper">
-                  <Bell className="stat-icon" />
+                <div className="stat-card-content">
+                  <div className="stat-info">
+                    <p className="stat-label">Health Records</p>
+                    <h3 className="stat-value">{stats.highRiskCount}</h3>
+                  </div>
+                  <div className="stat-icon-wrapper from-green-500">
+                    <FileText className="stat-icon" />
+                  </div>
                 </div>
-                <div className="stat-content">
-                  <h3 className="stat-value">{recentAlerts.length}</h3>
-                  <p className="stat-label">Unread Alerts</p>
-                  <p className="stat-description">Important notifications</p>
+              </div>
+
+              <div className="stat-card">
+                <div className="stat-card-content">
+                  <div className="stat-info">
+                    <p className="stat-label">Unread Alerts</p>
+                    <h3 className="stat-value">{recentAlerts.length}</h3>
+                  </div>
+                  <div className="stat-icon-wrapper from-teal-500">
+                    <Bell className="stat-icon" />
+                  </div>
                 </div>
               </div>
             </>
           )}
         </div>
 
-        <div className="dashboard-content-grid">
-          {/* Quick Actions */}
-          <div className="content-card">
-            <div className="card-header">
-              <h2 className="card-title">Quick Actions</h2>
-            </div>
-            <div className="actions-grid">
-              {isDoctor ? (
-                // DOCTOR ACTIONS
-                <>
-                  <Link to="/patients" className="action-card">
-                    <Users className="action-icon" />
-                    <div className="action-content">
-                      <h3>View My Patients</h3>
-                      <p>Manage assigned patients</p>
-                    </div>
-                  </Link>
-                  <Link to="/appointments" className="action-card">
-                    <Calendar className="action-icon" />
-                    <div className="action-content">
-                      <h3>Manage Appointments</h3>
-                      <p>Schedule and view visits</p>
-                    </div>
-                  </Link>
-                  <Link to="/medications" className="action-card">
-                    <Stethoscope className="action-icon" />
-                    <div className="action-content">
-                      <h3>Prescribe Medications</h3>
-                      <p>Manage patient prescriptions</p>
-                    </div>
-                  </Link>
-                  <Link to="/awareness-hub" className="action-card">
-                    <BookOpen className="action-icon" />
-                    <div className="action-content">
-                      <h3>Medical Resources</h3>
-                      <p>Educational materials</p>
-                    </div>
-                  </Link>
-                </>
-              ) : (
-                // PATIENT ACTIONS
-                <>
-                  <Link to="/family-tree" className="action-card">
-                    <Users className="action-icon" />
-                    <div className="action-content">
-                      <h3>Family Tree</h3>
-                      <p>View family health history</p>
-                    </div>
-                  </Link>
-                  <Link to="/my-health" className="action-card">
-                    <Activity className="action-icon" />
-                    <div className="action-content">
-                      <h3>My Health Records</h3>
-                      <p>View medical history</p>
-                    </div>
-                  </Link>
-                  <Link to="/appointments" className="action-card">
-                    <Calendar className="action-icon" />
-                    <div className="action-content">
-                      <h3>My Appointments</h3>
-                      <p>Schedule and manage visits</p>
-                    </div>
-                  </Link>
-                  <Link to="/awareness-hub" className="action-card">
-                    <BookOpen className="action-icon" />
-                    <div className="action-content">
-                      <h3>Health Education</h3>
-                      <p>Learn about conditions</p>
-                    </div>
-                  </Link>
-                </>
-              )}
-            </div>
+        {/* Quick Actions */}
+        <div className="quick-actions-card">
+          <h2 className="quick-actions-title">Quick Actions</h2>
+          <div className="quick-actions-grid">
+            {isDoctor ? (
+              // DOCTOR ACTIONS
+              <>
+                <Link to="/patients" className="quick-action-btn btn-teal">
+                  <Users className="quick-action-icon" />
+                  View My Patients
+                </Link>
+                <Link to="/appointments" className="quick-action-btn btn-blue">
+                  <Calendar className="quick-action-icon" />
+                  Manage Appointments
+                </Link>
+                <Link to="/medications" className="quick-action-btn btn-purple">
+                  <Stethoscope className="quick-action-icon" />
+                  Prescribe Medications
+                </Link>
+                <Link to="/awareness-hub" className="quick-action-btn btn-teal">
+                  <BookOpen className="quick-action-icon" />
+                  Medical Resources
+                </Link>
+              </>
+            ) : (
+              // PATIENT ACTIONS
+              <>
+                <Link to="/family-tree" className="quick-action-btn btn-teal">
+                  <Users className="quick-action-icon" />
+                  Family Tree
+                </Link>
+                <Link to="/my-health" className="quick-action-btn btn-blue">
+                  <Activity className="quick-action-icon" />
+                  My Health Records
+                </Link>
+                <Link to="/appointments" className="quick-action-btn btn-purple">
+                  <Calendar className="quick-action-icon" />
+                  My Appointments
+                </Link>
+                <Link to="/awareness-hub" className="quick-action-btn btn-teal">
+                  <BookOpen className="quick-action-icon" />
+                  Health Education
+                </Link>
+              </>
+            )}
           </div>
+        </div>
 
-          {/* Privacy Notice */}
-          <div className="content-card">
-            <div className="card-header">
-              <Shield className="card-icon" />
-              <h2 className="card-title">Patient Privacy & Access</h2>
-            </div>
-            <div className="card-content">
-              <p>
-                {isDoctor 
-                  ? `You have access to ${stats.patientCount} patients assigned to you. Patient data is protected by healthcare privacy regulations. You can only view and manage patients who have been specifically assigned to your care.`
-                  : 'Your health information is protected and secure. Only healthcare providers directly involved in your care have access to your medical records in accordance with privacy regulations.'
-                }
-              </p>
-            </div>
+        {/* Privacy Notice */}
+        <div className="quick-actions-card">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+            <Shield size={24} color="#14b8a6" />
+            <h2 className="quick-actions-title" style={{ margin: 0 }}>Patient Privacy & Access</h2>
           </div>
+          <p>
+            {isDoctor 
+              ? `You have access to ${stats.patientCount} patients assigned to you. Patient data is protected by healthcare privacy regulations. You can only view and manage patients who have been specifically assigned to your care.`
+              : 'Your health information is protected and secure. Only healthcare providers directly involved in your care have access to your medical records in accordance with privacy regulations.'
+            }
+          </p>
         </div>
       </div>
     </div>

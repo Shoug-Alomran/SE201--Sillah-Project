@@ -12,7 +12,7 @@ import Clinics from "./Prototype/Pages/Clinics.jsx";
 import FamilyTree from "./Prototype/Pages/FamilyTree.jsx";
 import MyHealth from "./Prototype/Pages/MyHealth.jsx";
 import PatientDetail from "./Prototype/Pages/PatientDetail.jsx";
-import Medications from './Prototype/Pages/Medications';
+import Medications from './Prototype/Pages/Medications.jsx';
 import Patients from "./Prototype/Pages/Patients.jsx";
 import RiskAssessment from "./Prototype/Pages/RiskAssessment.jsx";
 import Alerts from "./Prototype/Pages/Alerts.jsx";
