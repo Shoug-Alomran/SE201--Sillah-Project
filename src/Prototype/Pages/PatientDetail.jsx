@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ArrowLeft, User, Mail, Phone, AlertTriangle, Heart, Users, FileText, Calendar, Copy } from 'lucide-react';
 import { format } from 'date-fns';
 import { useParams, useNavigate } from 'react-router-dom';
-import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/config';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -18,56 +18,50 @@ export default function PatientDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Fetch patient data from Firebase
   useEffect(() => {
     const fetchPatientData = async () => {
       try {
         setLoading(true);
         
-        // Fetch patient profile
-        const patientDoc = await getDoc(doc(db, 'users', patientId));
-        if (patientDoc.exists()) {
-          setPatient({ id: patientId, ...patientDoc.data() });
+        const usersQuery = query(collection(db, 'users'), where('uid', '==', patientId));
+        const usersSnapshot = await getDocs(usersQuery);
+        
+        if (!usersSnapshot.empty) {
+          setPatient({ id: patientId, ...usersSnapshot.docs[0].data() });
         } else {
           setError('Patient not found');
           return;
         }
 
-        // Fetch family members
         const familyQuery = query(
           collection(db, 'family_members'),
-          where('patient_id', '==', patientId)
+          where('user_id', '==', patientId)
         );
         const familySnapshot = await getDocs(familyQuery);
-        const familyData = familySnapshot.docs.map(doc => ({
+        setFamilyMembers(familySnapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
-        }));
-        setFamilyMembers(familyData);
+        })));
 
-        // Fetch health records
         const healthQuery = query(
-          collection(db, 'health_records'),
-          where('patient_id', '==', patientId)
+          collection(db, 'personal_health_records'),
+          where('user_id', '==', patientId)
         );
         const healthSnapshot = await getDocs(healthQuery);
-        const healthData = healthSnapshot.docs.map(doc => ({
+        setHealthRecords(healthSnapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
-        }));
-        setHealthRecords(healthData);
+        })));
 
-        // Fetch appointments
         const appointmentsQuery = query(
           collection(db, 'appointments'),
           where('patient_id', '==', patientId)
         );
         const appointmentsSnapshot = await getDocs(appointmentsQuery);
-        const appointmentsData = appointmentsSnapshot.docs.map(doc => ({
+        setAppointments(appointmentsSnapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
-        }));
-        setAppointments(appointmentsData);
+        })));
 
       } catch (err) {
         console.error('Error fetching patient data:', err);
@@ -84,25 +78,16 @@ export default function PatientDetail() {
 
   const copyPatientId = () => {
     navigator.clipboard.writeText(patientId);
-    // You can add a toast notification here if you have one
     alert('Patient ID copied to clipboard!');
   };
 
-  const calculateAge = (dob) => {
-    if (!dob) return 'Unknown';
-    const birthDate = new Date(dob);
-    const today = new Date();
-    let age = today.getFullYear() - birthDate.getFullYear();
-    const monthDiff = today.getMonth() - birthDate.getMonth();
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
-    }
-    return age;
-  };
-
   const calculateRiskLevel = () => {
-    const scdFamilyMembers = familyMembers.filter(m => m.has_scd);
-    const earlyOnset = scdFamilyMembers.filter(m => m.age_at_diagnosis && m.age_at_diagnosis < 50);
+    const scdFamilyMembers = familyMembers.filter(m => 
+      m.health_status && m.health_status.toLowerCase().includes('scd')
+    );
+    const earlyOnset = scdFamilyMembers.filter(m => 
+      m.diagnosis_age && m.diagnosis_age < 50
+    );
     
     if (earlyOnset.length >= 2) return 'High';
     if (earlyOnset.length === 1) return 'Moderate';
@@ -110,188 +95,245 @@ export default function PatientDetail() {
     return 'None';
   };
 
-  const getRiskColor = (level) => {
-    const colors = {
-      'High': 'bg-red-100 text-red-800 border-red-200',
-      'Moderate': 'bg-amber-100 text-amber-800 border-amber-200',
-      'Low': 'bg-green-100 text-green-800 border-green-200',
-      'None': 'bg-gray-100 text-gray-800 border-gray-200'
-    };
-    return colors[level] || colors['None'];
-  };
-
   if (loading) {
     return (
-      <div className="patient-detail-page">
-        <div className="patient-detail-container">
-          <div className="loading-spinner">Loading patient data...</div>
+      <div className="patients-page">
+        <div className="patients-container">
+          <div className="empty-message">Loading patient data...</div>
         </div>
       </div>
     );
   }
 
-  if (error) {
+  if (error || !patient) {
     return (
-      <div className="patient-detail-page">
-        <div className="patient-detail-container">
-          <div className="error-message">{error}</div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!patient) {
-    return (
-      <div className="patient-detail-page">
-        <div className="patient-detail-container">
-          <div className="error-message">Patient not found</div>
+      <div className="patients-page">
+        <div className="patients-container">
+          <div className="empty-state">
+            <AlertTriangle className="empty-icon" />
+            <p className="empty-title">{error || 'Patient not found'}</p>
+            <button onClick={() => navigate('/patients')} className="empty-action-btn">
+              <ArrowLeft className="empty-action-icon" />
+              Back to Patients
+            </button>
+          </div>
         </div>
       </div>
     );
   }
 
   const riskLevel = calculateRiskLevel();
-  const scdEarlyOnset = familyMembers.filter(m => m.has_scd && m.age_at_diagnosis && m.age_at_diagnosis < 50);
+  const scdEarlyOnset = familyMembers.filter(m => 
+    m.health_status && 
+    m.health_status.toLowerCase().includes('scd') && 
+    m.diagnosis_age && 
+    m.diagnosis_age < 50
+  );
 
   return (
-    <div className="patient-detail-page">
-      <div className="patient-detail-container">
-        {/* Header */}
-        <div className="patient-detail-header">
-          <button className="back-btn" onClick={() => navigate('/patients')}>
-            <ArrowLeft className="back-icon" />
-            Back to Patients
-          </button>
+    <div className="patients-page">
+      <div className="patients-container">
+        {/* Back Button */}
+        <button 
+          onClick={() => navigate('/patients')} 
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            padding: '0.5rem 1rem',
+            background: 'white',
+            border: '1px solid #d1d5db',
+            borderRadius: '0.5rem',
+            cursor: 'pointer',
+            marginBottom: '1.5rem',
+            fontSize: '0.875rem',
+            fontWeight: '500',
+            color: '#4b5563'
+          }}
+        >
+          <ArrowLeft size={16} />
+          Back to Patients
+        </button>
 
-          <div className="patient-info-header">
-            <div className="patient-avatar-section">
-              <div className="patient-avatar">
-                <User className="avatar-icon" />
+        {/* Patient Header */}
+        <div style={{
+          background: 'white',
+          borderRadius: '1rem',
+          padding: '1.5rem',
+          marginBottom: '1.5rem',
+          boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '1rem' }}>
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <div style={{
+                width: '4rem',
+                height: '4rem',
+                background: 'linear-gradient(135deg, #14b8a6, #06b6d4)',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <User size={32} color="white" />
               </div>
-              <div className="patient-details">
-                <h1 className="patient-name">{patient.full_name || 'Unknown Patient'}</h1>
-                <div className="patient-contact">
-                  <div className="contact-item">
-                    <Mail className="contact-icon" />
-                    <span>{patient.email || 'No email'}</span>
+              <div>
+                <h1 style={{ fontSize: '1.5rem', fontWeight: '700', margin: '0 0 0.5rem 0' }}>
+                  {patient.full_name || 'Unknown Patient'}
+                </h1>
+                <div style={{ display: 'flex', gap: '1rem', fontSize: '0.875rem', color: '#6b7280' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                    <Mail size={14} />
+                    {patient.email || 'No email'}
                   </div>
                   {patient.phone_number && (
-                    <div className="contact-item">
-                      <Phone className="contact-icon" />
-                      <span>{patient.phone_number}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                      <Phone size={14} />
+                      {patient.phone_number}
                     </div>
                   )}
                 </div>
               </div>
             </div>
-            
-            {/* PATIENT ID DISPLAY - FOR DOCTORS TO COPY */}
-            {userProfile?.user_type === 'doctor' && (
-              <div className="patient-id-display-box">
-                <label className="patient-id-display-label">
-                  🆔 PATIENT ID (Use this to prescribe medications)
-                </label>
-                <div className="patient-id-display-content">
-                  <input
-                    type="text"
-                    value={patientId}
-                    readOnly
-                    className="patient-id-display-input"
-                  />
-                  <button 
-                    onClick={copyPatientId}
-                    className="copy-id-btn-large"
-                  >
-                    <Copy size={16} />
-                    Copy ID
-                  </button>
-                </div>
-                <p className="patient-id-helper-text">
-                  Paste this Patient ID in the Medications page when prescribing
-                </p>
-              </div>
-            )}
-
-            {riskLevel && riskLevel !== 'None' && (
-              <span className={`risk-badge ${getRiskColor(riskLevel)}`}>
-                {riskLevel} Risk
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* Summary Cards */}
-        <div className="summary-cards">
-          <div className="summary-card">
-            <div className="summary-card-content">
-              <div className="summary-info">
-                <p className="summary-label">Family Members</p>
-                <p className="summary-value">{familyMembers.length}</p>
-              </div>
-              <Users className="summary-icon" style={{ color: '#3b82f6', opacity: 0.2 }} />
-            </div>
           </div>
 
-          <div className="summary-card">
-            <div className="summary-card-content">
-              <div className="summary-info">
-                <p className="summary-label">Health Records</p>
-                <p className="summary-value">{healthRecords.length}</p>
+          {/* PATIENT ID - For Prescribing */}
+          {userProfile?.user_type === 'doctor' && (
+            <div style={{
+              background: '#dbeafe',
+              border: '1px solid #bfdbfe',
+              borderRadius: '0.5rem',
+              padding: '1rem',
+              marginTop: '1rem'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                <Copy size={16} color="#2563eb" />
+                <strong style={{ color: '#1e40af', fontSize: '0.875rem' }}>
+                  PATIENT ID (USE THIS TO PRESCRIBE MEDICATIONS)
+                </strong>
               </div>
-              <FileText className="summary-icon" style={{ color: '#a855f7', opacity: 0.2 }} />
-            </div>
-          </div>
-
-          <div className="summary-card">
-            <div className="summary-card-content">
-              <div className="summary-info">
-                <p className="summary-label">SCD Cases</p>
-                <p className="summary-value">{familyMembers.filter(m => m.has_scd).length}</p>
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <input
+                  type="text"
+                  value={patientId}
+                  readOnly
+                  style={{
+                    flex: 1,
+                    padding: '0.5rem',
+                    border: '1px solid #93c5fd',
+                    borderRadius: '0.375rem',
+                    background: 'white',
+                    fontFamily: 'monospace',
+                    fontSize: '0.875rem'
+                  }}
+                />
+                <button
+                  onClick={copyPatientId}
+                  style={{
+                    padding: '0.5rem 1rem',
+                    background: '#2563eb',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '0.375rem',
+                    cursor: 'pointer',
+                    fontWeight: '600',
+                    fontSize: '0.875rem'
+                  }}
+                >
+                  Copy ID
+                </button>
               </div>
-              <AlertTriangle className="summary-icon" style={{ color: '#ef4444', opacity: 0.2 }} />
-            </div>
-          </div>
-
-          <div className="summary-card">
-            <div className="summary-card-content">
-              <div className="summary-info">
-                <p className="summary-label">Upcoming Appointments</p>
-                <p className="summary-value">
-                  {appointments.filter(apt => 
-                    apt.status === 'Scheduled' && 
-                    new Date(apt.appointment_date) >= new Date()
-                  ).length}
-                </p>
-              </div>
-              <Calendar className="summary-icon" style={{ color: '#10b981', opacity: 0.2 }} />
-            </div>
-          </div>
-        </div>
-
-        {/* Risk Assessment */}
-        {scdEarlyOnset.length > 0 && (
-          <div className={`risk-assessment-card ${riskLevel === 'High' ? 'high-risk' : 'moderate-risk'}`}>
-            <div className="risk-header">
-              <h2 className="risk-title">
-                <AlertTriangle className={riskLevel === 'High' ? 'risk-icon-high' : 'risk-icon-moderate'} />
-                {riskLevel} Risk - Early Onset Cases Detected
-              </h2>
-            </div>
-            <div className="risk-body">
-              <p className="risk-description">
-                {scdEarlyOnset.length} family member{scdEarlyOnset.length > 1 ? 's' : ''} with SCD diagnosed before age 50:
+              <p style={{ fontSize: '0.75rem', color: '#1e3a8a', margin: '0.5rem 0 0 0' }}>
+                Paste this Patient ID in the Medications page when prescribing
               </p>
-              <div className="risk-members">
-                {scdEarlyOnset.map(member => (
-                  <div key={member.id} className="risk-member-item">
-                    <p className="risk-member-name">{member.full_name} ({member.relation})</p>
-                    <p className="risk-member-age">Diagnosed at age {member.age_at_diagnosis}</p>
-                  </div>
-                ))}
+            </div>
+          )}
+        </div>
+
+        {/* Stats Grid */}
+        <div className="stats-grid">
+          <div className="stat-card">
+            <div className="stat-card-content">
+              <div className="stat-info">
+                <p className="stat-label">Family Members</p>
+                <h3 className="stat-value">{familyMembers.length}</h3>
               </div>
-              <div className="risk-recommendation">
+              <div className="stat-icon-wrapper from-blue-500">
+                <Users className="stat-icon" />
+              </div>
+            </div>
+          </div>
+
+          <div className="stat-card">
+            <div className="stat-card-content">
+              <div className="stat-info">
+                <p className="stat-label">Health Records</p>
+                <h3 className="stat-value">{healthRecords.length}</h3>
+              </div>
+              <div className="stat-icon-wrapper from-purple-500">
+                <FileText className="stat-icon" />
+              </div>
+            </div>
+          </div>
+
+          <div className="stat-card">
+            <div className="stat-card-content">
+              <div className="stat-info">
+                <p className="stat-label">SCD Cases</p>
+                <h3 className="stat-value">
+                  {familyMembers.filter(m => m.health_status && m.health_status.toLowerCase().includes('scd')).length}
+                </h3>
+              </div>
+              <div className="stat-icon-wrapper from-green-500">
+                <AlertTriangle className="stat-icon" />
+              </div>
+            </div>
+          </div>
+
+          <div className="stat-card">
+            <div className="stat-card-content">
+              <div className="stat-info">
+                <p className="stat-label">Appointments</p>
+                <h3 className="stat-value">{appointments.length}</h3>
+              </div>
+              <div className="stat-icon-wrapper from-teal-500">
+                <Calendar className="stat-icon" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Risk Alert */}
+        {scdEarlyOnset.length > 0 && (
+          <div className="alert-card" style={{ borderLeftColor: riskLevel === 'High' ? '#ef4444' : '#f59e0b' }}>
+            <div className="alert-card-header">
+              <div className="alert-header-content">
+                <div className="alert-icon-wrapper" style={{ background: riskLevel === 'High' ? '#ef4444' : '#f59e0b' }}>
+                  <AlertTriangle size={20} />
+                </div>
+                <div className="alert-header-info">
+                  <h3 className="alert-title">{riskLevel} Risk - Early Onset Cases Detected</h3>
+                  <p className="alert-date">
+                    {scdEarlyOnset.length} family member{scdEarlyOnset.length > 1 ? 's' : ''} with SCD diagnosed before age 50
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="alert-card-body">
+              <div className="alert-risk-factors">
+                <p className="risk-factors-title">Family Members:</p>
+                <ul className="risk-factors-list">
+                  {scdEarlyOnset.map(member => (
+                    <li key={member.id} className="risk-factor-item">
+                      <span className="risk-bullet">•</span>
+                      {member.name} ({member.relationship}) - Diagnosed at age {member.diagnosis_age}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="alert-recommendation" style={{ borderLeftColor: '#14b8a6' }}>
+                <p className="recommendation-title">Clinical Recommendation:</p>
                 <p className="recommendation-text">
-                  <strong>Clinical Recommendation:</strong> Genetic counseling and preventive cardiac screening recommended for patient and immediate family members.
+                  Genetic counseling and preventive cardiac screening recommended for patient and immediate family members.
                 </p>
               </div>
             </div>
@@ -299,41 +341,57 @@ export default function PatientDetail() {
         )}
 
         {/* Family Tree */}
-        <div className="section-card">
-          <div className="section-header">
-            <h2 className="section-title">
-              <Users className="section-icon" />
+        <div className="activity-card">
+          <div className="activity-card-header">
+            <h2 className="activity-card-title">
               Family Health Tree ({familyMembers.length} members)
             </h2>
           </div>
-          <div className="section-body">
+          <div className="activity-card-content">
             {familyMembers.length > 0 ? (
-              <div className="family-members-grid">
+              <div className="members-grid">
                 {familyMembers.map((member) => (
-                  <div key={member.id} className="family-member-card">
-                    <div className="family-member-header">
-                      <div>
-                        <h3 className="family-member-name">{member.full_name}</h3>
-                        <p className="family-member-relation">{member.relation}</p>
+                  <div key={member.id} className="member-card-component">
+                    <div className="member-card-header-component">
+                      <div className="member-header-content">
+                        <div className="member-avatar-icon">
+                          <User className="user-icon" />
+                        </div>
+                        <div className="member-info-text">
+                          <h3 className="member-name-text">{member.name}</h3>
+                          <p className="member-relation-text">{member.relationship}</p>
+                        </div>
                       </div>
                     </div>
-                    <div className="family-member-body">
-                      <div className="member-detail-row">
-                        <span className="detail-label">Age:</span>
-                        <span className="detail-value">
-                          {member.date_of_birth ? `${calculateAge(member.date_of_birth)} years` : 'Unknown'}
+                    <div className="member-card-body-component">
+                      <div className="member-detail-row-component">
+                        <span className="detail-label-component">Age:</span>
+                        <span className="detail-value-component">
+                          {member.age ? `${member.age} years` : 'Unknown'}
                         </span>
                       </div>
-                      <div className="member-detail-row">
-                        <span className="detail-label">Health Status:</span>
-                        <span className={`health-badge ${member.has_scd ? 'has-condition' : 'no-condition'}`}>
-                          {member.has_scd ? 'Has SCD' : 'No Condition'}
+                      <div className="member-detail-row-component">
+                        <span className="detail-label-component">Status:</span>
+                        <span className={`member-status-badge ${
+                          member.health_status && member.health_status.toLowerCase().includes('scd') 
+                            ? 'status-scd' 
+                            : member.health_status === 'at risk'
+                            ? 'status-at-risk'
+                            : 'status-healthy'
+                        }`}>
+                          {member.health_status || 'Healthy'}
                         </span>
                       </div>
-                      {member.has_scd && member.age_at_diagnosis && (
-                        <div className="member-detail-row">
-                          <span className="detail-label">Diagnosed at:</span>
-                          <span className="detail-value">{member.age_at_diagnosis} years</span>
+                      {member.diagnosis_age && (
+                        <div className="member-detail-row-component">
+                          <span className="detail-label-component">Diagnosed:</span>
+                          <span className="detail-value-component">Age {member.diagnosis_age}</span>
+                        </div>
+                      )}
+                      {member.conditions && member.conditions.length > 0 && (
+                        <div className="member-detail-row-component">
+                          <span className="detail-label-component">Conditions:</span>
+                          <span className="detail-value-component">{member.conditions.join(', ')}</span>
                         </div>
                       )}
                     </div>
@@ -346,62 +404,55 @@ export default function PatientDetail() {
           </div>
         </div>
 
-        {/* Patient Health Records */}
-        <div className="section-card">
-          <div className="section-header">
-            <h2 className="section-title">
-              <FileText className="section-icon" style={{ color: '#a855f7' }} />
-              Patient Health Records
-            </h2>
+        {/* Health Records */}
+        <div className="activity-card">
+          <div className="activity-card-header">
+            <h2 className="activity-card-title">Patient Health Records</h2>
           </div>
-          <div className="section-body">
+          <div className="activity-card-content">
             {healthRecords.length > 0 ? (
               <div className="health-records-list">
                 {healthRecords.map((record) => (
-                  <div key={record.id} className="health-record-item">
-                    <div className="record-item-header">
-                      <div>
-                        <h4 className="record-item-title">{record.diagnosis}</h4>
-                        <p className="record-item-date">
-                          Diagnosed: {format(new Date(record.diagnosis_date), 'MMM d, yyyy')}
+                  <div key={record.id} className="health-record-card">
+                    <div className="record-header">
+                      <div className="record-header-content">
+                        <h3 className="record-diagnosis">{record.diagnosis}</h3>
+                        <p className="record-date">
+                          {record.diagnosis_date ? format(new Date(record.diagnosis_date), 'MMM d, yyyy') : 'Date unknown'}
                         </p>
                       </div>
                       {record.is_hereditary_condition && (
                         <span className="hereditary-badge">Hereditary</span>
                       )}
                     </div>
-
-                    <div className="record-item-details">
+                    <div className="record-body">
                       {record.age_at_diagnosis && (
-                        <div className="record-detail">
-                          <span className="record-label">Age at diagnosis: </span>
-                          <span className="record-value">{record.age_at_diagnosis}</span>
+                        <div className="record-info-row">
+                          <span className="info-label">Age at diagnosis:</span>
+                          <span className="info-value">{record.age_at_diagnosis}</span>
                         </div>
                       )}
                       {record.treatment && (
-                        <div className="record-detail">
-                          <span className="record-label">Treatment: </span>
-                          <span className="record-value">{record.treatment}</span>
+                        <div className="record-detail-box">
+                          <p className="detail-text"><strong>Treatment:</strong> {record.treatment}</p>
+                        </div>
+                      )}
+                      {record.medications && record.medications.length > 0 && (
+                        <div className="record-detail-box">
+                          <p className="detail-text-label">Medications:</p>
+                          <div className="medications-list">
+                            {record.medications.map((med, idx) => (
+                              <span key={idx} className="medication-badge">{med}</span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {record.notes && (
+                        <div className="record-detail-box">
+                          <p className="detail-text">{record.notes}</p>
                         </div>
                       )}
                     </div>
-
-                    {record.medications && record.medications.length > 0 && (
-                      <div className="record-medications">
-                        <p className="medications-label">Medications:</p>
-                        <div className="medications-list">
-                          {record.medications.map((med, idx) => (
-                            <span key={idx} className="medication-badge">{med}</span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {record.notes && (
-                      <div className="record-notes">
-                        <p className="notes-text">{record.notes}</p>
-                      </div>
-                    )}
                   </div>
                 ))}
               </div>
@@ -412,38 +463,25 @@ export default function PatientDetail() {
         </div>
 
         {/* Appointments */}
-        <div className="section-card">
-          <div className="section-header">
-            <h2 className="section-title">
-              <Calendar className="section-icon" style={{ color: '#10b981' }} />
-              Appointment History
-            </h2>
+        <div className="activity-card">
+          <div className="activity-card-header">
+            <h2 className="activity-card-title">Appointment History</h2>
           </div>
-          <div className="section-body">
+          <div className="activity-card-content">
             {appointments.length > 0 ? (
-              <div className="appointments-list">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                 {appointments.map((apt) => (
                   <div key={apt.id} className="appointment-item">
-                    <div className="appointment-item-content">
-                      <div>
-                        <h4 className="appointment-clinic">{apt.clinic_name}</h4>
-                        <p className="appointment-datetime">
-                          {format(new Date(apt.appointment_date), 'EEEE, MMM d, yyyy')} at {apt.appointment_time}
-                        </p>
-                        {apt.reason && (
-                          <p className="appointment-reason">
-                            <strong>Reason:</strong> {apt.reason}
-                          </p>
-                        )}
-                      </div>
-                      <span className={`appointment-status-badge ${
-                        apt.status === 'Scheduled' ? 'status-scheduled' :
-                        apt.status === 'Completed' ? 'status-completed' :
-                        'status-cancelled'
-                      }`}>
-                        {apt.status}
-                      </span>
-                    </div>
+                    <h4 className="appointment-item-title">{apt.clinic_name || 'Clinic Visit'}</h4>
+                    <p className="appointment-item-details">
+                      {apt.appointment_date ? format(new Date(apt.appointment_date), 'EEEE, MMM d, yyyy') : 'Date TBD'} 
+                      {apt.appointment_time && ` at ${apt.appointment_time}`}
+                    </p>
+                    {apt.reason && (
+                      <p className="appointment-item-details" style={{ marginTop: '0.25rem' }}>
+                        <strong>Reason:</strong> {apt.reason}
+                      </p>
+                    )}
                   </div>
                 ))}
               </div>
