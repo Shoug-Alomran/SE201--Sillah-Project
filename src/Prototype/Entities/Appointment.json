@@ -1,0 +1,47 @@
+{
+  "name": "Appointment",
+  "type": "object",
+  "properties": {
+    "clinic_id": {
+      "type": "string",
+      "description": "Reference to clinic"
+    },
+    "clinic_name": {
+      "type": "string",
+      "description": "Clinic name for display"
+    },
+    "appointment_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of appointment"
+    },
+    "appointment_time": {
+      "type": "string",
+      "description": "Time slot"
+    },
+    "reason": {
+      "type": "string",
+      "description": "Reason for appointment"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Scheduled",
+        "Completed",
+        "Cancelled",
+        "No Show"
+      ],
+      "default": "Scheduled"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes"
+    }
+  },
+  "required": [
+    "clinic_id",
+    "clinic_name",
+    "appointment_date",
+    "appointment_time"
+  ]
+}

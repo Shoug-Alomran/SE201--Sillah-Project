@@ -47,7 +47,7 @@ Each class is responsible for a specific aspect of the system’s functionality.
 | **Main** | Serves as the entry point that coordinates all modules and simulates system operation. |
 
 > **Figure 2:** UML Class Diagram  
-> *(Insert your class diagram here – e.g., “class-diagram.png”)*
+![Figure 2: System Architecture Overview](img/Class Diagram.png)
 
 In the UML diagram, the relationships between classes highlight key interactions such as:
 - A `User` manages multiple `FamilyMember` records.  

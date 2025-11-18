@@ -1,0 +1,65 @@
+{
+  "name": "FamilyMember",
+  "type": "object",
+  "properties": {
+    "full_name": {
+      "type": "string",
+      "description": "Full name of the family member"
+    },
+    "relation": {
+      "type": "string",
+      "enum": [
+        "Father",
+        "Mother",
+        "Brother",
+        "Sister",
+        "Son",
+        "Daughter",
+        "Grandfather",
+        "Grandmother",
+        "Uncle",
+        "Aunt",
+        "Cousin"
+      ],
+      "description": "Relationship to the user"
+    },
+    "age": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 120,
+      "description": "Current age"
+    },
+    "health_condition": {
+      "type": "string",
+      "description": "Primary health condition"
+    },
+    "has_scd": {
+      "type": "boolean",
+      "default": false,
+      "description": "Has Sickle Cell Disease"
+    },
+    "age_at_diagnosis": {
+      "type": "number",
+      "description": "Age when diagnosed with condition"
+    },
+    "additional_notes": {
+      "type": "string",
+      "description": "Additional health information"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Healthy",
+        "At Risk",
+        "Diagnosed",
+        "Deceased"
+      ],
+      "default": "Healthy"
+    }
+  },
+  "required": [
+    "full_name",
+    "relation",
+    "age"
+  ]
+}

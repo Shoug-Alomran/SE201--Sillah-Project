@@ -1,0 +1,60 @@
+{
+  "name": "Alert",
+  "type": "object",
+  "properties": {
+    "alert_type": {
+      "type": "string",
+      "enum": [
+        "Medical Review",
+        "Appointment Reminder",
+        "Wellness Tip",
+        "General Information"
+      ],
+      "description": "Type of alert"
+    },
+    "title": {
+      "type": "string",
+      "description": "Alert title"
+    },
+    "message": {
+      "type": "string",
+      "description": "Detailed alert message"
+    },
+    "risk_factors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Medical risk factors (doctor view only)"
+    },
+    "recommendation": {
+      "type": "string",
+      "description": "Recommended action"
+    },
+    "is_read": {
+      "type": "boolean",
+      "default": false,
+      "description": "Has user read this alert"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "Critical",
+        "High",
+        "Medium",
+        "Low"
+      ],
+      "default": "Medium"
+    },
+    "is_doctor_only": {
+      "type": "boolean",
+      "default": false,
+      "description": "Only visible to doctors"
+    }
+  },
+  "required": [
+    "alert_type",
+    "title",
+    "message"
+  ]
+}

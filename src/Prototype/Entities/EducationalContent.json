@@ -1,0 +1,55 @@
+{
+  "name": "EducationalContent",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Content title"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Sickle Cell Disease",
+        "Genetic Screening",
+        "Heart Health",
+        "Prevention",
+        "Family Planning"
+      ],
+      "description": "Content category"
+    },
+    "summary": {
+      "type": "string",
+      "description": "Short summary"
+    },
+    "content": {
+      "type": "string",
+      "description": "Full content body"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "Header image URL"
+    },
+    "reading_time": {
+      "type": "number",
+      "description": "Estimated reading time in minutes"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Content tags"
+    },
+    "is_featured": {
+      "type": "boolean",
+      "default": false,
+      "description": "Show on featured section"
+    }
+  },
+  "required": [
+    "title",
+    "category",
+    "summary",
+    "content"
+  ]
+}
