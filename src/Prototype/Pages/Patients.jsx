@@ -1,78 +1,76 @@
+// src/Prototype/Pages/Patients.jsx
+// @ts-nocheck
 import React, { useState, useEffect } from "react";
-import { Search, Filter, Users, AlertTriangle, TrendingUp } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Users, Search, AlertTriangle, TrendingUp, Filter } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
-import { collection, query, where, getDocs } from "firebase/firestore";
-import { db } from "../../firebase/config";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "../../supabase";
 
 export default function Patients() {
-  const navigate = useNavigate();
   const { currentUser } = useAuth();
+  const navigate = useNavigate();
+
   const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
   const [searchTerm, setSearchTerm] = useState("");
   const [riskFilter, setRiskFilter] = useState("all");
 
   useEffect(() => {
-    async function fetchAssignedPatients() {
-      if (!currentUser) {
-        setError("Please log in to view patients");
-        setLoading(false);
-        return;
-      }
+    if (!currentUser) return;
 
+    const fetchAssignedPatients = async () => {
       try {
         setLoading(true);
 
-        // Step 1: Get patient assignments for this doctor
-        const assignmentsRef = collection(db, "doctor_patients");
-        const assignmentsQuery = query(
-          assignmentsRef,
-          where("doctor_id", "==", currentUser.uid),
-          where("status", "==", "active")
-        );
-        const assignmentsSnapshot = await getDocs(assignmentsQuery);
+        // Step 1: Get assigned patients for this doctor
+        const { data: assignments, error: assignError } = await supabase
+          .from("doctor_patients")
+          .select("patient_id")
+          .eq("doctor_id", currentUser.uid)
+          .eq("status", "active");
 
-        if (assignmentsSnapshot.empty) {
+        if (assignError) throw assignError;
+
+        if (!assignments || assignments.length === 0) {
           setPatients([]);
           setLoading(false);
           return;
         }
 
-        // Step 2: Get patient IDs
-        const patientIds = [];
-        assignmentsSnapshot.forEach((doc) => {
-          patientIds.push(doc.data().patient_id);
+        const patientIds = assignments.map((a) => a.patient_id);
+
+        // Step 2: Fetch user profiles for each patient
+        const { data: usersData, error: usersError } = await supabase
+          .from("users")
+          .select("*")
+          .in("uid", patientIds);
+
+        if (usersError) throw usersError;
+
+        // Step 3: Fetch family member counts
+        const { data: familyData, error: familyError } = await supabase
+          .from("family_members")
+          .select("user_id");
+
+        if (familyError) throw familyError;
+
+        const familyCounts = {};
+        familyData.forEach((f) => {
+          familyCounts[f.user_id] = (familyCounts[f.user_id] || 0) + 1;
         });
 
-        // Step 3: Fetch patient details from users collection
-        const patientsData = [];
-        for (const patientId of patientIds) {
-          const usersRef = collection(db, "users");
-          const userQuery = query(usersRef, where("uid", "==", patientId));
-          const userSnapshot = await getDocs(userQuery);
+        // Step 4: Build final patient list
+        const finalPatients = usersData.map((u) => ({
+          id: u.uid,
+          full_name: u.full_name,
+          email: u.email,
+          risk_level: u.risk_level || "none",
+          family_members_count: familyCounts[u.uid] || 0,
+        }));
 
-          if (!userSnapshot.empty) {
-            const userData = userSnapshot.docs[0].data();
-
-            // Get family members count
-            const familyMembersRef = collection(db, "family_members");
-            const familyQuery = query(
-              familyMembersRef,
-              where("user_id", "==", patientId)
-            );
-            const familySnapshot = await getDocs(familyQuery);
-
-            patientsData.push({
-              id: patientId,
-              ...userData,
-              family_members_count: familySnapshot.size,
-            });
-          }
-        }
-
-        setPatients(patientsData);
+        setPatients(finalPatients);
         setError(null);
       } catch (err) {
         console.error("Error fetching patients:", err);
@@ -80,12 +78,12 @@ export default function Patients() {
       } finally {
         setLoading(false);
       }
-    }
+    };
 
     fetchAssignedPatients();
   }, [currentUser]);
 
-  // Filter patients
+  // Filtering logic
   const filteredPatients = patients.filter((patient) => {
     const matchesSearch =
       patient.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -98,7 +96,7 @@ export default function Patients() {
     return matchesSearch && matchesRisk;
   });
 
-  // Calculate stats
+  // Stats
   const totalPatients = patients.length;
   const highRiskCount = patients.filter(
     (p) => (p.risk_level || "none").toLowerCase() === "high"
@@ -111,7 +109,7 @@ export default function Patients() {
     0
   );
 
-  // Loading State
+  // Loading state
   if (loading) {
     return (
       <div className="patients-page">
@@ -128,7 +126,7 @@ export default function Patients() {
     );
   }
 
-  // Error State
+  // Error state
   if (error) {
     return (
       <div className="patients-page">
@@ -140,10 +138,13 @@ export default function Patients() {
             </h1>
             <p className="patients-subtitle">Unable to load patients</p>
           </header>
+
           <div className="empty-state">
             <AlertTriangle className="empty-icon" style={{ color: "#ef4444" }} />
             <p className="empty-title">{error}</p>
-            <p className="empty-text">Please check your connection or try again later.</p>
+            <p className="empty-text">
+              Please check your connection or try again later.
+            </p>
             <button
               onClick={() => window.location.reload()}
               className="empty-action-btn"
@@ -156,7 +157,7 @@ export default function Patients() {
     );
   }
 
-  // Empty State (No Patients Assigned)
+  // Empty state
   if (patients.length === 0) {
     return (
       <div className="patients-page">
@@ -168,12 +169,13 @@ export default function Patients() {
             </h1>
             <p className="patients-subtitle">No patients assigned yet</p>
           </header>
+
           <div className="empty-state">
             <Users className="empty-icon" />
             <p className="empty-title">No Patients Assigned</p>
             <p className="empty-text">
-              You don't have any patients assigned to you yet. Contact your administrator
-              to get patients assigned to your care.
+              You don't have any patients assigned to you yet. Contact your
+              administrator to get patients assigned to your care.
             </p>
           </div>
         </div>
@@ -196,7 +198,7 @@ export default function Patients() {
           </p>
         </header>
 
-        {/* Search and Filter */}
+        {/* Search + Filter */}
         <div className="search-filter-card">
           <div className="search-input-wrapper">
             <Search className="search-icon" />
@@ -208,6 +210,7 @@ export default function Patients() {
               className="search-input"
             />
           </div>
+
           <div className="filter-row">
             <Filter className="filter-icon" />
             <select
@@ -224,7 +227,7 @@ export default function Patients() {
           </div>
         </div>
 
-        {/* Statistics */}
+        {/* Stats */}
         <div className="statistics-grid">
           <div className="stat-card">
             <div className="stat-card-content">
@@ -294,6 +297,7 @@ export default function Patients() {
                       <p className="patient-email-component">{patient.email}</p>
                     </div>
                   </div>
+
                   {patient.risk_level && (
                     <span
                       className={`patient-risk-badge-component ${
@@ -309,6 +313,7 @@ export default function Patients() {
                     </span>
                   )}
                 </div>
+
                 <div className="patient-card-body-component">
                   <div className="patient-info-row-component">
                     <Users className="patient-info-icon-small" />
@@ -317,16 +322,16 @@ export default function Patients() {
                       {patient.family_members_count !== 1 ? "s" : ""}
                     </p>
                   </div>
-                  
-                  {/* PATIENT ID DISPLAY - FIXED: Added this section */}
+
+                  {/* Patient ID for prescribing */}
                   <div className="patient-id-section">
                     <div className="patient-id-label">PATIENT ID FOR PRESCRIBING:</div>
                     <div className="patient-id-copy-box">
                       <div className="patient-id-code">{patient.id}</div>
-                      <button 
+                      <button
                         onClick={() => {
                           navigator.clipboard.writeText(patient.id);
-                          alert('Patient ID copied to clipboard!');
+                          alert("Patient ID copied to clipboard!");
                         }}
                         className="copy-id-btn-small"
                         title="Copy Patient ID"
@@ -335,9 +340,8 @@ export default function Patients() {
                       </button>
                     </div>
                   </div>
-                  
+
                   <div className="patient-family-count-section">
-                    {/* FIXED: Changed from ?id= to / for URL parameters */}
                     <button
                       onClick={() => navigate(`/patient-detail/${patient.id}`)}
                       className="view-patient-details-btn"

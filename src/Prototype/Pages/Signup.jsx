@@ -1,50 +1,54 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
-import { useNavigate, Link } from 'react-router-dom';
-import { Heart, Mail, Lock, User, AlertCircle, Phone, Stethoscope, Users } from 'lucide-react';
-import { collection, query, where, getDocs } from 'firebase/firestore';
-import { db } from '../../firebase/config';
+// src/Prototype/Pages/Signup.jsx
+import React, { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import {
+  Heart,
+  Mail,
+  Lock,
+  User,
+  AlertCircle,
+  Phone,
+  Stethoscope,
+  Users,
+} from "lucide-react";
+import { supabase } from "../../supabase";
 
 export default function Signup() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [fullName, setFullName] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [userType, setUserType] = useState('patient');
-  const [selectedDoctor, setSelectedDoctor] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [userType, setUserType] = useState("patient");
+  const [selectedDoctor, setSelectedDoctor] = useState("");
   const [doctors, setDoctors] = useState([]);
   const [loadingDoctors, setLoadingDoctors] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const { signup } = useAuth();
+
   const navigate = useNavigate();
 
-  // Fetch available doctors when user selects "patient" type
+  // Fetch doctors from Supabase
   useEffect(() => {
     async function fetchDoctors() {
-      if (userType !== 'patient') {
+      if (userType !== "patient") {
         setDoctors([]);
         return;
       }
 
       try {
         setLoadingDoctors(true);
-        const usersRef = collection(db, 'users');
-        const doctorsQuery = query(usersRef, where('user_type', '==', 'doctor'));
-        const doctorsSnapshot = await getDocs(doctorsQuery);
 
-        const doctorsList = [];
-        doctorsSnapshot.forEach((doc) => {
-          doctorsList.push({
-            id: doc.id,
-            ...doc.data(),
-          });
-        });
+        const { data, error } = await supabase
+          .from("users")
+          .select("uid, full_name, email")
+          .eq("user_type", "doctor");
 
-        setDoctors(doctorsList);
-      } catch (error) {
-        console.error('Error fetching doctors:', error);
+        if (error) throw error;
+
+        setDoctors(data || []);
+      } catch (err) {
+        console.error("Error fetching doctors:", err);
       } finally {
         setLoadingDoctors(false);
       }
@@ -57,26 +61,57 @@ export default function Signup() {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      return setError('Passwords do not match');
+      return setError("Passwords do not match");
     }
 
     if (password.length < 6) {
-      return setError('Password must be at least 6 characters');
+      return setError("Password must be at least 6 characters");
     }
 
-    if (userType === 'patient' && !selectedDoctor) {
-      return setError('Please select a doctor');
+    if (userType === "patient" && !selectedDoctor) {
+      return setError("Please select a doctor");
     }
 
     try {
-      setError('');
+      setError("");
       setLoading(true);
-      await signup(email, password, fullName, phoneNumber, userType, selectedDoctor);
-      navigate('/dashboard');
-    } catch (error) {
-      setError('Failed to create account. Email may already be in use.');
-      console.error(error);
+
+      // 1️⃣ Create user in Supabase Auth
+      const { data: authData, error: authError } =
+        await supabase.auth.signUp({
+          email,
+          password,
+        });
+
+      if (authError) throw authError;
+
+      const uid = authData.user.id;
+
+      // 2️⃣ Insert user into "users" table
+      const { error: insertError } = await supabase.from("users").insert({
+        uid,
+        email,
+        full_name: fullName,
+        phone: phoneNumber || null,
+        user_type: userType,
+        risk_level: null,
+        gender: null,
+        birthdate: null,
+        address: null,
+        age: null,
+        blood_type: null,
+        // If patient, store their doctor
+        assigned_doctor: userType === "patient" ? selectedDoctor : null,
+      });
+
+      if (insertError) throw insertError;
+
+      navigate("/dashboard");
+    } catch (err) {
+      console.error(err);
+      setError("Failed to create account. Email may already be in use.");
     }
+
     setLoading(false);
   }
 
@@ -109,16 +144,20 @@ export default function Signup() {
               <div className="user-type-selector">
                 <button
                   type="button"
-                  className={`user-type-btn ${userType === 'patient' ? 'active' : ''}`}
-                  onClick={() => setUserType('patient')}
+                  className={`user-type-btn ${
+                    userType === "patient" ? "active" : ""
+                  }`}
+                  onClick={() => setUserType("patient")}
                 >
                   <Users className="user-type-icon" />
                   <span>Patient</span>
                 </button>
                 <button
                   type="button"
-                  className={`user-type-btn ${userType === 'doctor' ? 'active' : ''}`}
-                  onClick={() => setUserType('doctor')}
+                  className={`user-type-btn ${
+                    userType === "doctor" ? "active" : ""
+                  }`}
+                  onClick={() => setUserType("doctor")}
                 >
                   <Stethoscope className="user-type-icon" />
                   <span>Doctor</span>
@@ -174,21 +213,32 @@ export default function Signup() {
             </div>
 
             {/* Doctor Selection (Only for Patients) */}
-            {userType === 'patient' && (
+            {userType === "patient" && (
               <div className="form-field">
                 <label htmlFor="doctor" className="form-label">
                   <Stethoscope className="form-label-icon" />
                   Select Your Doctor
                 </label>
+
                 {loadingDoctors ? (
-                  <p className="form-input" style={{ color: '#6b7280' }}>
+                  <p className="form-input" style={{ color: "#6b7280" }}>
                     Loading available doctors...
                   </p>
                 ) : doctors.length === 0 ? (
                   <div className="doctor-notice">
-                    <AlertCircle className="form-label-icon" style={{ color: '#f59e0b' }} />
-                    <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>
-                      No doctors available yet. You can still sign up and select a doctor later.
+                    <AlertCircle
+                      className="form-label-icon"
+                      style={{ color: "#f59e0b" }}
+                    />
+                    <p
+                      style={{
+                        fontSize: "0.875rem",
+                        color: "#6b7280",
+                        margin: 0,
+                      }}
+                    >
+                      No doctors available yet. You can still sign up and select
+                      a doctor later.
                     </p>
                   </div>
                 ) : (
@@ -244,15 +294,25 @@ export default function Signup() {
 
             <button
               type="submit"
-              disabled={loading || (userType === 'patient' && doctors.length > 0 && !selectedDoctor)}
+              disabled={
+                loading ||
+                (userType === "patient" &&
+                  doctors.length > 0 &&
+                  !selectedDoctor)
+              }
               className="auth-submit-btn"
             >
-              {loading ? 'Creating account...' : 'Sign Up'}
+              {loading ? "Creating account..." : "Sign Up"}
             </button>
           </form>
 
           <div className="auth-footer">
-            <p>Already have an account? <Link to="/login" className="auth-link">Login</Link></p>
+            <p>
+              Already have an account?{" "}
+              <Link to="/login" className="auth-link">
+                Login
+              </Link>
+            </p>
           </div>
         </div>
       </div>

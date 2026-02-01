@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Bell, CheckCircle, AlertTriangle, Info, ExternalLink } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
-import { collection, query, where, getDocs, updateDoc, doc } from "firebase/firestore";
-import { db } from "../../firebase/config";
+import { supabase } from "../../supabase";
 
 export default function Alerts() {
   const { currentUser } = useAuth();
   const [alerts, setAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [filter, setFilter] = useState("all"); // all, unread, read, high, moderate
+  const [filter, setFilter] = useState("all");
 
   useEffect(() => {
     fetchAlerts();
@@ -24,18 +23,16 @@ export default function Alerts() {
 
     try {
       setLoading(true);
-      const alertsRef = collection(db, "alerts");
-      const q = query(alertsRef, where("user_id", "==", currentUser.uid));
-      const querySnapshot = await getDocs(q);
 
-      const alertsData = [];
-      querySnapshot.forEach((doc) => {
-        alertsData.push({ id: doc.id, ...doc.data() });
-      });
+      const { data, error } = await supabase
+        .from("alerts")
+        .select("*")
+        .eq("user_id", currentUser.uid)
+        .order("created_at", { ascending: false });
 
-      // Sort by date (newest first)
-      alertsData.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-      setAlerts(alertsData);
+      if (error) throw error;
+
+      setAlerts(data || []);
       setError(null);
     } catch (err) {
       console.error("Error fetching alerts:", err);
@@ -47,12 +44,17 @@ export default function Alerts() {
 
   const handleMarkAsRead = async (alertId) => {
     try {
-      await updateDoc(doc(db, "alerts", alertId), {
-        is_read: true,
-        read_at: new Date().toISOString()
-      });
-      
-      setAlerts(alerts.map(alert => 
+      const { error } = await supabase
+        .from("alerts")
+        .update({
+          is_read: true,
+          read_at: new Date().toISOString(),
+        })
+        .eq("id", alertId);
+
+      if (error) throw error;
+
+      setAlerts(alerts.map(alert =>
         alert.id === alertId ? { ...alert, is_read: true } : alert
       ));
     } catch (err) {
@@ -64,14 +66,17 @@ export default function Alerts() {
   const handleMarkAllAsRead = async () => {
     try {
       const unreadAlerts = alerts.filter(a => !a.is_read);
-      
-      for (const alert of unreadAlerts) {
-        await updateDoc(doc(db, "alerts", alert.id), {
+
+      const { error } = await supabase
+        .from("alerts")
+        .update({
           is_read: true,
-          read_at: new Date().toISOString()
-        });
-      }
-      
+          read_at: new Date().toISOString(),
+        })
+        .in("id", unreadAlerts.map(a => a.id));
+
+      if (error) throw error;
+
       setAlerts(alerts.map(alert => ({ ...alert, is_read: true })));
     } catch (err) {
       console.error("Error marking all as read:", err);
@@ -81,15 +86,19 @@ export default function Alerts() {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      month: 'short', 
-      day: 'numeric', 
-      year: 'numeric' 
-    }) + ' · ' + date.toLocaleTimeString('en-US', { 
-      hour: 'numeric', 
-      minute: '2-digit',
-      hour12: true 
-    });
+    return (
+      date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      }) +
+      " · " +
+      date.toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      })
+    );
   };
 
   const getFilteredAlerts = () => {
@@ -148,7 +157,6 @@ export default function Alerts() {
   return (
     <div className="alerts-page">
       <div className="alerts-container">
-        {/* Header */}
         <div className="alerts-header">
           <div>
             <h1 className="alerts-title">
@@ -156,7 +164,7 @@ export default function Alerts() {
               Medical Alerts
             </h1>
             <p className="alerts-subtitle">
-              {unreadCount} unread reminder{unreadCount !== 1 ? 's' : ''}
+              {unreadCount} unread reminder{unreadCount !== 1 ? "s" : ""}
             </p>
           </div>
           {unreadCount > 0 && (
@@ -167,47 +175,30 @@ export default function Alerts() {
           )}
         </div>
 
-        {/* Filter Tabs */}
         <div className="alerts-filters">
-          <button
-            onClick={() => setFilter("all")}
-            className={`filter-tab ${filter === "all" ? "active" : ""}`}
-          >
+          <button onClick={() => setFilter("all")} className={`filter-tab ${filter === "all" ? "active" : ""}`}>
             All Alerts
           </button>
-          <button
-            onClick={() => setFilter("unread")}
-            className={`filter-tab ${filter === "unread" ? "active" : ""}`}
-          >
+          <button onClick={() => setFilter("unread")} className={`filter-tab ${filter === "unread" ? "active" : ""}`}>
             Unread
           </button>
-          <button
-            onClick={() => setFilter("read")}
-            className={`filter-tab ${filter === "read" ? "active" : ""}`}
-          >
+          <button onClick={() => setFilter("read")} className={`filter-tab ${filter === "read" ? "active" : ""}`}>
             Read
           </button>
-          <button
-            onClick={() => setFilter("high")}
-            className={`filter-tab ${filter === "high" ? "active" : ""}`}
-          >
+          <button onClick={() => setFilter("high")} className={`filter-tab ${filter === "high" ? "active" : ""}`}>
             High Risk
           </button>
-          <button
-            onClick={() => setFilter("moderate")}
-            className={`filter-tab ${filter === "moderate" ? "active" : ""}`}
-          >
+          <button onClick={() => setFilter("moderate")} className={`filter-tab ${filter === "moderate" ? "active" : ""}`}>
             Moderate
           </button>
         </div>
 
-        {/* Alerts List */}
         {filteredAlerts.length === 0 ? (
           <div className="empty-state">
             <Bell className="empty-icon" />
             <p className="empty-title">No Alerts</p>
             <p className="empty-text">
-              {filter === "all" 
+              {filter === "all"
                 ? "You're all caught up! No alerts at this time."
                 : `No ${filter} alerts found.`}
             </p>
@@ -215,11 +206,7 @@ export default function Alerts() {
         ) : (
           <div className="alerts-list">
             {filteredAlerts.map((alertItem) => (
-              <div 
-                key={alertItem.id} 
-                className={`alert-card ${!alertItem.is_read ? "unread" : ""}`}
-              >
-                {/* Alert Header */}
+              <div key={alertItem.id} className={`alert-card ${!alertItem.is_read ? "unread" : ""}`}>
                 <div className="alert-card-header">
                   <div className="alert-icon-wrapper">
                     <Info className="alert-icon" />
@@ -227,19 +214,15 @@ export default function Alerts() {
                   <div className="alert-header-content">
                     <div className="alert-title-row">
                       <h3 className="alert-title">{alertItem.title}</h3>
-                      {!alertItem.is_read && (
-                        <span className="new-badge">New</span>
-                      )}
+                      {!alertItem.is_read && <span className="new-badge">New</span>}
                     </div>
                     <p className="alert-date">{formatDate(alertItem.created_at)}</p>
                   </div>
                 </div>
 
-                {/* Alert Body */}
                 <div className="alert-card-body">
                   <p className="alert-message">{alertItem.message}</p>
 
-                  {/* Recommendation Box */}
                   {alertItem.recommendation && (
                     <div className="recommendation-box">
                       <strong>Recommendation:</strong>
@@ -247,21 +230,14 @@ export default function Alerts() {
                     </div>
                   )}
 
-                  {/* Actions */}
                   <div className="alert-actions">
                     {!alertItem.is_read && (
-                      <button
-                        onClick={() => handleMarkAsRead(alertItem.id)}
-                        className="mark-read-btn"
-                      >
+                      <button onClick={() => handleMarkAsRead(alertItem.id)} className="mark-read-btn">
                         Mark as Read
                       </button>
                     )}
                     {alertItem.link && (
-                      <button
-                        onClick={() => window.open(alertItem.link, '_blank')}
-                        className="learn-more-btn"
-                      >
+                      <button onClick={() => window.open(alertItem.link, "_blank")} className="learn-more-btn">
                         <ExternalLink size={16} />
                         Learn More
                       </button>

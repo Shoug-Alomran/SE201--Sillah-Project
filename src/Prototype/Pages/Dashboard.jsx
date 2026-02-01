@@ -1,121 +1,159 @@
+// src/Prototype/Pages/Dashboard.jsx
+// @ts-nocheck
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { 
-  Heart, 
-  Bell, 
-  Calendar, 
-  BookOpen, 
-  Users, 
-  Activity, 
+import {
+  Heart,
+  Bell,
+  Calendar,
+  BookOpen,
+  Users,
+  Activity,
   Stethoscope,
   TrendingUp,
   AlertTriangle,
   FileText,
-  Shield
+  Shield,
 } from "lucide-react";
+
 import { useAuth } from "../../contexts/AuthContext";
-import { collection, query, where, getDocs, orderBy, limit } from "firebase/firestore";
-import { db } from "../../firebase/config";
+import { supabase } from "../../supabase";
 
 export default function Dashboard() {
   const { currentUser, userProfile } = useAuth();
+
   const [stats, setStats] = useState({
     patientCount: 0,
     appointmentCount: 0,
     highRiskCount: 0,
-    familyMembersCount: 0
+    familyMembersCount: 0,
   });
+
   const [recentAppointments, setRecentAppointments] = useState([]);
   const [recentAlerts, setRecentAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      if (!currentUser) return;
+  const isDoctor = userProfile?.user_type === "doctor";
 
+  useEffect(() => {
+    if (!currentUser) return;
+
+    const fetchDashboardData = async () => {
       try {
         setLoading(true);
 
-        if (userProfile?.user_type === 'doctor') {
-          // DOCTOR DASHBOARD DATA
-          const assignmentsQuery = query(
-            collection(db, "doctor_patients"),
-            where("doctor_id", "==", currentUser.uid),
-            where("status", "==", "active")
-          );
-          const assignmentsSnapshot = await getDocs(assignmentsQuery);
-          const patientIds = assignmentsSnapshot.docs.map(doc => doc.data().patient_id);
-          
+        if (isDoctor) {
+          // ---------------------------------------------
+          // DOCTOR DASHBOARD
+          // ---------------------------------------------
+
+          // 1. Get assigned patients
+          const { data: assignments, error: assignError } = await supabase
+            .from("doctor_patients")
+            .select("patient_id")
+            .eq("doctor_id", currentUser.uid)
+            .eq("status", "active");
+
+          if (assignError) throw assignError;
+
+          const patientIds = assignments.map((a) => a.patient_id);
+
+          // 2. Count high‑risk patients
           let highRiskCount = 0;
           let totalFamilyMembers = 0;
 
-          for (const patientId of patientIds) {
-            const userQuery = query(collection(db, "users"), where("uid", "==", patientId));
-            const userSnapshot = await getDocs(userQuery);
-            
-            if (!userSnapshot.empty) {
-              const patientData = userSnapshot.docs[0].data();
-              if (patientData.risk_level === 'high') highRiskCount++;
+          if (patientIds.length > 0) {
+            const { data: usersData, error: usersError } = await supabase
+              .from("users")
+              .select("uid, risk_level")
+              .in("uid", patientIds);
 
-              const familyQuery = query(collection(db, "family_members"), where("user_id", "==", patientId));
-              const familySnapshot = await getDocs(familyQuery);
-              totalFamilyMembers += familySnapshot.size;
-            }
+            if (usersError) throw usersError;
+
+            highRiskCount = usersData.filter(
+              (u) => u.risk_level === "high"
+            ).length;
+
+            // 3. Count family members
+            const { data: familyData, error: famError } = await supabase
+              .from("family_members")
+              .select("user_id");
+
+            if (famError) throw famError;
+
+            const familyCounts = {};
+            familyData.forEach((f) => {
+              familyCounts[f.user_id] = (familyCounts[f.user_id] || 0) + 1;
+            });
+
+            totalFamilyMembers = patientIds.reduce(
+              (sum, id) => sum + (familyCounts[id] || 0),
+              0
+            );
           }
 
-          const appointmentsQuery = query(
-            collection(db, "appointments"),
-            where("doctor_id", "==", currentUser.uid),
-            where("status", "==", "scheduled"),
-            orderBy("appointment_date", "asc"),
-            limit(5)
-          );
-          const appointmentsSnapshot = await getDocs(appointmentsQuery);
-          const appointmentsData = appointmentsSnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-          }));
+          // 4. Upcoming appointments
+          const { data: appts, error: apptError } = await supabase
+            .from("appointments")
+            .select("*")
+            .eq("doctor_id", currentUser.uid)
+            .eq("status", "scheduled")
+            .order("appointment_date", { ascending: true })
+            .limit(5);
+
+          if (apptError) throw apptError;
 
           setStats({
             patientCount: patientIds.length,
-            appointmentCount: appointmentsData.length,
-            highRiskCount: highRiskCount,
-            familyMembersCount: totalFamilyMembers
+            appointmentCount: appts.length,
+            highRiskCount,
+            familyMembersCount: totalFamilyMembers,
           });
-          setRecentAppointments(appointmentsData);
 
+          setRecentAppointments(appts);
         } else {
-          // PATIENT DASHBOARD DATA
-          const familyQuery = query(collection(db, "family_members"), where("user_id", "==", currentUser.uid));
-          const familySnapshot = await getDocs(familyQuery);
-          const familyCount = familySnapshot.size;
+          // ---------------------------------------------
+          // PATIENT DASHBOARD
+          // ---------------------------------------------
 
-          const appointmentsQuery = query(
-            collection(db, "appointments"),
-            where("patient_id", "==", currentUser.uid),
-            where("status", "==", "scheduled"),
-            orderBy("appointment_date", "asc"),
-            limit(5)
-          );
-          const appointmentsSnapshot = await getDocs(appointmentsQuery);
-          const appointmentsData = appointmentsSnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-          }));
+          // 1. Family members
+          const { data: familyData, error: famError } = await supabase
+            .from("family_members")
+            .select("id")
+            .eq("user_id", currentUser.uid);
 
-          const healthQuery = query(collection(db, "personal_health_records"), where("user_id", "==", currentUser.uid));
-          const healthSnapshot = await getDocs(healthQuery);
-          const healthRecordsCount = healthSnapshot.size;
+          if (famError) throw famError;
+
+          const familyCount = familyData.length;
+
+          // 2. Upcoming appointments
+          const { data: appts, error: apptError } = await supabase
+            .from("appointments")
+            .select("*")
+            .eq("patient_id", currentUser.uid)
+            .eq("status", "scheduled")
+            .order("appointment_date", { ascending: true })
+            .limit(5);
+
+          if (apptError) throw apptError;
+
+          // 3. Health records count
+          const { data: healthData, error: healthError } = await supabase
+            .from("personal_health_records")
+            .select("id")
+            .eq("user_id", currentUser.uid);
+
+          if (healthError) throw healthError;
 
           setStats({
             patientCount: 0,
-            appointmentCount: appointmentsData.length,
-            highRiskCount: healthRecordsCount,
-            familyMembersCount: familyCount
+            appointmentCount: appts.length,
+            highRiskCount: healthData.length,
+            familyMembersCount: familyCount,
           });
-          setRecentAppointments(appointmentsData);
-        }
 
+          setRecentAppointments(appts);
+        }
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
       } finally {
@@ -125,8 +163,6 @@ export default function Dashboard() {
 
     fetchDashboardData();
   }, [currentUser, userProfile]);
-
-  const isDoctor = userProfile?.user_type === 'doctor';
 
   if (loading) {
     return (
@@ -141,26 +177,27 @@ export default function Dashboard() {
   return (
     <div className="dashboard-page">
       <div className="dashboard-container">
-        {/* Welcome Header */}
+        {/* Header */}
         <div className="dashboard-header">
-          <h1 className="dashboard-title">Welcome back, {userProfile?.full_name || 'User'}</h1>
+          <h1 className="dashboard-title">
+            Welcome back, {userProfile?.full_name || "User"}
+          </h1>
           <p className="dashboard-subtitle">
-            {isDoctor ? 'Healthcare Provider Portal' : 'Family Health Portal'}
+            {isDoctor ? "Healthcare Provider Portal" : "Family Health Portal"}
           </p>
           <p className="dashboard-welcome">
-            {new Date().toLocaleDateString('en-US', { 
-              weekday: 'long', 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
+            {new Date().toLocaleDateString("en-US", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
             })}
           </p>
         </div>
 
-        {/* Statistics Grid */}
+        {/* Stats Grid */}
         <div className="stats-grid">
           {isDoctor ? (
-            // DOCTOR STATS
             <>
               <div className="stat-card">
                 <div className="stat-card-content">
@@ -211,7 +248,6 @@ export default function Dashboard() {
               </div>
             </>
           ) : (
-            // PATIENT STATS
             <>
               <div className="stat-card">
                 <div className="stat-card-content">
@@ -269,7 +305,6 @@ export default function Dashboard() {
           <h2 className="quick-actions-title">Quick Actions</h2>
           <div className="quick-actions-grid">
             {isDoctor ? (
-              // DOCTOR ACTIONS
               <>
                 <Link to="/patients" className="quick-action-btn btn-teal">
                   <Users className="quick-action-icon" />
@@ -289,7 +324,6 @@ export default function Dashboard() {
                 </Link>
               </>
             ) : (
-              // PATIENT ACTIONS
               <>
                 <Link to="/family-tree" className="quick-action-btn btn-teal">
                   <Users className="quick-action-icon" />
@@ -314,15 +348,24 @@ export default function Dashboard() {
 
         {/* Privacy Notice */}
         <div className="quick-actions-card">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              marginBottom: "1rem",
+            }}
+          >
             <Shield size={24} color="#14b8a6" />
-            <h2 className="quick-actions-title" style={{ margin: 0 }}>Patient Privacy & Access</h2>
+            <h2 className="quick-actions-title" style={{ margin: 0 }}>
+              Patient Privacy & Access
+            </h2>
           </div>
+
           <p>
-            {isDoctor 
+            {isDoctor
               ? `You have access to ${stats.patientCount} patients assigned to you. Patient data is protected by healthcare privacy regulations. You can only view and manage patients who have been specifically assigned to your care.`
-              : 'Your health information is protected and secure. Only healthcare providers directly involved in your care have access to your medical records in accordance with privacy regulations.'
-            }
+              : `Your health information is protected and secure. Only healthcare providers directly involved in your care have access to your medical records in accordance with privacy regulations.`}
           </p>
         </div>
       </div>

@@ -5,11 +5,11 @@ import { useAuth } from "../contexts/AuthContext";
 export default function ProtectedRoute({ children }) {
   const { currentUser } = useAuth();
 
-  // If the user is not logged in, send them to /login
+  // If the user is not logged in, redirect to login
   if (!currentUser) {
     return <Navigate to="/login" replace />;
   }
 
-  // Otherwise, render the protected page
+  // Otherwise, allow access
   return children;
 }

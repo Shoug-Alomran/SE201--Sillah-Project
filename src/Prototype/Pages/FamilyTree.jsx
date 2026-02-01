@@ -1,445 +1,565 @@
+// src/Prototype/Pages/FamilyTree.jsx
+// @ts-nocheck
 import React, { useState, useEffect } from "react";
-import { Users, Plus, Search, Edit, Trash2, Heart, AlertCircle, Activity } from "lucide-react";
+import {
+  Users,
+  Plus,
+  Trash2,
+  Edit3,
+  AlertTriangle,
+  Heart,
+  Activity,
+} from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
-import { collection, query, where, getDocs, addDoc, updateDoc, deleteDoc, doc } from "firebase/firestore";
-import { db } from "../../firebase/config";
+import { supabase } from "../../supabase";
 
 export default function FamilyTree() {
-  const { currentUser } = useAuth();
+  const { currentUser, isPatient } = useAuth();
+
   const [familyMembers, setFamilyMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [showAddModal, setShowAddModal] = useState(false);
+
+  const [showForm, setShowForm] = useState(false);
   const [editingMember, setEditingMember] = useState(null);
 
-  const [formData, setFormData] = useState({
+  const [form, setForm] = useState({
     name: "",
     relationship: "",
     age: "",
     health_status: "healthy",
-    conditions: [],
+    conditions_input: "",
     diagnosis_age: "",
-    medical_notes: ""
+    medical_notes: "",
   });
 
-  const hereditaryConditions = [
-    "Sickle Cell Disease",
-    "Type 2 Diabetes",
-    "High Cholesterol",
-    "Hypertension (High Blood Pressure)",
-    "Heart Disease",
-    "Breast Cancer",
-    "Colon Cancer",
-    "Alzheimer's Disease",
-    "Asthma",
-    "Stroke",
-    "Obesity",
-    "Osteoporosis",
-    "Mental Health Conditions"
-  ];
-
   useEffect(() => {
+    if (!currentUser) return;
+
+    const fetchFamilyMembers = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from("family_members")
+          .select("*")
+          .eq("user_id", currentUser.uid)
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+
+        setFamilyMembers(data || []);
+        setError(null);
+      } catch (err) {
+        console.error("Error fetching family members:", err);
+        setError("Unable to load family history. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchFamilyMembers();
   }, [currentUser]);
 
-  async function fetchFamilyMembers() {
-    if (!currentUser) {
-      setError("Please log in to view family members");
-      setLoading(false);
+  const resetForm = () => {
+    setForm({
+      name: "",
+      relationship: "",
+      age: "",
+      health_status: "healthy",
+      conditions_input: "",
+      diagnosis_age: "",
+      medical_notes: "",
+    });
+    setEditingMember(null);
+  };
+
+  const openNewForm = () => {
+    resetForm();
+    setShowForm(true);
+  };
+
+  const openEditForm = (member) => {
+    setEditingMember(member);
+    setForm({
+      name: member.name || "",
+      relationship: member.relationship || "",
+      age: member.age?.toString() || "",
+      health_status: member.health_status || "healthy",
+      conditions_input: member.conditions || "", // stored as text
+      diagnosis_age: member.diagnosis_age?.toString() || "",
+      medical_notes: member.medical_notes || "",
+    });
+    setShowForm(true);
+  };
+
+  const handleFormChange = (field, value) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!currentUser) return;
+
+    if (!form.name || !form.relationship || !form.age) {
+      alert("Name, relationship, and age are required.");
       return;
     }
 
     try {
-      setLoading(true);
-      const membersRef = collection(db, "family_members");
-      const q = query(membersRef, where("user_id", "==", currentUser.uid));
-      const querySnapshot = await getDocs(q);
+      const conditionsText = form.conditions_input
+        .split(",")
+        .map((c) => c.trim())
+        .filter(Boolean)
+        .join(", ");
 
-      const members = [];
-      querySnapshot.forEach((doc) => {
-        members.push({ id: doc.id, ...doc.data() });
-      });
-
-      setFamilyMembers(members);
-      setError(null);
-    } catch (err) {
-      console.error("Error fetching family members:", err);
-      setError("Unable to load family members");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  const handleAddMember = async (e) => {
-    e.preventDefault();
-
-    try {
-      const newMember = {
+      const payload = {
         user_id: currentUser.uid,
-        name: formData.name,
-        relationship: formData.relationship,
-        age: parseInt(formData.age),
-        health_status: formData.health_status,
-        conditions: formData.conditions,
-        diagnosis_age: formData.diagnosis_age ? parseInt(formData.diagnosis_age) : null,
-        medical_notes: formData.medical_notes,
-        created_at: new Date().toISOString()
+        name: form.name,
+        relationship: form.relationship,
+        age: parseInt(form.age, 10) || null,
+        health_status: form.health_status,
+        conditions: conditionsText || null,
+        diagnosis_age: form.diagnosis_age
+          ? parseInt(form.diagnosis_age, 10)
+          : null,
+        medical_notes: form.medical_notes || null,
       };
 
       if (editingMember) {
-        await updateDoc(doc(db, "family_members", editingMember.id), newMember);
-        setFamilyMembers(familyMembers.map(m => 
-          m.id === editingMember.id ? { ...newMember, id: editingMember.id } : m
-        ));
-        alert("Family member updated successfully!");
+        const { error } = await supabase
+          .from("family_members")
+          .update(payload)
+          .eq("id", editingMember.id);
+
+        if (error) throw error;
+
+        setFamilyMembers((prev) =>
+          prev.map((m) =>
+            m.id === editingMember.id ? { ...m, ...payload } : m
+          )
+        );
       } else {
-        const docRef = await addDoc(collection(db, "family_members"), newMember);
-        setFamilyMembers([...familyMembers, { id: docRef.id, ...newMember }]);
-        alert("Family member added successfully!");
+        const { data, error } = await supabase
+          .from("family_members")
+          .insert(payload)
+          .select()
+          .single();
+
+        if (error) throw error;
+
+        setFamilyMembers((prev) => [data, ...prev]);
       }
 
-      setFormData({
-        name: "",
-        relationship: "",
-        age: "",
-        health_status: "healthy",
-        conditions: [],
-        diagnosis_age: "",
-        medical_notes: ""
-      });
-      setShowAddModal(false);
-      setEditingMember(null);
+      resetForm();
+      setShowForm(false);
     } catch (err) {
       console.error("Error saving family member:", err);
-      alert("Failed to save family member");
+      alert("Failed to save family member. Please try again.");
     }
   };
 
-  const handleEdit = (member) => {
-    setEditingMember(member);
-    setFormData({
-      name: member.name,
-      relationship: member.relationship,
-      age: member.age.toString(),
-      health_status: member.health_status,
-      conditions: member.conditions || [],
-      diagnosis_age: member.diagnosis_age ? member.diagnosis_age.toString() : "",
-      medical_notes: member.medical_notes || ""
-    });
-    setShowAddModal(true);
-  };
-
-  const handleDelete = async (memberId) => {
-    if (!confirm("Are you sure you want to delete this family member?")) return;
+  const handleDelete = async (id) => {
+    if (!confirm("Remove this family member from your history?")) return;
 
     try {
-      await deleteDoc(doc(db, "family_members", memberId));
-      setFamilyMembers(familyMembers.filter(m => m.id !== memberId));
-      alert("Family member deleted successfully!");
+      const { error } = await supabase
+        .from("family_members")
+        .delete()
+        .eq("id", id);
+
+      if (error) throw error;
+
+      setFamilyMembers((prev) => prev.filter((m) => m.id !== id));
     } catch (err) {
       console.error("Error deleting family member:", err);
-      alert("Failed to delete family member");
+      alert("Failed to delete. Please try again.");
     }
   };
 
-  const handleConditionToggle = (condition) => {
-    if (formData.conditions.includes(condition)) {
-      setFormData({
-        ...formData,
-        conditions: formData.conditions.filter(c => c !== condition)
-      });
-    } else {
-      setFormData({
-        ...formData,
-        conditions: [...formData.conditions, condition]
-      });
-    }
+  const getStatusLabel = (status) => {
+    if (status === "diagnosed") return "Diagnosed";
+    if (status === "at-risk") return "At Risk";
+    return "Healthy";
   };
 
-  const filteredMembers = familyMembers.filter(member =>
-    member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    member.relationship.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const getStatusClass = (status) => {
+    if (status === "diagnosed") return "status-diagnosed";
+    if (status === "at-risk") return "status-at-risk";
+    return "status-healthy";
+  };
+
+  const countByStatus = (status) =>
+    familyMembers.filter((m) => m.health_status === status).length;
 
   if (loading) {
     return (
-      <div className="family-tree-page">
-        <div className="family-tree-container">
-          <h1 className="family-tree-title">Family Health Tree</h1>
-          <p>Loading family members...</p>
+      <div className="family-page">
+        <div className="family-container">
+          <header className="family-header">
+            <h1 className="family-title">
+              <Users className="title-icon" />
+              Family Health History
+            </h1>
+            <p className="family-subtitle">Loading your family records...</p>
+          </header>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="family-page">
+        <div className="family-container">
+          <header className="family-header">
+            <h1 className="family-title">
+              <Users className="title-icon" />
+              Family Health History
+            </h1>
+            <p className="family-subtitle">Unable to load family history</p>
+          </header>
+
+          <div className="empty-state">
+            <AlertTriangle className="empty-icon" style={{ color: "#ef4444" }} />
+            <p className="empty-title">{error}</p>
+            <p className="empty-text">
+              Please check your connection or try again later.
+            </p>
+            <button
+              onClick={() => window.location.reload()}
+              className="empty-action-btn"
+            >
+              Try Again
+            </button>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="family-tree-page">
-      <div className="family-tree-container">
-        <header className="family-tree-header">
+    <div className="family-page">
+      <div className="family-container">
+        {/* Header */}
+        <header className="family-header">
           <div>
-            <h1 className="family-tree-title">Family Health Tree</h1>
-            <p className="family-tree-subtitle">Manage your family's health history</p>
+            <h1 className="family-title">
+              <Users className="title-icon" />
+              Family Health History
+            </h1>
+            <p className="family-subtitle">
+              Track hereditary risks and family medical patterns
+            </p>
           </div>
-          <button
-            onClick={() => {
-              setEditingMember(null);
-              setFormData({
-                name: "",
-                relationship: "",
-                age: "",
-                health_status: "healthy",
-                conditions: [],
-                diagnosis_age: "",
-                medical_notes: ""
-              });
-              setShowAddModal(true);
-            }}
-            className="add-member-btn"
-          >
-            <Plus className="btn-icon" />
-            Add Family Member
-          </button>
+
+          {isPatient && (
+            <button onClick={openNewForm} className="add-member-btn">
+              <Plus className="btn-icon" />
+              Add Family Member
+            </button>
+          )}
         </header>
 
-        <div className="search-bar">
-          <Search className="search-icon" />
-          <input
-            type="text"
-            placeholder="Search family members..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
-          />
+        {/* Stats */}
+        <div className="statistics-grid">
+          <div className="stat-card">
+            <div className="stat-card-content">
+              <div className="stat-info">
+                <p className="stat-label">Total Family Members</p>
+                <p className="stat-value">{familyMembers.length}</p>
+              </div>
+              <Users className="stat-icon" style={{ color: "#3b82f6", opacity: 0.2 }} />
+            </div>
+          </div>
+
+          <div className="stat-card">
+            <div className="stat-card-content">
+              <div className="stat-info">
+                <p className="stat-label">Diagnosed Conditions</p>
+                <p className="stat-value stat-value-red">
+                  {countByStatus("diagnosed")}
+                </p>
+              </div>
+              <Heart className="stat-icon" style={{ color: "#ef4444", opacity: 0.2 }} />
+            </div>
+          </div>
+
+          <div className="stat-card">
+            <div className="stat-card-content">
+              <div className="stat-info">
+                <p className="stat-label">At Risk</p>
+                <p className="stat-value stat-value-amber">
+                  {countByStatus("at-risk")}
+                </p>
+              </div>
+              <Activity
+                className="stat-icon"
+                style={{ color: "#f59e0b", opacity: 0.2 }}
+              />
+            </div>
+          </div>
+
+          <div className="stat-card">
+            <div className="stat-card-content">
+              <div className="stat-info">
+                <p className="stat-label">No Known Conditions</p>
+                <p className="stat-value stat-value-green">
+                  {countByStatus("healthy")}
+                </p>
+              </div>
+              <Heart
+                className="stat-icon"
+                style={{ color: "#10b981", opacity: 0.2 }}
+              />
+            </div>
+          </div>
         </div>
 
+        {/* Empty state */}
         {familyMembers.length === 0 ? (
           <div className="empty-state">
             <Users className="empty-icon" />
-            <p className="empty-title">No Family Members Added Yet</p>
-            <p className="empty-text">Start building your family health tree by adding family members.</p>
-            <button onClick={() => setShowAddModal(true)} className="empty-action-btn">
-              <Plus className="empty-action-icon" />
-              Add Your First Family Member
-            </button>
+            <p className="empty-title">No Family Members Added</p>
+            <p className="empty-text">
+              Start building your family health tree to better understand hereditary
+              risks and patterns across generations.
+            </p>
+            {isPatient && (
+              <button onClick={openNewForm} className="empty-action-btn">
+                <Plus className="empty-action-icon" />
+                Add First Family Member
+              </button>
+            )}
           </div>
         ) : (
-          <div className="family-members-grid">
-            {filteredMembers.map((member) => (
-              <div key={member.id} className="family-member-card-new">
-                <div className="family-card-header-new">
-                  <div className="family-card-header-left">
-                    <h3 className="family-member-name-new">{member.name}</h3>
-                    <p className="family-member-relationship-new">{member.relationship}</p>
+          <div className="family-grid">
+            {familyMembers.map((member) => (
+              <div key={member.id} className="family-card">
+                <div className="family-card-header">
+                  <div>
+                    <h3 className="family-name">{member.name}</h3>
+                    <p className="family-relationship">{member.relationship}</p>
                   </div>
-                  <div className="family-card-header-right">
-                    <button 
-                      onClick={() => handleEdit(member)} 
-                      className="family-edit-btn-new" 
-                      title="Edit"
-                    >
-                      <Edit size={18} />
-                    </button>
-                    <button 
-                      onClick={() => handleDelete(member.id)} 
-                      className="family-delete-btn-new" 
-                      title="Delete"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
+
+                  <span
+                    className={`family-status-badge ${getStatusClass(
+                      member.health_status
+                    )}`}
+                  >
+                    {getStatusLabel(member.health_status)}
+                  </span>
                 </div>
 
-                <div className="family-card-content-new">
-                  <p className="family-member-age-new">
-                    <strong>Age:</strong> {member.age} years
+                <div className="family-card-body">
+                  <p className="family-detail">
+                    <span className="family-detail-label">Age:</span>{" "}
+                    {member.age ?? "N/A"}
                   </p>
 
-                  <div className="family-health-status-row-new">
-                    <strong>Health Status:</strong>
-                    <span
-                      className={`family-health-badge-new ${
-                        member.health_status === "healthy" ? "badge-healthy" :
-                        member.health_status === "at_risk" ? "badge-at-risk" :
-                        "badge-diagnosed"
-                      }`}
-                    >
-                      {member.health_status === "healthy" && <Heart size={14} />}
-                      {member.health_status === "at_risk" && <AlertCircle size={14} />}
-                      {member.health_status === "diagnosed" && <Activity size={14} />}
-                      <span>
-                        {member.health_status === "healthy" ? "No Condition" :
-                         member.health_status === "at_risk" ? "At Risk" : "Has Condition(s)"}
-                      </span>
-                    </span>
-                  </div>
-
-                  {member.conditions && member.conditions.length > 0 && (
-                    <div className="family-conditions-section-new">
-                      <strong>Conditions:</strong>
-                      <div className="family-conditions-list-new">
-                        {member.conditions.map((condition, index) => (
-                          <span key={index} className="family-condition-tag-new">{condition}</span>
-                        ))}
-                      </div>
-                    </div>
+                  {member.conditions && (
+                    <p className="family-detail">
+                      <span className="family-detail-label">Conditions:</span>{" "}
+                      {member.conditions}
+                    </p>
                   )}
 
                   {member.diagnosis_age && (
-                    <p className="family-diagnosis-age-new">
-                      <strong>Diagnosed at:</strong> {member.diagnosis_age} years
+                    <p className="family-detail">
+                      <span className="family-detail-label">Diagnosis Age:</span>{" "}
+                      {member.diagnosis_age}
                     </p>
                   )}
 
                   {member.medical_notes && (
-                    <div className="family-notes-section-new">
-                      <strong>Medical Notes:</strong>
-                      <p className="family-notes-text-new">{member.medical_notes}</p>
-                    </div>
+                    <p className="family-notes">
+                      <span className="family-detail-label">Notes:</span>{" "}
+                      {member.medical_notes}
+                    </p>
                   )}
                 </div>
+
+                {isPatient && (
+                  <div className="family-card-footer">
+                    <button
+                      className="family-action-btn"
+                      onClick={() => openEditForm(member)}
+                    >
+                      <Edit3 className="family-action-icon" />
+                      Edit
+                    </button>
+                    <button
+                      className="family-action-btn delete"
+                      onClick={() => handleDelete(member.id)}
+                    >
+                      <Trash2 className="family-action-icon" />
+                      Remove
+                    </button>
+                  </div>
+                )}
               </div>
             ))}
           </div>
         )}
-      </div>
 
-      {showAddModal && (
-        <div className="modal-overlay" onClick={() => setShowAddModal(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2 className="modal-title">
-                {editingMember ? "Edit Family Member" : "Add Family Member"}
-              </h2>
-              <button onClick={() => setShowAddModal(false)} className="modal-close">×</button>
-            </div>
+        {/* Add/Edit Modal */}
+        {showForm && (
+          <div
+            className="modal-overlay"
+            onClick={() => {
+              setShowForm(false);
+              resetForm();
+            }}
+          >
+            <div
+              className="modal-content"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="modal-header">
+                <h2 className="modal-title">
+                  {editingMember ? "Edit Family Member" : "Add Family Member"}
+                </h2>
+                <button
+                  onClick={() => {
+                    setShowForm(false);
+                    resetForm();
+                  }}
+                  className="modal-close"
+                >
+                  ×
+                </button>
+              </div>
 
-            <form onSubmit={handleAddMember} className="modal-body">
-              <div className="form-content">
-                <div className="form-field">
-                  <label htmlFor="name" className="form-label">Name *</label>
-                  <input
-                    id="name"
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="form-input"
-                    required
-                  />
-                </div>
+              <form onSubmit={handleSubmit} className="modal-body">
+                <div className="form-content">
+                  <div className="form-field">
+                    <label className="form-label">Name *</label>
+                    <input
+                      type="text"
+                      className="form-input"
+                      value={form.name}
+                      onChange={(e) =>
+                        handleFormChange("name", e.target.value)
+                      }
+                      required
+                    />
+                  </div>
 
-                <div className="form-field">
-                  <label htmlFor="relationship" className="form-label">Relationship *</label>
-                  <select
-                    id="relationship"
-                    value={formData.relationship}
-                    onChange={(e) => setFormData({ ...formData, relationship: e.target.value })}
-                    className="form-input"
-                    required
-                  >
-                    <option value="">Select relationship</option>
-                    <option value="Father">Father</option>
-                    <option value="Mother">Mother</option>
-                    <option value="Brother">Brother</option>
-                    <option value="Sister">Sister</option>
-                    <option value="Son">Son</option>
-                    <option value="Daughter">Daughter</option>
-                    <option value="Grandfather">Grandfather</option>
-                    <option value="Grandmother">Grandmother</option>
-                    <option value="Uncle">Uncle</option>
-                    <option value="Aunt">Aunt</option>
-                    <option value="Cousin">Cousin</option>
-                  </select>
-                </div>
+                  <div className="form-field">
+                    <label className="form-label">Relationship *</label>
+                    <input
+                      type="text"
+                      className="form-input"
+                      value={form.relationship}
+                      onChange={(e) =>
+                        handleFormChange("relationship", e.target.value)
+                      }
+                      placeholder="e.g., Mother, Brother, Child"
+                      required
+                    />
+                  </div>
 
-                <div className="form-field">
-                  <label htmlFor="age" className="form-label">Age *</label>
-                  <input
-                    id="age"
-                    type="number"
-                    value={formData.age}
-                    onChange={(e) => setFormData({ ...formData, age: e.target.value })}
-                    className="form-input"
-                    required
-                  />
-                </div>
-
-                <div className="form-field">
-                  <label htmlFor="health_status" className="form-label">Health Status *</label>
-                  <select
-                    id="health_status"
-                    value={formData.health_status}
-                    onChange={(e) => setFormData({ ...formData, health_status: e.target.value })}
-                    className="form-input"
-                    required
-                  >
-                    <option value="healthy">No Condition</option>
-                    <option value="at_risk">At Risk</option>
-                    <option value="diagnosed">Has Hereditary Condition(s)</option>
-                  </select>
-                </div>
-
-                {formData.health_status === "diagnosed" && (
-                  <>
+                  <div className="form-grid-two">
                     <div className="form-field">
-                      <label className="form-label">Select Conditions *</label>
-                      <div className="conditions-checkbox-grid">
-                        {hereditaryConditions.map((condition) => (
-                          <label key={condition} className="condition-checkbox-label">
-                            <input
-                              type="checkbox"
-                              checked={formData.conditions.includes(condition)}
-                              onChange={() => handleConditionToggle(condition)}
-                            />
-                            <span>{condition}</span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="form-field">
-                      <label htmlFor="diagnosis_age" className="form-label">Age at Diagnosis</label>
+                      <label className="form-label">Age *</label>
                       <input
-                        id="diagnosis_age"
                         type="number"
-                        value={formData.diagnosis_age}
-                        onChange={(e) => setFormData({ ...formData, diagnosis_age: e.target.value })}
                         className="form-input"
+                        value={form.age}
+                        onChange={(e) =>
+                          handleFormChange("age", e.target.value)
+                        }
+                        min="0"
+                        required
                       />
                     </div>
-                  </>
-                )}
 
-                <div className="form-field">
-                  <label htmlFor="medical_notes" className="form-label">Medical Notes</label>
-                  <textarea
-                    id="medical_notes"
-                    value={formData.medical_notes}
-                    onChange={(e) => setFormData({ ...formData, medical_notes: e.target.value })}
-                    className="form-input form-textarea"
-                    rows="3"
-                    placeholder="Any additional medical information..."
-                  />
+                    <div className="form-field">
+                      <label className="form-label">Health Status</label>
+                      <select
+                        className="form-input"
+                        value={form.health_status}
+                        onChange={(e) =>
+                          handleFormChange("health_status", e.target.value)
+                        }
+                      >
+                        <option value="healthy">Healthy</option>
+                        <option value="at-risk">At Risk</option>
+                        <option value="diagnosed">Diagnosed</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="form-field">
+                    <label className="form-label">
+                      Conditions (comma separated)
+                    </label>
+                    <input
+                      type="text"
+                      className="form-input"
+                      value={form.conditions_input}
+                      onChange={(e) =>
+                        handleFormChange("conditions_input", e.target.value)
+                      }
+                      placeholder="e.g., Diabetes, Heart disease, Cancer"
+                    />
+                  </div>
+
+                  <div className="form-field">
+                    <label className="form-label">
+                      Diagnosis Age (optional)
+                    </label>
+                    <input
+                      type="number"
+                      className="form-input"
+                      value={form.diagnosis_age}
+                      onChange={(e) =>
+                        handleFormChange("diagnosis_age", e.target.value)
+                      }
+                      min="0"
+                    />
+                  </div>
+
+                  <div className="form-field">
+                    <label className="form-label">
+                      Medical Notes (optional)
+                    </label>
+                    <textarea
+                      className="form-input form-textarea"
+                      rows="3"
+                      value={form.medical_notes}
+                      onChange={(e) =>
+                        handleFormChange("medical_notes", e.target.value)
+                      }
+                      placeholder="Add any relevant details about their diagnosis, treatment, or progression."
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <div className="form-footer">
-                <button
-                  type="button"
-                  onClick={() => setShowAddModal(false)}
-                  className="cancel-btn"
-                  style={{ padding: "0.75rem 1.5rem", borderRadius: "0.5rem" }}
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="save-btn">
-                  {editingMember ? "Update Member" : "Add Member"}
-                </button>
-              </div>
-            </form>
+                <div className="form-footer">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowForm(false);
+                      resetForm();
+                    }}
+                    className="cancel-btn"
+                    style={{
+                      padding: "0.75rem 1.5rem",
+                      borderRadius: "0.5rem",
+                    }}
+                  >
+                    Cancel
+                  </button>
+
+                  <button type="submit" className="save-btn">
+                    {editingMember ? "Save Changes" : "Add Member"}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

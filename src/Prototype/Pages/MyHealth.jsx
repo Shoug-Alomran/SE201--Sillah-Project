@@ -1,267 +1,432 @@
+// src/Prototype/Pages/MyHealth.jsx
+// @ts-nocheck
 import React, { useState, useEffect } from "react";
-import { Heart, Plus, Calendar, Pill, FileText, Edit, Trash2, Activity } from "lucide-react";
+import {
+  Activity,
+  AlertTriangle,
+  ClipboardList,
+  Plus,
+  Edit3,
+  Trash2,
+  HeartPulse,
+  BarChart2,
+} from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
-import { collection, query, where, getDocs, addDoc, updateDoc, deleteDoc, doc } from "firebase/firestore";
-import { db } from "../../firebase/config";
+import { supabase } from "../../supabase";
 
 export default function MyHealth() {
-  const { currentUser } = useAuth();
-  const [healthRecords, setHealthRecords] = useState([]);
+  const { currentUser, isPatient } = useAuth();
+
+  const [records, setRecords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showAddModal, setShowAddModal] = useState(false);
+
+  const [showForm, setShowForm] = useState(false);
   const [editingRecord, setEditingRecord] = useState(null);
 
-  const [formData, setFormData] = useState({
-    condition_name: "",
-    diagnosis_date: "",
-    current_medications: "",
-    doctor_name: "",
-    treatment_plan: "",
+  const [form, setForm] = useState({
+    record_type: "note",
+    risk_level: "none",
     notes: "",
-    is_chronic: false
+    data_input: "",
   });
 
   useEffect(() => {
-    fetchHealthRecords();
+    if (!currentUser) return;
+
+    const fetchRecords = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from("personal_health_records")
+          .select("*")
+          .eq("user_id", currentUser.uid)
+          .order("created_at", { ascending: false });
+
+        if (error) throw error;
+
+        setRecords(data || []);
+        setError(null);
+      } catch (err) {
+        console.error("Error fetching health records:", err);
+        setError("Unable to load your health records. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRecords();
   }, [currentUser]);
 
-  async function fetchHealthRecords() {
-    if (!currentUser) {
-      setError("Please log in to view health records");
-      setLoading(false);
-      return;
-    }
+  const resetForm = () => {
+    setForm({
+      record_type: "note",
+      risk_level: "none",
+      notes: "",
+      data_input: "",
+    });
+    setEditingRecord(null);
+  };
+
+  const openNewForm = () => {
+    resetForm();
+    setShowForm(true);
+  };
+
+  const openEditForm = (record) => {
+    setEditingRecord(record);
+    setForm({
+      record_type: record.record_type || "note",
+      risk_level: record.risk_level || "none",
+      notes: record.notes || "",
+      data_input: record.data ? JSON.stringify(record.data, null, 2) : "",
+    });
+    setShowForm(true);
+  };
+
+  const handleFormChange = (field, value) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const parseDataInput = () => {
+    if (!form.data_input.trim()) return null;
 
     try {
-      setLoading(true);
-      const recordsRef = collection(db, "personal_health_records");
-      const q = query(recordsRef, where("user_id", "==", currentUser.uid));
-      const querySnapshot = await getDocs(q);
-
-      const records = [];
-      querySnapshot.forEach((doc) => {
-        records.push({ id: doc.id, ...doc.data() });
-      });
-
-      // Sort by diagnosis date (newest first)
-      records.sort((a, b) => new Date(b.diagnosis_date) - new Date(a.diagnosis_date));
-      setHealthRecords(records);
-      setError(null);
+      return JSON.parse(form.data_input);
     } catch (err) {
-      console.error("Error fetching health records:", err);
-      setError("Unable to load health records");
-    } finally {
-      setLoading(false);
+      alert("Invalid JSON in data field. Please check the format.");
+      throw err;
     }
-  }
+  };
 
-  const handleAddRecord = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!currentUser) return;
 
     try {
-      const newRecord = {
+      const parsedData = parseDataInput();
+
+      const payload = {
         user_id: currentUser.uid,
-        condition_name: formData.condition_name,
-        diagnosis_date: formData.diagnosis_date,
-        current_medications: formData.current_medications,
-        doctor_name: formData.doctor_name,
-        treatment_plan: formData.treatment_plan,
-        notes: formData.notes,
-        is_chronic: formData.is_chronic,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
+        record_type: form.record_type,
+        risk_level: form.risk_level || null,
+        notes: form.notes || null,
+        data: parsedData,
       };
 
       if (editingRecord) {
-        await updateDoc(doc(db, "personal_health_records", editingRecord.id), {
-          ...newRecord,
-          created_at: editingRecord.created_at // Keep original creation date
-        });
-        setHealthRecords(healthRecords.map(r => 
-          r.id === editingRecord.id ? { ...newRecord, id: editingRecord.id, created_at: editingRecord.created_at } : r
-        ));
-        alert("Health record updated successfully!");
+        const { error } = await supabase
+          .from("personal_health_records")
+          .update({
+            ...payload,
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", editingRecord.id);
+
+        if (error) throw error;
+
+        setRecords((prev) =>
+          prev.map((r) =>
+            r.id === editingRecord.id
+              ? { ...r, ...payload, updated_at: new Date().toISOString() }
+              : r
+          )
+        );
       } else {
-        const docRef = await addDoc(collection(db, "personal_health_records"), newRecord);
-        setHealthRecords([{ id: docRef.id, ...newRecord }, ...healthRecords]);
-        alert("Health record added successfully!");
+        const now = new Date().toISOString();
+        const { data, error } = await supabase
+          .from("personal_health_records")
+          .insert({
+            ...payload,
+            created_at: now,
+            updated_at: null,
+          })
+          .select()
+          .single();
+
+        if (error) throw error;
+
+        setRecords((prev) => [data, ...prev]);
       }
 
-      setFormData({
-        condition_name: "",
-        diagnosis_date: "",
-        current_medications: "",
-        doctor_name: "",
-        treatment_plan: "",
-        notes: "",
-        is_chronic: false
-      });
-      setShowAddModal(false);
-      setEditingRecord(null);
+      resetForm();
+      setShowForm(false);
     } catch (err) {
       console.error("Error saving health record:", err);
-      alert("Failed to save health record");
+      if (!String(err).includes("Invalid JSON")) {
+        alert("Failed to save record. Please try again.");
+      }
     }
   };
 
-  const handleEdit = (record) => {
-    setEditingRecord(record);
-    setFormData({
-      condition_name: record.condition_name,
-      diagnosis_date: record.diagnosis_date,
-      current_medications: record.current_medications || "",
-      doctor_name: record.doctor_name || "",
-      treatment_plan: record.treatment_plan || "",
-      notes: record.notes || "",
-      is_chronic: record.is_chronic || false
-    });
-    setShowAddModal(true);
-  };
-
-  const handleDelete = async (recordId) => {
-    if (!confirm("Are you sure you want to delete this health record?")) return;
+  const handleDelete = async (id) => {
+    if (!confirm("Delete this health record? This cannot be undone.")) return;
 
     try {
-      await deleteDoc(doc(db, "personal_health_records", recordId));
-      setHealthRecords(healthRecords.filter(r => r.id !== recordId));
-      alert("Health record deleted successfully!");
+      const { error } = await supabase
+        .from("personal_health_records")
+        .delete()
+        .eq("id", id);
+
+      if (error) throw error;
+
+      setRecords((prev) => prev.filter((r) => r.id !== id));
     } catch (err) {
       console.error("Error deleting health record:", err);
-      alert("Failed to delete health record");
+      alert("Failed to delete record. Please try again.");
     }
   };
 
-  const formatDate = (dateString) => {
-    if (!dateString) return "Not specified";
+  const formatDateTime = (dateString) => {
+    if (!dateString) return "N/A";
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    return date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   };
+
+  const getRiskLabel = (risk) => {
+    if (risk === "high") return "High Risk";
+    if (risk === "moderate") return "Moderate Risk";
+    if (risk === "low") return "Low Risk";
+    return "No Significant Risk";
+  };
+
+  const getRiskClass = (risk) => {
+    if (risk === "high") return "risk-high";
+    if (risk === "moderate") return "risk-moderate";
+    if (risk === "low") return "risk-low";
+    return "risk-none";
+  };
+
+  const countByRisk = (risk) =>
+    records.filter((r) => r.risk_level === risk).length;
+
+  const countByType = (type) =>
+    records.filter((r) => r.record_type === type).length;
 
   if (loading) {
     return (
-      <div className="my-health-page">
-        <div className="my-health-container">
-          <h1 className="my-health-title">My Health Records</h1>
-          <p>Loading your health records...</p>
+      <div className="myhealth-page">
+        <div className="myhealth-container">
+          <header className="myhealth-header">
+            <h1 className="myhealth-title">
+              <Activity className="title-icon" />
+              My Health Overview
+            </h1>
+            <p className="myhealth-subtitle">
+              Loading your health records and risk assessments...
+            </p>
+          </header>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="myhealth-page">
+        <div className="myhealth-container">
+          <header className="myhealth-header">
+            <h1 className="myhealth-title">
+              <Activity className="title-icon" />
+              My Health Overview
+            </h1>
+            <p className="myhealth-subtitle">Unable to load your health data</p>
+          </header>
+
+          <div className="empty-state">
+            <AlertTriangle className="empty-icon" style={{ color: "#ef4444" }} />
+            <p className="empty-title">{error}</p>
+            <p className="empty-text">
+              Please check your connection or try again later.
+            </p>
+            <button
+              onClick={() => window.location.reload()}
+              className="empty-action-btn"
+            >
+              Try Again
+            </button>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="my-health-page">
-      <div className="my-health-container">
-        <header className="my-health-header">
+    <div className="myhealth-page">
+      <div className="myhealth-container">
+        {/* Header */}
+        <header className="myhealth-header">
           <div>
-            <h1 className="my-health-title">
-              <Heart className="title-icon" />
-              My Health Records
+            <h1 className="myhealth-title">
+              <Activity className="title-icon" />
+              My Health Overview
             </h1>
-            <p className="my-health-subtitle">Your personal medical history and current treatments</p>
+            <p className="myhealth-subtitle">
+              View your records, risk assessments, and key health events
+            </p>
           </div>
-          <button
-            onClick={() => {
-              setEditingRecord(null);
-              setFormData({
-                condition_name: "",
-                diagnosis_date: "",
-                current_medications: "",
-                doctor_name: "",
-                treatment_plan: "",
-                notes: "",
-                is_chronic: false
-              });
-              setShowAddModal(true);
-            }}
-            className="add-record-btn"
-          >
-            <Plus className="btn-icon" />
-            Add Health Record
-          </button>
+
+          {isPatient && (
+            <button onClick={openNewForm} className="add-member-btn">
+              <Plus className="btn-icon" />
+              Add Health Record
+            </button>
+          )}
         </header>
 
-        {healthRecords.length === 0 ? (
+        {/* Stats */}
+        <div className="statistics-grid">
+          <div className="stat-card">
+            <div className="stat-card-content">
+              <div className="stat-info">
+                <p className="stat-label">Total Records</p>
+                <p className="stat-value">{records.length}</p>
+              </div>
+              <ClipboardList
+                className="stat-icon"
+                style={{ color: "#3b82f6", opacity: 0.2 }}
+              />
+            </div>
+          </div>
+
+          <div className="stat-card">
+            <div className="stat-card-content">
+              <div className="stat-info">
+                <p className="stat-label">High Risk Flags</p>
+                <p className="stat-value stat-value-red">
+                  {countByRisk("high")}
+                </p>
+              </div>
+              <AlertTriangle
+                className="stat-icon"
+                style={{ color: "#ef4444", opacity: 0.2 }}
+              />
+            </div>
+          </div>
+
+          <div className="stat-card">
+            <div className="stat-card-content">
+              <div className="stat-info">
+                <p className="stat-label">Risk Assessments</p>
+                <p className="stat-value stat-value-amber">
+                  {countByType("risk_assessment")}
+                </p>
+              </div>
+              <BarChart2
+                className="stat-icon"
+                style={{ color: "#f59e0b", opacity: 0.2 }}
+              />
+            </div>
+          </div>
+
+          <div className="stat-card">
+            <div className="stat-card-content">
+              <div className="stat-info">
+                <p className="stat-label">Clinical Notes</p>
+                <p className="stat-value stat-value-green">
+                  {countByType("note")}
+                </p>
+              </div>
+              <HeartPulse
+                className="stat-icon"
+                style={{ color: "#10b981", opacity: 0.2 }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Empty state */}
+        {records.length === 0 ? (
           <div className="empty-state">
-            <Heart className="empty-icon" />
+            <ClipboardList className="empty-icon" />
             <p className="empty-title">No Health Records Yet</p>
             <p className="empty-text">
-              Start tracking your personal health history by adding your diagnoses, medications, and treatments.
+              Add your first health record or risk assessment to start tracking
+              your journey over time.
             </p>
-            <button onClick={() => setShowAddModal(true)} className="empty-action-btn">
-              <Plus className="empty-action-icon" />
-              Add Your First Health Record
-            </button>
+            {isPatient && (
+              <button onClick={openNewForm} className="empty-action-btn">
+                <Plus className="empty-action-icon" />
+                Add Your First Record
+              </button>
+            )}
           </div>
         ) : (
-          <div className="health-records-grid">
-            {healthRecords.map((record) => (
-              <div key={record.id} className="health-record-card">
-                <div className="health-card-header">
-                  <div className="health-card-header-left">
-                    <h3 className="health-condition-name">{record.condition_name}</h3>
-                    <div className="health-diagnosis-date">
-                      <Calendar size={14} />
-                      <span>Diagnosed: {formatDate(record.diagnosis_date)}</span>
+          <div className="timeline">
+            {records.map((record) => (
+              <div key={record.id} className="timeline-item">
+                <div className="timeline-marker" />
+
+                <div className="timeline-card">
+                  <div className="timeline-header">
+                    <div>
+                      <h3 className="timeline-title">
+                        {record.record_type === "risk_assessment"
+                          ? "Risk Assessment"
+                          : record.record_type === "diagnosis"
+                          ? "Diagnosis"
+                          : record.record_type === "vital"
+                          ? "Vital Record"
+                          : "Health Note"}
+                      </h3>
+                      <p className="timeline-subtitle">
+                        Created: {formatDateTime(record.created_at)}
+                        {record.updated_at && (
+                          <span style={{ marginLeft: "0.5rem", opacity: 0.7 }}>
+                            · Updated: {formatDateTime(record.updated_at)}
+                          </span>
+                        )}
+                      </p>
                     </div>
+
+                    {record.risk_level && record.risk_level !== "none" && (
+                      <span
+                        className={`risk-badge ${getRiskClass(
+                          record.risk_level
+                        )}`}
+                      >
+                        {getRiskLabel(record.risk_level)}
+                      </span>
+                    )}
                   </div>
-                  <div className="health-card-header-right">
-                    <button 
-                      onClick={() => handleEdit(record)} 
-                      className="health-edit-btn" 
-                      title="Edit"
-                    >
-                      <Edit size={18} />
-                    </button>
-                    <button 
-                      onClick={() => handleDelete(record.id)} 
-                      className="health-delete-btn" 
-                      title="Delete"
-                    >
-                      <Trash2 size={18} />
-                    </button>
+
+                  <div className="timeline-body">
+                    {record.notes && (
+                      <p className="timeline-notes">{record.notes}</p>
+                    )}
+
+                    {record.data && (
+                      <div className="timeline-data-box">
+                        <p className="timeline-data-label">Details</p>
+                        <pre className="timeline-data-pre">
+                          {JSON.stringify(record.data, null, 2)}
+                        </pre>
+                      </div>
+                    )}
                   </div>
-                </div>
 
-                <div className="health-card-content">
-                  {record.is_chronic && (
-                    <div className="chronic-badge">
-                      <Activity size={14} />
-                      <span>Chronic Condition</span>
-                    </div>
-                  )}
-
-                  {record.doctor_name && (
-                    <div className="health-info-row">
-                      <strong>Doctor:</strong>
-                      <span>{record.doctor_name}</span>
-                    </div>
-                  )}
-
-                  {record.current_medications && (
-                    <div className="health-medications-section">
-                      <div className="section-header">
-                        <Pill size={16} />
-                        <strong>Current Medications:</strong>
-                      </div>
-                      <p className="medication-text">{record.current_medications}</p>
-                    </div>
-                  )}
-
-                  {record.treatment_plan && (
-                    <div className="health-treatment-section">
-                      <div className="section-header">
-                        <FileText size={16} />
-                        <strong>Treatment Plan:</strong>
-                      </div>
-                      <p className="treatment-text">{record.treatment_plan}</p>
-                    </div>
-                  )}
-
-                  {record.notes && (
-                    <div className="health-notes-section">
-                      <strong>Notes:</strong>
-                      <p className="notes-text">{record.notes}</p>
+                  {isPatient && (
+                    <div className="timeline-footer">
+                      <button
+                        className="family-action-btn"
+                        onClick={() => openEditForm(record)}
+                      >
+                        <Edit3 className="family-action-icon" />
+                        Edit
+                      </button>
+                      <button
+                        className="family-action-btn delete"
+                        onClick={() => handleDelete(record.id)}
+                      >
+                        <Trash2 className="family-action-icon" />
+                        Delete
+                      </button>
                     </div>
                   )}
                 </div>
@@ -269,122 +434,137 @@ export default function MyHealth() {
             ))}
           </div>
         )}
-      </div>
 
-      {showAddModal && (
-        <div className="modal-overlay" onClick={() => setShowAddModal(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2 className="modal-title">
-                {editingRecord ? "Edit Health Record" : "Add Health Record"}
-              </h2>
-              <button onClick={() => setShowAddModal(false)} className="modal-close">×</button>
-            </div>
-
-            <form onSubmit={handleAddRecord} className="modal-body">
-              <div className="form-content">
-                <div className="form-field">
-                  <label htmlFor="condition_name" className="form-label">Condition/Diagnosis *</label>
-                  <input
-                    id="condition_name"
-                    type="text"
-                    value={formData.condition_name}
-                    onChange={(e) => setFormData({ ...formData, condition_name: e.target.value })}
-                    className="form-input"
-                    placeholder="e.g., Type 2 Diabetes, Hypertension"
-                    required
-                  />
-                </div>
-
-                <div className="form-field">
-                  <label htmlFor="diagnosis_date" className="form-label">Diagnosis Date *</label>
-                  <input
-                    id="diagnosis_date"
-                    type="date"
-                    value={formData.diagnosis_date}
-                    onChange={(e) => setFormData({ ...formData, diagnosis_date: e.target.value })}
-                    className="form-input"
-                    required
-                  />
-                </div>
-
-                <div className="form-field">
-                  <label htmlFor="doctor_name" className="form-label">Doctor/Healthcare Provider</label>
-                  <input
-                    id="doctor_name"
-                    type="text"
-                    value={formData.doctor_name}
-                    onChange={(e) => setFormData({ ...formData, doctor_name: e.target.value })}
-                    className="form-input"
-                    placeholder="Dr. John Smith"
-                  />
-                </div>
-
-                <div className="form-field">
-                  <label htmlFor="current_medications" className="form-label">Current Medications</label>
-                  <textarea
-                    id="current_medications"
-                    value={formData.current_medications}
-                    onChange={(e) => setFormData({ ...formData, current_medications: e.target.value })}
-                    className="form-input form-textarea"
-                    rows="3"
-                    placeholder="List your current medications (e.g., Metformin 500mg twice daily, Lisinopril 10mg once daily)"
-                  />
-                </div>
-
-                <div className="form-field">
-                  <label htmlFor="treatment_plan" className="form-label">Treatment Plan</label>
-                  <textarea
-                    id="treatment_plan"
-                    value={formData.treatment_plan}
-                    onChange={(e) => setFormData({ ...formData, treatment_plan: e.target.value })}
-                    className="form-input form-textarea"
-                    rows="3"
-                    placeholder="Describe your current treatment plan, lifestyle changes, or therapies"
-                  />
-                </div>
-
-                <div className="form-field">
-                  <label htmlFor="notes" className="form-label">Additional Notes</label>
-                  <textarea
-                    id="notes"
-                    value={formData.notes}
-                    onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                    className="form-input form-textarea"
-                    rows="2"
-                    placeholder="Any additional information about this condition"
-                  />
-                </div>
-
-                <div className="form-field">
-                  <label className="checkbox-label">
-                    <input
-                      type="checkbox"
-                      checked={formData.is_chronic}
-                      onChange={(e) => setFormData({ ...formData, is_chronic: e.target.checked })}
-                      className="form-checkbox"
-                    />
-                    <span>This is a chronic condition (ongoing/long-term)</span>
-                  </label>
-                </div>
-              </div>
-
-              <div className="form-footer">
+        {/* Add/Edit Modal */}
+        {showForm && (
+          <div
+            className="modal-overlay"
+            onClick={() => {
+              setShowForm(false);
+              resetForm();
+            }}
+          >
+            <div
+              className="modal-content"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="modal-header">
+                <h2 className="modal-title">
+                  {editingRecord ? "Edit Health Record" : "Add Health Record"}
+                </h2>
                 <button
-                  type="button"
-                  onClick={() => setShowAddModal(false)}
-                  className="cancel-btn"
+                  onClick={() => {
+                    setShowForm(false);
+                    resetForm();
+                  }}
+                  className="modal-close"
                 >
-                  Cancel
-                </button>
-                <button type="submit" className="save-btn">
-                  {editingRecord ? "Update Record" : "Add Record"}
+                  ×
                 </button>
               </div>
-            </form>
+
+              <form onSubmit={handleSubmit} className="modal-body">
+                <div className="form-content">
+                  <div className="form-grid-two">
+                    <div className="form-field">
+                      <label className="form-label">Record Type</label>
+                      <select
+                        className="form-input"
+                        value={form.record_type}
+                        onChange={(e) =>
+                          handleFormChange("record_type", e.target.value)
+                        }
+                      >
+                        <option value="note">Health Note</option>
+                        <option value="risk_assessment">
+                          Risk Assessment
+                        </option>
+                        <option value="diagnosis">Diagnosis</option>
+                        <option value="vital">Vital Record</option>
+                      </select>
+                    </div>
+
+                    <div className="form-field">
+                      <label className="form-label">Risk Level</label>
+                      <select
+                        className="form-input"
+                        value={form.risk_level}
+                        onChange={(e) =>
+                          handleFormChange("risk_level", e.target.value)
+                        }
+                      >
+                        <option value="none">None / Not Applicable</option>
+                        <option value="low">Low</option>
+                        <option value="moderate">Moderate</option>
+                        <option value="high">High</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="form-field">
+                    <label className="form-label">Notes</label>
+                    <textarea
+                      className="form-input form-textarea"
+                      rows="3"
+                      value={form.notes}
+                      onChange={(e) =>
+                        handleFormChange("notes", e.target.value)
+                      }
+                      placeholder="Summary of this record, diagnosis, or reasoning behind the risk level."
+                    />
+                  </div>
+
+                  <div className="form-field">
+                    <label className="form-label">
+                      Structured Data (JSON, optional)
+                    </label>
+                    <textarea
+                      className="form-input form-textarea"
+                      rows="6"
+                      value={form.data_input}
+                      onChange={(e) =>
+                        handleFormChange("data_input", e.target.value)
+                      }
+                      placeholder={`Example:
+{
+  "blood_pressure": "120/80",
+  "heart_rate": 72,
+  "bmi": 23.4,
+  "symptoms": ["fatigue", "headache"]
+}`}
+                    />
+                    <p className="helper-text">
+                      Optional. Use JSON to store vitals, metrics, or detailed
+                      structured data.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="form-footer">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowForm(false);
+                      resetForm();
+                    }}
+                    className="cancel-btn"
+                    style={{
+                      padding: "0.75rem 1.5rem",
+                      borderRadius: "0.5rem",
+                    }}
+                  >
+                    Cancel
+                  </button>
+
+                  <button type="submit" className="save-btn">
+                    {editingRecord ? "Save Changes" : "Add Record"}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

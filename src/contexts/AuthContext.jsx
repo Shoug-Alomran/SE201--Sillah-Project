@@ -1,13 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { 
-  createUserWithEmailAndPassword, 
-  signInWithEmailAndPassword, 
-  signOut, 
-  onAuthStateChanged,
-  updateProfile
-} from 'firebase/auth';
-import { doc, setDoc, getDoc, collection, addDoc } from 'firebase/firestore';
-import { auth, db } from '../firebase/config';
+// src/contexts/AuthContext.jsx
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { supabase } from "../supabase";
 
 const AuthContext = createContext();
 
@@ -16,76 +9,126 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }) {
-  const [currentUser, setCurrentUser] = useState(null);
-  const [userProfile, setUserProfile] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);     // Supabase Auth user
+  const [userProfile, setUserProfile] = useState(null);     // Row from "users" table
   const [loading, setLoading] = useState(true);
 
-  async function signup(email, password, fullName, phoneNumber = '', userType = 'patient', doctorId = '') {
-    // Create Firebase Auth account
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    await updateProfile(userCredential.user, { displayName: fullName });
-    
-    // Create user profile in Firestore
-    await setDoc(doc(db, 'users', userCredential.user.uid), {
-      uid: userCredential.user.uid,
+  // -----------------------------
+  // SIGNUP
+  // -----------------------------
+  async function signup(email, password, fullName, phoneNumber, userType, doctorId) {
+    // 1️⃣ Create user in Supabase Auth
+    const { data: authData, error: authError } =
+      await supabase.auth.signUp({
+        email,
+        password,
+      });
+
+    if (authError) throw authError;
+
+    const uid = authData.user.id;
+
+    // 2️⃣ Insert user profile into "users" table
+    const { error: insertError } = await supabase.from("users").insert({
+      uid,
       email,
       full_name: fullName,
-      phone_number: phoneNumber,
+      phone: phoneNumber || null,
       user_type: userType,
+      assigned_doctor: userType === "patient" ? doctorId : null,
       created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
     });
 
-    // If patient selected a doctor, create doctor-patient assignment
-    if (userType === 'patient' && doctorId) {
-      await addDoc(collection(db, 'doctor_patients'), {
-        doctor_id: doctorId,
-        patient_id: userCredential.user.uid,
-        assigned_at: new Date().toISOString(),
-        status: 'active'
-      });
-      console.log('Patient assigned to doctor successfully!');
-    }
-    
-    return userCredential.user;
+    if (insertError) throw insertError;
+
+    return authData.user;
   }
 
+  // -----------------------------
+  // LOGIN
+  // -----------------------------
   async function login(email, password) {
-    return signInWithEmailAndPassword(auth, email, password);
-  }
-
-  async function logout() {
-    return signOut(auth);
-  }
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setCurrentUser(user);
-      
-      if (user) {
-        // Fetch user profile from Firestore
-        const userDoc = await getDoc(doc(db, 'users', user.uid));
-        if (userDoc.exists()) {
-          setUserProfile(userDoc.data());
-        }
-      } else {
-        setUserProfile(null);
-      }
-      
-      setLoading(false);
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
     });
 
-    return unsubscribe;
+    if (error) throw error;
+    return data.user;
+  }
+
+  // -----------------------------
+  // LOGOUT
+  // -----------------------------
+  async function logout() {
+    await supabase.auth.signOut();
+    setCurrentUser(null);
+    setUserProfile(null);
+  }
+
+  // -----------------------------
+  // LOAD USER SESSION + PROFILE
+  // -----------------------------
+  useEffect(() => {
+    async function loadSession() {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      const user = session?.user || null;
+      setCurrentUser(user);
+
+      if (user) {
+        const { data: profile } = await supabase
+          .from("users")
+          .select("*")
+          .eq("uid", user.id)
+          .single();
+
+        setUserProfile(profile || null);
+      }
+
+      setLoading(false);
+    }
+
+    loadSession();
+
+    // Listen for login/logout events
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        const user = session?.user || null;
+        setCurrentUser(user);
+
+        if (user) {
+          const { data: profile } = await supabase
+            .from("users")
+            .select("*")
+            .eq("uid", user.id)
+            .single();
+
+          setUserProfile(profile || null);
+        } else {
+          setUserProfile(null);
+        }
+      }
+    );
+
+    return () => {
+      listener.subscription.unsubscribe();
+    };
   }, []);
 
+  // -----------------------------
+  // CONTEXT VALUE
+  // -----------------------------
   const value = {
     currentUser,
     userProfile,
     signup,
     login,
     logout,
-    isDoctor: userProfile?.user_type === 'doctor',
-    isPatient: userProfile?.user_type === 'patient',
+    isDoctor: userProfile?.user_type === "doctor",
+    isPatient: userProfile?.user_type === "patient",
   };
 
   return (

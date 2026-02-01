@@ -1,28 +1,57 @@
-import React, { useState } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
-import { useNavigate, Link } from 'react-router-dom';
-import { Heart, Mail, Lock, AlertCircle } from 'lucide-react';
+// src/Prototype/Pages/Login.jsx
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { Heart, Mail, Lock, AlertCircle } from "lucide-react";
+import { supabase } from "../../supabase";
+import { useAuth } from "../../contexts/AuthContext";
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+
+  const { setCurrentUser, setUserProfile } = useAuth();
   const navigate = useNavigate();
 
   async function handleSubmit(e) {
     e.preventDefault();
 
     try {
-      setError('');
+      setError("");
       setLoading(true);
-      await login(email, password);
-      navigate('/dashboard');
-    } catch (error) {
-      setError('Failed to login. Please check your credentials.');
-      console.error(error);
+
+      // 1️⃣ Login with Supabase Auth
+      const { data: authData, error: authError } =
+        await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+      if (authError) throw authError;
+
+      const user = authData.user;
+
+      // 2️⃣ Fetch user profile from "users" table
+      const { data: profile, error: profileError } = await supabase
+        .from("users")
+        .select("*")
+        .eq("uid", user.id)
+        .single();
+
+      if (profileError) throw profileError;
+
+      // 3️⃣ Store in AuthContext
+      setCurrentUser(user);
+      setUserProfile(profile);
+
+      // 4️⃣ Redirect
+      navigate("/dashboard");
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("Failed to login. Please check your credentials.");
     }
+
     setLoading(false);
   }
 
@@ -83,12 +112,17 @@ export default function Login() {
               disabled={loading}
               className="auth-submit-btn"
             >
-              {loading ? 'Logging in...' : 'Login'}
+              {loading ? "Logging in..." : "Login"}
             </button>
           </form>
 
           <div className="auth-footer">
-            <p>Don't have an account? <Link to="/signup" className="auth-link">Sign up</Link></p>
+            <p>
+              Don't have an account?{" "}
+              <Link to="/signup" className="auth-link">
+                Sign up
+              </Link>
+            </p>
           </div>
         </div>
       </div>

@@ -2,6 +2,9 @@
 // @ts-nocheck
 import React, { useState } from "react";
 import { Calendar, Clock, CheckCircle } from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { supabase } from "../../supabase";
+import { useAuth } from "../../contexts/AuthContext";
 
 const TIME_SLOTS = [
   "08:00 AM",
@@ -17,8 +20,15 @@ const TIME_SLOTS = [
 const today = new Date().toISOString().split("T")[0];
 
 export default function BookAppointment() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { currentUser, userProfile } = useAuth();
+
+  // Clinic passed from Clinics.jsx
+  const clinic = location.state?.clinic || null;
+
   const [form, setForm] = useState({
-    clinic: "",
+    clinic_name: clinic?.name || "",
     appointment_date: today,
     appointment_time: "",
     reason: "Preventive Cardiac Screening",
@@ -30,10 +40,54 @@ export default function BookAppointment() {
     setForm((prev) => ({ ...prev, [name]: value }));
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    // For now just demo:
-    alert("Appointment saved (demo only)");
+
+    if (!currentUser || !userProfile) {
+      alert("You must be logged in to book an appointment.");
+      return;
+    }
+
+    if (!clinic) {
+      alert("No clinic selected.");
+      return;
+    }
+
+    try {
+      const now = new Date().toISOString();
+
+      // Insert into Supabase
+      const { error } = await supabase.from("appointments").insert({
+        patient_id: currentUser.id,
+        doctor_id: userProfile.assigned_doctor, // your rule #1
+        patient_name: userProfile.full_name, // your rule #2
+
+        // Clinic fields (your rule #3)
+        clinic_name: clinic.name,
+        location: clinic.location,
+        address: clinic.address,
+        phone: clinic.phone,
+        clinic_rating: clinic.rating,
+
+        // Appointment fields (your rule #4)
+        appointment_date: form.appointment_date,
+        appointment_time: form.appointment_time,
+
+        reason: form.reason,
+        notes: form.notes,
+
+        status: "pending",
+        created_at: now,
+      });
+
+      if (error) throw error;
+
+      alert("Appointment booked successfully!");
+      navigate("/appointments");
+    } catch (err) {
+      console.error("Error booking appointment:", err);
+      alert("Failed to book appointment.");
+    }
   }
 
   return (
@@ -58,17 +112,16 @@ export default function BookAppointment() {
           <div className="book-card-body">
             {/* Clinic */}
             <div className="field">
-              <label htmlFor="clinic" className="field-label">
+              <label htmlFor="clinic_name" className="field-label">
                 Clinic
               </label>
               <input
-                id="clinic"
-                name="clinic"
+                id="clinic_name"
+                name="clinic_name"
                 type="text"
                 className="field-input"
-                placeholder="Clinic name"
-                value={form.clinic}
-                onChange={handleChange}
+                value={form.clinic_name}
+                readOnly
               />
             </div>
 
