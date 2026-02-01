@@ -1,4 +1,4 @@
-??? note "AlertSystem.java"
+??? note "Message.java"
 ```java
 enum Lang {
     EN, AR
@@ -37,4 +37,5 @@ public class Message {
         return lang == Lang.AR ? "=== نهاية المحاكاة ===" : "=== End of Simulation ===";
     }
 }
+
 ```

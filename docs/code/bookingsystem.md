@@ -1,4 +1,4 @@
-??? note "AlertSystem.java"
+??? note "BookingSystem.java"
 ```java
 public class BookingSystem {
     public Clinic findClinic(String name) {

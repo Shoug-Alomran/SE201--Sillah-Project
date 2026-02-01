@@ -1,4 +1,4 @@
-??? note "AlertSystem.java"
+??? note "Appointment.java"
 ```java
 public class Appointment {
     private User user;

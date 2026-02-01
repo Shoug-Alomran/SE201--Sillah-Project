@@ -1,4 +1,4 @@
-??? note "AlertSystem.java"
+??? note "Clinic.java"
 ```java
 public class Clinic {
     private String name;

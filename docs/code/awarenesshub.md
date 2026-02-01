@@ -1,4 +1,4 @@
-??? note "AlertSystem.java"
+??? note "AwarenessHub.java"
 ```java
 import java.util.Scanner;
 

@@ -1,4 +1,4 @@
-??? note "AlertSystem.java"
+??? note "HealthEvent.java"
 ```java
 public class HealthEvent {
     private String condition;

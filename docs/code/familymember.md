@@ -1,4 +1,4 @@
-??? note "AlertSystem.java"
+??? note "FamilyMember.java"
 ```java
 public class FamilyMember {
     private String relation;
