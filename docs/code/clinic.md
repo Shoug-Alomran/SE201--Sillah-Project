@@ -1,4 +1,5 @@
-```bash
+??? note "AlertSystem.java"
+```java
 public class Clinic {
     private String name;
     private String location;

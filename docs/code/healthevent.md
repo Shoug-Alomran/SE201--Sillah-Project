@@ -1,4 +1,5 @@
-```bash
+??? note "AlertSystem.java"
+```java
 public class HealthEvent {
     private String condition;
     private int ageAtDiagnosis;

@@ -1,4 +1,5 @@
-```bash
+??? note "AlertSystem.java"
+```java
 enum Lang {
     EN, AR
 }

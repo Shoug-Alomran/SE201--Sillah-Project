@@ -1,4 +1,5 @@
-```bash
+??? note "AlertSystem.java"
+```java
 import java.util.Scanner;
 
 public class AwarenessHub {

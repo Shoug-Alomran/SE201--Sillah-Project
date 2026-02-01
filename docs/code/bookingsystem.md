@@ -1,4 +1,5 @@
-```bash
+??? note "AlertSystem.java"
+```java
 public class BookingSystem {
     public Clinic findClinic(String name) {
         if (name != null && name.equalsIgnoreCase("Riyadh Heart Center"))

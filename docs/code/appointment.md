@@ -1,4 +1,5 @@
-```bash
+??? note "AlertSystem.java"
+```java
 public class Appointment {
     private User user;
     private Clinic clinic;

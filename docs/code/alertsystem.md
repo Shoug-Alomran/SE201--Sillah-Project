@@ -1,4 +1,5 @@
-```bash
+??? note "AlertSystem.java"
+```java
 public class AlertSystem {
 
     public String checkRisk(User user) {
