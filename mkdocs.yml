@@ -1,6 +1,8 @@
 site_name: SE201 - Sillah (صلة) Family Health Management System
 site_description: Full SE201 Software Engineering Project Documentation
 site_url: https://Sillah.Shoug-Tech.com
+copyright: © 2026 Shoug Fawaz Alomran · All rights reserved
+
 
 theme:
   name: material
