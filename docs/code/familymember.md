@@ -1,6 +1,7 @@
 ??? note "FamilyMember.java"
-```java
-public class FamilyMember {
+    
+    ```java
+    public class FamilyMember {
     private String relation;
     private int age;
     private List<HealthEvent> healthEvents = new ArrayList<>();
@@ -53,6 +54,6 @@ public class FamilyMember {
     @Override
     public String toString() {
         return relation + " (Age: " + age + ", Events: " + healthEvents.size() + ")";
+      }
     }
-}
-```
+    ```

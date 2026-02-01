@@ -1,8 +1,9 @@
 ??? note "Main.java"
-```java
-import java.util.Scanner;
 
-public class Main {
+    ```java
+    import java.util.Scanner;
+
+    public class Main {
     private static final String title = "=== Sillah (صلة) Preventive Health System ===";
 
     public static void main(String[] args) {
@@ -100,6 +101,6 @@ public class Main {
         System.out.println("Appointment booked for " + appointment.getUser().getName() +
                 " at " + appointment.getClinic().getName());
         System.out.println("=== End of Simulation ===");
+        }
     }
-}
-```
+    ```

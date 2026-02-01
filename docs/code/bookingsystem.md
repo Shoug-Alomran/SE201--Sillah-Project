@@ -1,6 +1,7 @@
 ??? note "BookingSystem.java"
-```java
-public class BookingSystem {
+    
+    ```java
+    public class BookingSystem {
     public Clinic findClinic(String name) {
         if (name != null && name.equalsIgnoreCase("Riyadh Heart Center"))
             return new Clinic("Riyadh Heart Center", "Riyadh");
@@ -14,6 +15,6 @@ public class BookingSystem {
             throw new IllegalArgumentException("User and clinic are required");
         System.out.println("Booking appointment...");
         return new Appointment(user, clinic);
+        }
     }
-}
-```
+     ```

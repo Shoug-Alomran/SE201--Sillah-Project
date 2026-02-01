@@ -1,6 +1,7 @@
 ??? note "Clinic.java"
-```java
-public class Clinic {
+
+    ```java
+    public class Clinic {
     private String name;
     private String location;
 
@@ -16,5 +17,5 @@ public class Clinic {
     public String getLocation() {
         return location;
     }
-}
-```
+    }
+    ```

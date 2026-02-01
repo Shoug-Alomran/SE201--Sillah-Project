@@ -1,8 +1,9 @@
 ??? note "AwarenessHub.java"
-```java
-import java.util.Scanner;
 
-public class AwarenessHub {
+    ```java
+    import java.util.Scanner;
+
+    public class AwarenessHub {
     public void start(Scanner input) {
         while (true) {
             System.out.println("\n=== Awareness Hub ===");
@@ -22,8 +23,8 @@ public class AwarenessHub {
             } else {
                 System.out.println("Invalid choice.");
             }
+         }
         }
-    }
 
     private void showTopics(Scanner input) {
         System.out.println("\nAvailable Topics:");
@@ -50,6 +51,6 @@ public class AwarenessHub {
         System.out.println("[ ] Schedule your first screening");
         System.out.println("[ ] Read one Awareness article");
         System.out.println("Progress: 1/3 completed");
+      }
     }
-}
-```
+    ```

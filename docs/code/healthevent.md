@@ -1,6 +1,7 @@
 ??? note "HealthEvent.java"
-```java
-public class HealthEvent {
+    
+    ```java
+    public class HealthEvent {
     private String condition;
     private int ageAtDiagnosis;
     private String description;
@@ -32,6 +33,6 @@ public class HealthEvent {
     @Override
     public String toString() {
         return condition + " (diagnosed at age " + ageAtDiagnosis + ")";
+      }
     }
-}
-```
+    ```

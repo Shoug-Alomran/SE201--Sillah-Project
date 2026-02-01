@@ -1,10 +1,11 @@
 ??? note "Message.java"
-```java
-enum Lang {
-    EN, AR
-}
 
-public class Message {
+    ```java
+    enum Lang {
+    EN, AR
+    }
+
+    public class Message {
     private final Lang lang;
 
     public Message(Lang lang) {
@@ -35,7 +36,6 @@ public class Message {
 
     public String end() {
         return lang == Lang.AR ? "=== نهاية المحاكاة ===" : "=== End of Simulation ===";
+         }
     }
-}
-
-```
+    ```
