@@ -47,6 +47,7 @@ nav:
       - HealthEvent: code/healthevent.md
       - Message: code/message.md
       - User: code/user.md
+  - Copyright: copyright.md
 
 markdown_extensions:
   - admonition
