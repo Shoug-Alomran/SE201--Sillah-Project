@@ -10,9 +10,13 @@
 **Submission Date:** 13 November 2025  
 
 **Developed by:**  
+
 - Shoug Fawaz Abdullah Alomran — 223410392  
+
 - Aljohara Waleed A. Albawardi — 223410346  
+
 - Aljawhara Mohammad Nasser Alruzuq — 223410216  
+
 - Aljawharah Turki Abdullah AlSaleh — 223410217  
 
 ---

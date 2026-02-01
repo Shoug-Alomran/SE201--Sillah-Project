@@ -1,6 +1,6 @@
 site_name: SE201 - Sillah (صلة) Family Health Management System
 site_description: Full SE201 Software Engineering Project Documentation
-site_url: https://shoug-alomran.github.io/SE201--Sillah-Project/
+site_url: https://Sillah.Shoug-Tech.com
 
 theme:
   name: material
@@ -60,3 +60,4 @@ markdown_extensions:
 
 extra_css:
   - https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css
+  - styles/extra.css
