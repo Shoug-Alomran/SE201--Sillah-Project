@@ -2,31 +2,61 @@
    GLOBAL COLORS
    ======================================================= */
 :root {
-  --mint-1: #98e2c6;
-  --mint-2: #bbf7d0;
+  /* NEW LIGHT MODE GRADIENT (sage → mist) */
+  --mint-1: #cfeee3;  /* soft sage */
+  --mint-2: #f3fbf7;  /* misty off-white */
 
   /* Softer than harsh black */
   --ink: #2b3443;
   --ink-muted: #445063;
 
-  /* Accent */
-  --accent: #0b6b63;
+  /* Accent (slightly deeper to match new light palette) */
+  --accent: #0f6f66;
 
   /* Pills */
   --pill: rgba(43, 52, 67, 0.06);
   --pill-hover: rgba(43, 52, 67, 0.10);
-  --pill-active: rgba(11, 107, 99, 0.14);
+  --pill-active: rgba(15, 111, 102, 0.14);
+
+  /* --- Dark mode palette (defaults; overridden in slate) --- */
+  --mint-d1: #1b3b39;     /* dark mint */
+  --mint-d2: #0f2d2c;     /* darker mint */
+  --ink-d: #e8eef2;       /* light text */
+  --ink-d-muted: rgba(232, 238, 242, 0.78);
+
+  --pill-d: rgba(232, 238, 242, 0.08);
+  --pill-d-hover: rgba(232, 238, 242, 0.12);
+  --pill-d-active: rgba(152, 226, 198, 0.18);
+}
+
+/* Override variables when Material scheme is slate */
+[data-md-color-scheme="slate"] {
+  --mint-d1: #1b3b39;
+  --mint-d2: #0f2d2c;
+
+  --ink: var(--ink-d);
+  --ink-muted: var(--ink-d-muted);
+
+  --pill: var(--pill-d);
+  --pill-hover: var(--pill-d-hover);
+  --pill-active: var(--pill-d-active);
 }
 
 /* =======================================================
-   HEADER + TABS (PALE GREEN GRADIENT) — CLEAN
+   HEADER + TABS (GRADIENT) — CLEAN
    ======================================================= */
 .md-header,
 .md-tabs {
   background: linear-gradient(90deg, var(--mint-1), var(--mint-2)) !important;
 }
 
-/* Make header text readable (soft ink) */
+/* Dark mode header/tabs */
+[data-md-color-scheme="slate"] .md-header,
+[data-md-color-scheme="slate"] .md-tabs {
+  background: linear-gradient(90deg, var(--mint-d1), var(--mint-d2)) !important;
+}
+
+/* Make header text readable */
 .md-header,
 .md-header * {
   color: var(--ink) !important;
@@ -62,8 +92,8 @@
   width: 100% !important;
   display: flex !important;
   flex-wrap: wrap !important;
-  justify-content: center !important; /* looks balanced */
-  gap: 10px 14px !important;          /* consistent spacing */
+  justify-content: center !important;
+  gap: 10px 14px !important;
   padding: 10px 0 !important;
 }
 
@@ -105,7 +135,12 @@
   border-bottom: 0 !important;
 }
 
-/* On smaller screens, left align so it feels natural */
+/* Make active stand out more in dark mode */
+[data-md-color-scheme="slate"] .md-tabs__link--active {
+  color: #bff7e2 !important;
+}
+
+/* On smaller screens, left align */
 @media (max-width: 720px) {
   .md-tabs__list {
     justify-content: flex-start !important;
@@ -115,7 +150,6 @@
 /* =======================================================
    LEFT SIDEBAR (PRIMARY NAV)
    ======================================================= */
-/* Reset base nav links */
 .md-nav--primary .md-nav__link {
   background: transparent !important;
   color: inherit !important;
@@ -139,6 +173,12 @@
   box-sizing: border-box !important;
 }
 
+/* Dark mode section headers */
+[data-md-color-scheme="slate"] .md-nav--primary .md-nav__item--section > .md-nav__title,
+[data-md-color-scheme="slate"] .md-nav--primary .md-nav__item--section > .md-nav__link {
+  background: linear-gradient(90deg, var(--mint-d1), var(--mint-d2)) !important;
+}
+
 /* Chevron inside section titles */
 .md-nav--primary .md-nav__item--section > .md-nav__title .md-nav__button {
   margin-left: auto !important;
@@ -148,9 +188,14 @@
 
 /* ACTIVE PAGE LINK */
 .md-nav--primary .md-nav__link--active {
-  background-color: rgba(152, 226, 198, 0.20) !important;
+  background-color: rgba(15, 111, 102, 0.12) !important; /* updated for new palette */
   color: var(--accent) !important;
   font-weight: 700 !important;
+}
+
+[data-md-color-scheme="slate"] .md-nav--primary .md-nav__link--active {
+  background-color: rgba(152, 226, 198, 0.16) !important;
+  color: #bff7e2 !important;
 }
 
 /* =======================================================
@@ -170,6 +215,11 @@
   font-weight: 700;
 }
 
+/* Dark mode TOC title */
+[data-md-color-scheme="slate"] .md-nav--secondary .md-nav__title {
+  background: linear-gradient(90deg, var(--mint-d1), var(--mint-d2)) !important;
+}
+
 /* TOC links */
 .md-nav--secondary .md-nav__link {
   border-radius: 8px;
@@ -178,16 +228,194 @@
 
 /* TOC hover */
 .md-nav--secondary .md-nav__link:hover {
-  background-color: rgba(187, 247, 208, 0.10);
+  background-color: rgba(15, 111, 102, 0.06); /* updated for new palette */
+}
+
+[data-md-color-scheme="slate"] .md-nav--secondary .md-nav__link:hover {
+  background-color: rgba(232, 238, 242, 0.06);
 }
 
 /* TOC active */
 .md-nav--secondary .md-nav__link--active {
-  background-color: rgba(152, 226, 198, 0.20) !important;
+  background-color: rgba(15, 111, 102, 0.12) !important; /* updated for new palette */
   color: var(--accent) !important;
   font-weight: 700 !important;
 }
 
+[data-md-color-scheme="slate"] .md-nav--secondary .md-nav__link--active {
+  background-color: rgba(152, 226, 198, 0.16) !important;
+  color: #bff7e2 !important;
+}
+
 .md-nav--secondary .md-nav__link--active * {
   color: inherit !important;
+}
+
+/* =======================================================
+   CUSTOM FOOTER — MATCH HEADER COLORS
+   ======================================================= */
+.custom-footer{
+  background: linear-gradient(90deg, var(--mint-1), var(--mint-2)) !important;
+  color: var(--ink) !important;
+
+  padding:56px 16px !important;
+  border-top:1px solid rgba(0,0,0,0.08) !important;
+}
+
+[data-md-color-scheme="slate"] .custom-footer{
+  background: linear-gradient(90deg, var(--mint-d1), var(--mint-d2)) !important;
+  color: var(--ink) !important;
+  border-top: 1px solid rgba(255,255,255,0.10) !important;
+}
+
+.custom-footer__inner{
+  max-width:1200px !important;
+  margin:0 auto !important;
+
+  display:grid !important;
+  grid-template-columns: 1.2fr 1fr !important;
+  gap:32px !important;
+}
+
+@media (max-width: 900px){
+  .custom-footer__inner{ grid-template-columns:1fr !important; }
+}
+
+.custom-footer__brand{
+  font-size:1.1rem !important;
+  font-weight:800 !important;
+  opacity:0.95 !important;
+  margin-bottom:10px !important;
+}
+
+.custom-footer__title{
+  font-size:1.8rem !important;
+  font-weight:900 !important;
+  margin-bottom:18px !important;
+  line-height:1.15 !important;
+}
+
+.custom-footer__form{
+  display:flex !important;
+  align-items:center !important;
+  gap:12px !important;
+
+  max-width:560px !important;
+  padding:10px !important;
+
+  border-radius:999px !important;
+  background: rgba(43, 52, 67, 0.08) !important;
+  border:1px solid rgba(43, 52, 67, 0.12) !important;
+}
+
+[data-md-color-scheme="slate"] .custom-footer__form{
+  background: rgba(232, 238, 242, 0.08) !important;
+  border: 1px solid rgba(232, 238, 242, 0.14) !important;
+}
+
+.custom-footer__input{
+  flex:1 !important;
+  border:none !important;
+  outline:none !important;
+  background:transparent !important;
+
+  padding:10px 14px !important;
+  font-size:1rem !important;
+  color: var(--ink) !important;
+}
+.custom-footer__input::placeholder{
+  color: var(--ink-muted) !important;
+}
+
+.custom-footer__button{
+  border:none !important;
+  cursor:pointer !important;
+
+  border-radius:999px !important;
+  padding:10px 16px !important;
+
+  font-weight:900 !important;
+  background: var(--ink) !important;
+  color: #fff !important;
+
+  transition: opacity 120ms ease, transform 120ms ease !important;
+}
+
+[data-md-color-scheme="slate"] .custom-footer__button{
+  background: rgba(232, 238, 242, 0.92) !important;
+  color: #0f172a !important;
+}
+
+.custom-footer__button:hover{
+  opacity:0.9 !important;
+  transform: translateY(-1px) !important;
+}
+
+.custom-footer__note{
+  margin-top:14px !important;
+  font-size:0.95rem !important;
+  max-width:560px !important;
+  color: var(--ink-muted) !important;
+}
+
+.custom-footer__right{
+  display:grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap:26px !important;
+}
+@media (max-width: 900px){
+  .custom-footer__right{ grid-template-columns:1fr !important; }
+}
+
+.footer-col__title{
+  font-weight:900 !important;
+  margin-bottom:10px !important;
+  font-size:1.05rem !important;
+}
+
+.footer-link{
+  display:block !important;
+  padding:6px 0 !important;
+  text-decoration:none !important;
+  color: var(--ink-muted) !important;
+}
+.footer-link:hover{
+  color: var(--ink) !important;
+  text-decoration:underline !important;
+}
+
+/* Dark mode footer links need brighter hover */
+[data-md-color-scheme="slate"] .footer-link{
+  color: rgba(232, 238, 242, 0.78) !important;
+}
+[data-md-color-scheme="slate"] .footer-link:hover{
+  color: rgba(232, 238, 242, 0.95) !important;
+}
+
+/* =========================================================
+   FOOTER META (MATCH HEADER TOO)
+   ========================================================= */
+.md-footer-meta,
+.md-footer-meta__inner{
+  background: transparent !important;
+  border-top: 0 !important;
+}
+
+.md-footer-meta{
+  background: linear-gradient(90deg, var(--mint-1), var(--mint-2)) !important;
+  color: var(--ink) !important;
+}
+
+[data-md-color-scheme="slate"] .md-footer-meta{
+  background: linear-gradient(90deg, var(--mint-d1), var(--mint-d2)) !important;
+  color: var(--ink) !important;
+}
+
+.md-footer-meta,
+.md-footer-meta *{
+  color: var(--ink) !important;
+}
+
+.md-footer-meta__inner{
+  padding-top: 14px !important;
 }
