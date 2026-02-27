@@ -13,7 +13,7 @@ https://sillah.shoug-tech.com/
 
 ### Secondary Live System (Working Web Application Prototype)
 A fully functional web application where users can log in, manage family data, and interact with the system.  
-https://se201--sillah-project.vercel.app/
+https://sillah-app.shoug-tech.com
 
 ------------------------------------------------------------
 
