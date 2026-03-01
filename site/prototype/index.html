@@ -1,0 +1,1676 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Full SE201 Software Engineering Project Documentation">
+      
+      
+      
+        <link rel="canonical" href="https://Sillah.Shoug-Tech.com/prototype/">
+      
+      
+        <link rel="prev" href="../design/">
+      
+      
+        <link rel="next" href="../conclusion/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.2">
+    
+    
+      
+        <title>Prototype & Testing - SE201 - Sillah (صلة) Family Health Management System</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+      <link rel="stylesheet" href="../styles/extra.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="green">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#phase-iv-prototype-testing" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="SE201 - Sillah (صلة) Family Health Management System" class="md-header__button md-logo" aria-label="SE201 - Sillah (صلة) Family Health Management System" data-md-component="logo">
+      
+  <img src="../img/tree.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            SE201 - Sillah (صلة) Family Health Management System
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Prototype & Testing
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="green"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="green"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m3.55 19.09 1.41 1.41 1.8-1.79-1.42-1.42M12 6c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6c0-3.32-2.69-6-6-6m8 7h3v-2h-3m-2.76 7.71 1.8 1.79 1.41-1.41-1.79-1.8M20.45 5l-1.41-1.4-1.8 1.79 1.42 1.42M13 1h-2v3h2M6.76 5.39 4.96 3.6 3.55 5l1.79 1.81zM1 13h3v-2H1m12 9h-2v3h2"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../introduction/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Introduction
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../requirements/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Requirements
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../design/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Design
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="./" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Prototype & Testing
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../conclusion/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Conclusion
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../references/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  References
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../team/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Team
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../report/report/" class="md-tabs__link">
+          
+  
+  
+  Report
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../code/main/" class="md-tabs__link">
+          
+  
+  
+  Code
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../copyright/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Copyright
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="SE201 - Sillah (صلة) Family Health Management System" class="md-nav__button md-logo" aria-label="SE201 - Sillah (صلة) Family Health Management System" data-md-component="logo">
+      
+  <img src="../img/tree.png" alt="logo">
+
+    </a>
+    SE201 - Sillah (صلة) Family Health Management System
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../requirements/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Requirements
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../design/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prototype & Testing
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Prototype & Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#41-prototype-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Prototype Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#42-implemented-modules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Implemented Modules
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#43-console-interaction-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Console Interaction Example
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.3 Console Interaction Example">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#431-awareness-hub-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3.1 Awareness Hub Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#432-alert-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3.2 Alert Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#44-system-screenshots" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 System Screenshots
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#44-system-screenshots_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 System Screenshots
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../conclusion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Conclusion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../team/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Team
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Report
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Report
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../report/report/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    View & Download
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        
+          
+          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Code
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Code
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../code/main/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Main
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../code/alertsystem/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AlertSystem
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../code/appointment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Appointment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../code/awarenesshub/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AwarenessHub
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../code/bookingsystem/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    BookingSystem
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../code/clinic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Clinic
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../code/familymember/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FamilyMember
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../code/healthevent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HealthEvent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../code/message/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Message
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../code/user/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../copyright/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Copyright
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#41-prototype-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 Prototype Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#42-implemented-modules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 Implemented Modules
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#43-console-interaction-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Console Interaction Example
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.3 Console Interaction Example">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#431-awareness-hub-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3.1 Awareness Hub Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#432-alert-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3.2 Alert Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#44-system-screenshots" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 System Screenshots
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#44-system-screenshots_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 System Screenshots
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="phase-iv-prototype-testing">Phase IV – Prototype &amp; Testing<a class="headerlink" href="#phase-iv-prototype-testing" title="Permanent link">&para;</a></h1>
+<p>This phase details the implementation, demonstration, and evaluation of the <em>Sillah (صلة) Family Health Management System</em> prototype. It validates how the design and requirements from previous phases were successfully transformed into a working Java application following software engineering best practices.</p>
+<hr />
+<h2 id="41-prototype-overview">4.1 Prototype Overview<a class="headerlink" href="#41-prototype-overview" title="Permanent link">&para;</a></h2>
+<p>The <em>Sillah</em> system prototype was developed using <strong>Java (JDK 17)</strong> and demonstrates the use of <strong>Object-Oriented Programming (OOP)</strong> principles including encapsulation, inheritance, and modularity. It allows users to register, add family members, book appointments, receive health alerts, and view awareness content — all within a <strong>Command-Line Interface (CLI)</strong> environment.</p>
+<blockquote>
+<p><strong>Development Environment:</strong> Visual Studio Code / IntelliJ IDEA<br />
+<strong>Programming Language:</strong> Java 17<br />
+<strong>Paradigm:</strong> Object-Oriented Programming<br />
+<strong>Testing Types:</strong> Unit Testing and Integration Testing</p>
+</blockquote>
+<p>This prototype represents a complete, testable version of the system design presented in Phase III and serves as the foundation for future GUI or web expansion.</p>
+<hr />
+<h2 id="42-implemented-modules">4.2 Implemented Modules<a class="headerlink" href="#42-implemented-modules" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Module</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Main.java</strong></td>
+<td style="text-align: left;">Acts as the program entry point and manages the main menu navigation.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>User.java</strong></td>
+<td style="text-align: left;">Handles user registration, login, and authentication.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>FamilyMember.java</strong></td>
+<td style="text-align: left;">Stores and manages individual family members’ information.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Appointment.java</strong></td>
+<td style="text-align: left;">Manages booking, modification, and cancellation of appointments.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Clinic.java</strong></td>
+<td style="text-align: left;">Stores clinic data, working hours, and appointment slots.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>HealthEvent.java</strong></td>
+<td style="text-align: left;">Records checkups and medical events such as ECG results.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>BookingSystem.java</strong></td>
+<td style="text-align: left;">Connects user, clinic, and appointment modules for booking coordination.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>AlertSystem.java</strong></td>
+<td style="text-align: left;">Automatically generates reminders and alerts for upcoming events.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>AwarenessHub.java</strong></td>
+<td style="text-align: left;">Provides verified educational health content to users.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Message.java</strong></td>
+<td style="text-align: left;">Supports communication between users and clinics.</td>
+</tr>
+</tbody>
+</table>
+<p>Each class was independently implemented, compiled, and verified to ensure that all functional requirements were met.</p>
+<hr />
+<h2 id="43-console-interaction-example">4.3 Console Interaction Example<a class="headerlink" href="#43-console-interaction-example" title="Permanent link">&para;</a></h2>
+<p>The prototype uses a <strong>menu-driven console interface</strong> where users interact with the system by selecting options.</p>
+<div class="highlight"><pre><span></span><code>---<span class="w"> </span>Sillah<span class="w"> </span><span class="o">(</span>صلة<span class="o">)</span><span class="w"> </span>Family<span class="w"> </span>Health<span class="w"> </span>Management<span class="w"> </span>System<span class="w"> </span>---
+
+<span class="m">1</span><span class="o">)</span><span class="w"> </span>Register<span class="w"> </span>/<span class="w"> </span>Login
+<span class="m">2</span><span class="o">)</span><span class="w"> </span>Add<span class="w"> </span>Family<span class="w"> </span>Member
+<span class="m">3</span><span class="o">)</span><span class="w"> </span>Book<span class="w"> </span>Appointment
+<span class="m">4</span><span class="o">)</span><span class="w"> </span>View<span class="w"> </span>Awareness<span class="w"> </span>Hub
+<span class="m">5</span><span class="o">)</span><span class="w"> </span>Check<span class="w"> </span>Alerts
+<span class="m">0</span><span class="o">)</span><span class="w"> </span>Exit
+Select<span class="w"> </span>option:<span class="w"> </span><span class="m">3</span>
+
+Enter<span class="w"> </span>Family<span class="w"> </span>Member<span class="w"> </span>ID:<span class="w"> </span>FM01
+Select<span class="w"> </span>Clinic:<span class="w"> </span>Al-Noor<span class="w"> </span>Cardiology<span class="w"> </span>Center
+Enter<span class="w"> </span>Date<span class="w"> </span><span class="o">(</span>YYYY-MM-DD<span class="o">)</span>:<span class="w"> </span><span class="m">2025</span>-11-10
+Enter<span class="w"> </span>Time<span class="w"> </span><span class="o">(</span>HH:MM<span class="o">)</span>:<span class="w"> </span><span class="m">10</span>:30
+Appointment<span class="w"> </span>booked<span class="w"> </span>successfully!
+
+Reminder<span class="w"> </span><span class="nb">set</span><span class="w"> </span><span class="k">for</span>:<span class="w"> </span><span class="m">2025</span>-11-09<span class="w"> </span>at<span class="w"> </span><span class="m">10</span>:30<span class="w"> </span>AM
+</code></pre></div>
+<h3 id="431-awareness-hub-example">4.3.1 Awareness Hub Example<a class="headerlink" href="#431-awareness-hub-example" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>---<span class="w"> </span>Awareness<span class="w"> </span>Hub<span class="w"> </span>---
+
+<span class="m">1</span><span class="o">)</span><span class="w"> </span>Understanding<span class="w"> </span>Heart<span class="w"> </span>Disease
+<span class="m">2</span><span class="o">)</span><span class="w"> </span>Importance<span class="w"> </span>of<span class="w"> </span>Regular<span class="w"> </span>Checkups
+<span class="m">3</span><span class="o">)</span><span class="w"> </span>Early<span class="w"> </span>Warning<span class="w"> </span>Signs<span class="w"> </span>of<span class="w"> </span>Cardiac<span class="w"> </span>Risk
+<span class="m">4</span><span class="o">)</span><span class="w"> </span>Family<span class="w"> </span>Genetics<span class="w"> </span>and<span class="w"> </span>Prevention
+
+Select<span class="w"> </span>an<span class="w"> </span>article<span class="w"> </span>to<span class="w"> </span>read:<span class="w"> </span><span class="m">2</span>
+
+&gt;<span class="w"> </span>Regular<span class="w"> </span>checkups<span class="w"> </span><span class="nb">help</span><span class="w"> </span><span class="k">in</span><span class="w"> </span>early<span class="w"> </span>detection<span class="w"> </span>of<span class="w"> </span>hereditary<span class="w"> </span>risks
+<span class="w">  </span>and<span class="w"> </span>ensure<span class="w"> </span>timely<span class="w"> </span>medical<span class="w"> </span>intervention.
+</code></pre></div>
+<h3 id="432-alert-example">4.3.2 Alert Example<a class="headerlink" href="#432-alert-example" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>---<span class="w"> </span>Alerts<span class="w"> </span>---
+
+Upcoming<span class="w"> </span>Appointment:<span class="w"> </span>Family<span class="w"> </span>Member<span class="w"> </span><span class="o">(</span>FM01<span class="o">)</span>
+Clinic:<span class="w"> </span>Al-Noor<span class="w"> </span>Cardiology<span class="w"> </span>Center
+Date:<span class="w"> </span><span class="m">2025</span>-11-10
+Reminder:<span class="w"> </span>Tomorrow<span class="w"> </span>at<span class="w"> </span><span class="m">10</span>:30<span class="w"> </span>AM
+</code></pre></div>
+<h2 id="44-system-screenshots">4.4 System Screenshots<a class="headerlink" href="#44-system-screenshots" title="Permanent link">&para;</a></h2>
+<p>This section visually demonstrates the <em>Sillah (صلة) Family Health Management System</em> prototype in action.<br />
+Each figure corresponds to a major function captured during the execution phase, illustrating the system’s flow, user interactions, and educational features.</p>
+<hr />
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"><strong>Figure</strong></th>
+<th style="text-align: left;"><strong>Description</strong></th>
+<th style="text-align: left;"><strong>File Name</strong></th>
+<th style="text-align: left;"><strong>Notes</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>Figure 4.1</strong></td>
+<td style="text-align: left;"><strong>Main Menu Interface</strong> displaying all primary options available to the user.</td>
+<td style="text-align: left;"><code>main-menu.png</code></td>
+<td style="text-align: left;">Displayed at system startup; allows access to all modules.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>Figure 4.2</strong></td>
+<td style="text-align: left;"><strong>Appointment Booking Interface</strong> showing input prompts and booking confirmation.</td>
+<td style="text-align: left;"><code>booking-interface.png</code></td>
+<td style="text-align: left;">Demonstrates data entry for family member, clinic, and appointment details.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>Figure 4.3</strong></td>
+<td style="text-align: left;"><strong>Alert Output</strong> displaying a generated reminder message for an upcoming appointment.</td>
+<td style="text-align: left;"><code>alert-output.png</code></td>
+<td style="text-align: left;">Automatically triggered post-booking to simulate real-time reminders.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>Figure 4.4</strong></td>
+<td style="text-align: left;"><strong>Awareness Hub Display</strong> presenting selectable health topics and educational checklists.</td>
+<td style="text-align: left;"><code>awareness-hub.png</code></td>
+<td style="text-align: left;">Encourages user awareness and preventive actions.</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>Figure 4.5</strong></td>
+<td style="text-align: left;"><strong>Future GUI Mockup</strong> showcasing a proposed visual interface upgrade.</td>
+<td style="text-align: left;"><code>future-gui.png</code></td>
+<td style="text-align: left;">Illustrates next-phase enhancement from CLI to GUI.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><img alt="Login Interface" src="../img/login.png" />
+<em>Figure 4.16: User Login Interface</em></p>
+<p><img alt="Doctor Portal Dashboard" src="../img/doctor_portal_dashboard.png" />
+<em>Figure 4.17: Healthcare Provider Dashboard</em></p>
+<p><img alt="Doctor Patient List" src="../img/doctor_patient_list.png" />
+<em>Figure 4.18: Patient Management Interface</em></p>
+<p><img alt="Doctor Prescribe Medication Form" src="../img/doctor_prescribe_medication_form.png" />
+<em>Figure 4.19: Medication Prescription Interface</em></p>
+<p><img alt="Doctor Active Medications List" src="../img/doctor_active_medications_list.png" />
+<em>Figure 4.20: Active Medications Management</em></p>
+<p><img alt="Doctor Appointment List" src="../img/doctor_appointment_list.png" />
+<em>Figure 4.21: Healthcare Provider Appointments</em></p>
+<p><img alt="Patient Portal Dashboard" src="../img/patient_portal_dashboard.png" />
+<em>Figure 4.22: Patient Portal Dashboard</em></p>
+<p><img alt="Patient Risk Assessment" src="../img/patient_risk_assessment.png" />
+<em>Figure 4.23: Comprehensive Risk Assessment</em></p>
+<p><img alt="Patient Family Health Tree" src="../img/patient_family_health_tree.png" />
+<em>Figure 4.24: Family Health Tree Interface</em></p>
+<p><img alt="Patient Medical Alerts" src="../img/patient_medical_alerts.png" />
+<em>Figure 4.25: Medical Alert System</em></p>
+<p><img alt="Patient My Appointments" src="../img/patient_my_appointments.png" />
+<em>Figure 4.26: Patient Appointment Management</em></p>
+<p><img alt="Patient Nearby Clinics" src="../img/patient_nearby_clinics.png" />
+<em>Figure 4.27: Nearby Clinics Finder</em></p>
+<p><img alt="Patient Health Records Empty" src="../img/patient_health_records_empty.png" />
+<em>Figure 4.28: Health Records Interface</em></p>
+<p><img alt="Patient Add Health Record Form" src="../img/patient_add_health_record_form.png" />
+<em>Figure 4.29: Add Health Record Form</em></p>
+<p><img alt="Patient Awareness Hub" src="../img/patient_awareness_hub.png" />
+<em>Figure 4.30: Awareness Hub Interface</em></p>
+<p><img alt="Patient Profile Family Overview" src="../img/patient_profile_family_overview.png" />
+<em>Figure 4.31: Family Health Overview</em></p>
+<p><img alt="Signup Doctor" src="../img/signup_doctor.png" />
+<em>Figure 4.32: Healthcare Provider Registration</em></p>
+<p><img alt="Signup Patient" src="../img/signup_patient.png" />
+<em>Figure 4.33: Patient Registration</em></p>
+<h2 id="44-system-screenshots_1">4.4 System Screenshots<a class="headerlink" href="#44-system-screenshots_1" title="Permanent link">&para;</a></h2>
+<p>This section visually demonstrates the <em>Sillah (صلة) Family Health Management System</em> prototype.<br />
+All images are stored in <code>docs/img/</code>. Paths use angle brackets to handle spaces/punctuation.</p>
+<p><img alt="Figure 4.1 Low Risk Family Simulation" src="../img/Figure%204.1%20Low%20Risk%20Family%20Simulation.png" />
+<em>Figure 4.1 – Low/No Risk Family Simulation.</em></p>
+<p><img alt="Figure 4.1 Main Menu" src="../img/Figure%204.1%20Main%20Menu.png" />
+<em>Figure 4.1 (Alt) – Main Menu Interface.</em></p>
+<p><img alt="Figure 4.2 Low Risk Demo" src="../img/Figure%204.2%20Low%20Risk%20Demo.png" />
+<em>Figure 4.2 – Low Risk Demo Output.</em></p>
+<p><img alt="Figure 4.3 High Risk Demo" src="../img/Figure%204.3%20High%20Risk%20Demo.png" />
+<em>Figure 4.3 – High Risk Demo Output.</em></p>
+<p><img alt="Figure 4.3 High-Risk Family Scenario Output" src="../img/Figure%204.3%20High-Risk%20Family%20Scenario%20Output.png" />
+<em>Figure 4.3 (Alt) – High-Risk Family Scenario Output.</em></p>
+<p><img alt="Figure 4.4 Awareness Hub Menu" src="../img/Figure%204.4%20Awareness%20Hub%20Menu.png" /></p>
+<p><em>Figure 4.4 – Awareness Hub Main Menu.</em></p>
+<p><img alt="Figure 4.5 Awareness Hub Selection" src="../img/Figure%204.5%20Awareness%20Hub%20Selection.png" />
+<em>Figure 4.5 – Awareness Hub Selection Screen.</em></p>
+<p><img alt="Figure 4.6 Awareness Hub – Educational Topics Menu" src="../img/Figure%204.6%20Awareness%20Hub%20%E2%80%93%20Educational%20Topics%20Menu.png" />
+<em>Figure 4.6 – Educational Topics Menu.</em></p>
+<p><img alt="Figure 4.7 Educational Topic – Understanding Sickle Cell Disease" src="../img/Figure%204.7%20Educational%20Topic%20%E2%80%93%20Understanding%20Sickle%20Cell%20Disease.png" />
+<em>Figure 4.7 – Educational Topic – Sickle Cell Disease.</em></p>
+<p><img alt="Figure 4.8 Educational Topics Menu – Topic Selection Prompt" src="../img/Figure%204.8%20Educational%20Topics%20Menu%20%E2%80%93%20Topic%20Selection%20Prompt.png" />
+<em>Figure 4.8 – Topic Selection Prompt.</em></p>
+<p><img alt="Figure 4.9 Educational Topic – Importance of Genetic Screening" src="../img/Figure%204.9%20Educational%20Topic%20%E2%80%93%20Importance%20of%20Genetic%20Screening.png" />
+<em>Figure 4.9 – Educational Topic – Genetic Screening.</em></p>
+<p><img alt="Figure 4.10 Educational Topic – Healthy Heart Tips" src="../img/Figure%204.10%20Educational%20Topic%20%E2%80%93%20Healthy%20Heart%20Tips.png" />
+<em>Figure 4.10 – Educational Topic – Healthy Heart Tips.</em></p>
+<p><img alt="Figure 4.11 Awareness Hub – Healthy Heart Tips Display" src="../img/Figure%204.11%20Awareness%20Hub%20%E2%80%93%20Healthy%20Heart%20Tips%20Display.png" />
+<em>Figure 4.11 – Healthy Heart Tips Display.</em></p>
+<p><img alt="Figure 4.12 Educational Topic – Importance of Genetic Screening Output" src="../img/Figure%204.12%20Educational%20Topic%20%E2%80%93%20Importance%20of%20Genetic%20Screening%20Output.png" />
+<em>Figure 4.12 – Genetic Screening Output Screen.</em></p>
+<p><img alt="Figure 4.13 Preventive Checklist Display in Awareness Hub" src="../img/Figure%204.13%20Preventive%20Checklist%20Display%20in%20Awareness%20Hub.png" />
+<em>Figure 4.13 – Preventive Checklist Display.</em></p>
+<p><img alt="Figure 4.14 System Exit Interface – End of Program Execution" src="../img/Figure%204.14%20System%20Exit%20Interface%20%E2%80%93%20End%20of%20Program%20Execution.png" />
+<em>Figure 4.14 – Exit / End of Program Execution.</em></p>
+<p><img alt="Figure 4.15 Preventive Checklist Progress Update – Task Completion Status" src="../img/Figure%204.15%20Preventive%20Checklist%20Progress%20Update%20%E2%80%93%20Task%20Completion%20Status.png" />
+<em>Figure 4.15 – Preventive Checklist Progress / Completion Status.</em></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      © 2026 Shoug Fawaz Alomran · All rights reserved
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.instant", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../javascripts/cta-footer.js"></script>
+      
+    
+  </body>
+</html>

@@ -5117,3 +5117,574 @@ body {
   color: #0e7490;
   font-style: italic;
 }
+/* ===== 2026 THEME REFRESH: PREVENTION-FIRST HEALTH UI ===== */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Source+Serif+4:wght@500;700&display=swap');
+
+:root {
+  --bg-base: #f3fbf8;
+  --bg-tint: #e8f6ef;
+  --surface: #ffffff;
+  --surface-strong: #f6fbff;
+  --text-main: #103227;
+  --text-muted: #4e6f63;
+  --line-soft: #d1e8dc;
+  --line-strong: #9ecab5;
+  --primary: #1f7a5d;
+  --primary-strong: #14563f;
+  --accent: #0f766e;
+  --danger: #b42318;
+  --warning: #c47f00;
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --shadow-soft: 0 10px 28px rgba(16, 50, 39, 0.08);
+  --shadow-card: 0 18px 38px rgba(16, 50, 39, 0.11);
+}
+
+body {
+  font-family: 'Outfit', 'Trebuchet MS', sans-serif;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(31, 122, 93, 0.14), transparent 28%),
+    radial-gradient(circle at 85% 0%, rgba(15, 118, 110, 0.15), transparent 26%),
+    linear-gradient(145deg, var(--bg-base), #edf7ff 55%, var(--bg-tint));
+  color: var(--text-main);
+  line-height: 1.45;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.28) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px);
+  background-size: 46px 46px;
+  opacity: 0.45;
+  z-index: -1;
+}
+
+h1,
+h2,
+h3,
+.auth-title,
+.dashboard-title,
+.patients-title,
+.clinics-title,
+.medications-title,
+.section-title,
+.quick-actions-title {
+  font-family: 'Source Serif 4', Georgia, serif;
+  letter-spacing: 0.2px;
+}
+
+[class$='-page'],
+.auth-page {
+  padding: 1.25rem;
+}
+
+[class$='-container'],
+.auth-container,
+.dashboard-container {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+}
+
+.app-shell {
+  min-height: 100vh;
+}
+
+.top-nav {
+  background: rgba(255, 255, 255, 0.86);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(158, 202, 181, 0.52);
+  box-shadow: 0 10px 30px rgba(16, 50, 39, 0.08);
+}
+
+.top-nav-inner {
+  max-width: 1240px;
+  padding: 1rem 1.2rem;
+}
+
+.prevention-strip {
+  border-top: 1px solid rgba(158, 202, 181, 0.45);
+  background: linear-gradient(90deg, rgba(31, 122, 93, 0.12), rgba(15, 118, 110, 0.09));
+  padding: 0.56rem 1.2rem;
+}
+
+.prevention-strip-text {
+  margin: 0;
+  text-align: center;
+  font-size: 0.84rem;
+  color: var(--primary-strong);
+  letter-spacing: 0.02em;
+  font-weight: 700;
+}
+
+.brand-icon {
+  border-radius: 14px;
+  background: linear-gradient(150deg, var(--primary), #27a177);
+  box-shadow: 0 10px 20px rgba(20, 86, 63, 0.32);
+}
+
+.brand-title {
+  color: #0f4b38;
+}
+
+.brand-subtitle {
+  color: #588174;
+  font-weight: 600;
+}
+
+.nav-link {
+  border-radius: 999px;
+  color: #456d60;
+  font-weight: 600;
+}
+
+.nav-link:hover {
+  background: rgba(31, 122, 93, 0.12);
+  color: #144936;
+}
+
+.nav-link--active,
+.nav-link--active:hover {
+  background: linear-gradient(135deg, var(--primary), #2c9c73);
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(20, 86, 63, 0.32);
+}
+
+.nav-link--ghost {
+  color: var(--danger);
+}
+
+.nav-link--ghost:hover {
+  background: rgba(180, 35, 24, 0.12);
+}
+
+.nav-links--mobile {
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.app-main {
+  padding: 1rem 1rem 0;
+}
+
+.app-main-inner {
+  width: min(1240px, 100%);
+  margin: 0 auto;
+}
+
+.dashboard-header,
+.auth-card,
+.search-filter-card,
+.quick-actions-card,
+.activity-card,
+.medications-section,
+.privacy-notice,
+.patient-profile-card,
+.alerts-header,
+.appointments-header,
+.family-tree-header,
+.awareness-header,
+.risk-assessment-header,
+.health-header,
+.patients-header,
+.clinics-header,
+.medications-header,
+.awareness-content-card,
+.empty-state,
+.member-form-card,
+.modal-content,
+.patient-id-display-box,
+.patient-id-card,
+.analytics-card,
+.health-summary-card,
+.welcome-card {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.92), rgba(246, 252, 248, 0.92));
+  border: 1px solid rgba(158, 202, 181, 0.56);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+}
+
+.dashboard-header,
+.patients-header,
+.clinics-header,
+.medications-header,
+.awareness-header,
+.risk-assessment-header,
+.health-header,
+.appointments-header,
+.alerts-header,
+.family-tree-header {
+  padding: 1.3rem 1.4rem;
+  margin-bottom: 1.1rem;
+}
+
+.dashboard-title,
+.patients-title,
+.clinics-title,
+.medications-title,
+.auth-title,
+.section-title {
+  color: #123b2d;
+}
+
+.dashboard-subtitle,
+.dashboard-welcome,
+.patients-subtitle,
+.clinics-subtitle,
+.medications-subtitle,
+.auth-subtitle,
+[class*='subtitle'] {
+  color: var(--text-muted);
+}
+
+.stats-grid,
+.quick-actions-grid,
+.clinics-grid,
+.medications-grid,
+.alerts-grid,
+.patients-grid,
+.family-grid,
+.health-grid,
+.records-grid,
+.overview-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.stats-grid,
+.quick-actions-grid,
+.clinics-grid,
+.medications-grid,
+.patients-grid {
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+}
+
+.stat-card,
+.quick-action-btn,
+.alert-card,
+.medication-card,
+.clinic-card-component,
+.patient-card,
+.member-card,
+.health-record-card,
+.appointment-item,
+.recommendation-card,
+.educational-card,
+.tip-card,
+.summary-card,
+.checklist-item,
+.risk-card,
+.record-card {
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.stat-card:hover,
+.quick-action-btn:hover,
+.alert-card:hover,
+.medication-card:hover,
+.clinic-card-component:hover,
+.patient-card:hover,
+.member-card:hover,
+.health-record-card:hover,
+.appointment-item:hover,
+.recommendation-card:hover,
+.educational-card:hover,
+.tip-card:hover,
+.summary-card:hover,
+.checklist-item:hover,
+.risk-card:hover,
+.record-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card);
+  border-color: var(--line-strong);
+}
+
+.stat-card {
+  border-left: 5px solid rgba(31, 122, 93, 0.62);
+}
+
+.stat-label {
+  color: #5f7f73;
+  font-weight: 600;
+}
+
+.stat-value {
+  color: #134434;
+}
+
+.quick-action-btn,
+button,
+.empty-action-btn,
+.add-medication-btn,
+.clinic-book-btn,
+.auth-submit-btn,
+.save-btn,
+.toggle-active-btn,
+.mark-read-btn,
+.learn-more-btn {
+  border-radius: 12px;
+}
+
+.quick-action-btn,
+.auth-submit-btn,
+.save-btn,
+.add-medication-btn,
+.clinic-book-btn,
+.empty-action-btn,
+.toggle-active-btn.active,
+.mark-read-btn,
+.learn-more-btn {
+  background: linear-gradient(135deg, var(--primary), #288f6a);
+  color: #fff;
+  border: none;
+  font-weight: 700;
+}
+
+.quick-action-btn:hover,
+.auth-submit-btn:hover,
+.save-btn:hover,
+.add-medication-btn:hover,
+.clinic-book-btn:hover,
+.empty-action-btn:hover,
+.toggle-active-btn.active:hover,
+.mark-read-btn:hover,
+.learn-more-btn:hover {
+  background: linear-gradient(135deg, var(--primary-strong), #1f7a5d);
+  box-shadow: 0 9px 20px rgba(20, 86, 63, 0.33);
+}
+
+.cancel-btn,
+.medication-edit-btn,
+.medication-delete-btn,
+.toggle-active-btn,
+.form-close-btn,
+.modal-close,
+.user-type-btn {
+  border-radius: 12px;
+  border: 1px solid var(--line-soft);
+  background: #fff;
+  color: #264f40;
+}
+
+.cancel-btn:hover,
+.medication-edit-btn:hover,
+.medication-delete-btn:hover,
+.toggle-active-btn:hover,
+.form-close-btn:hover,
+.modal-close:hover,
+.user-type-btn:hover {
+  background: #f1fbf6;
+  border-color: var(--line-strong);
+}
+
+.user-type-btn.active {
+  background: linear-gradient(135deg, var(--primary), #2a9d74);
+  color: #fff;
+  border-color: transparent;
+}
+
+.form-label,
+label,
+.slots-label,
+.privacy-title,
+.footer-subtitle,
+.recommendation-title,
+.risk-factors-title {
+  color: #2c5c4b;
+  font-weight: 700;
+}
+
+.form-input,
+.form-select,
+.search-input,
+.filter-select,
+textarea,
+select,
+input,
+.patient-id-display-input,
+.time-input {
+  border-radius: 12px;
+  border: 1px solid #bfdccd;
+  background: #fbfffc;
+  color: #174435;
+}
+
+.form-input:focus,
+.form-select:focus,
+.search-input:focus,
+.filter-select:focus,
+textarea:focus,
+select:focus,
+input:focus,
+.patient-id-display-input:focus,
+.time-input:focus {
+  border-color: #2b9d73;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(31, 122, 93, 0.16);
+}
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.auth-card {
+  max-width: 540px;
+  margin: 0 auto;
+  padding: 1.6rem;
+}
+
+.brand-icon-large {
+  border-radius: 20px;
+  background: linear-gradient(135deg, var(--primary), #24966e);
+  box-shadow: 0 12px 26px rgba(20, 86, 63, 0.34);
+}
+
+.auth-link,
+.footer-link {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.auth-link:hover,
+.footer-link:hover {
+  color: var(--primary-strong);
+}
+
+.alert-unread {
+  border-left: 4px solid var(--warning);
+}
+
+.inactive-badge,
+.member-status-badge.inactive,
+.member-status-badge.deceased {
+  background: rgba(180, 35, 24, 0.12);
+  color: #8f211a;
+}
+
+.member-status-badge,
+.hereditary-badge,
+.alert-new-badge,
+.clinic-specialty-badge-component,
+.slot-badge,
+.medication-badge {
+  border-radius: 999px;
+}
+
+.modal-overlay,
+.member-form-wrapper {
+  backdrop-filter: blur(4px);
+  background: rgba(16, 34, 28, 0.36);
+}
+
+.modal-content,
+.member-form-card {
+  width: min(760px, 94vw);
+}
+
+.app-footer {
+  margin-top: 2.6rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(236, 248, 241, 0.95));
+  border-top: 1px solid rgba(158, 202, 181, 0.52);
+}
+
+.app-footer-inner {
+  max-width: 1240px;
+  padding: 2.1rem 1.2rem;
+}
+
+.footer-title {
+  color: #143f31;
+}
+
+.footer-text,
+.footer-note,
+.app-footer-bottom p,
+.privacy-text,
+.empty-text,
+.detail-text,
+.recommendation-text,
+.record-date,
+.alert-date {
+  color: #557466;
+}
+
+.app-footer-bottom {
+  border-top: 1px solid rgba(158, 202, 181, 0.52);
+  background: rgba(242, 251, 246, 0.7);
+}
+
+.app-footer-bottom p {
+  font-weight: 600;
+}
+
+@keyframes fadeRise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stats-grid > *,
+.quick-actions-grid > *,
+.clinics-grid > *,
+.medications-grid > *,
+.alerts-grid > *,
+.patients-grid > * {
+  animation: fadeRise 0.45s ease both;
+}
+
+@media (max-width: 900px) {
+  .top-nav-inner {
+    padding: 0.9rem 0.9rem;
+  }
+
+  .prevention-strip {
+    padding: 0.6rem 0.8rem;
+  }
+
+  .app-main {
+    padding-inline: 0.5rem;
+  }
+
+  .dashboard-header,
+  .patients-header,
+  .clinics-header,
+  .medications-header,
+  .awareness-header,
+  .risk-assessment-header,
+  .health-header,
+  .appointments-header,
+  .alerts-header,
+  .family-tree-header,
+  .quick-actions-card,
+  .activity-card,
+  .search-filter-card,
+  .medications-section {
+    padding: 1rem;
+    border-radius: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

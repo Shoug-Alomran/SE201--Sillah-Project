@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://Sillah.shoug-tech.com/sitemap.xml

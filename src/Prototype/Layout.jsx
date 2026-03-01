@@ -22,6 +22,7 @@ export default function Layout({ children, currentPageName }) {
   const { logout, currentUser, userProfile, isDoctor, isPatient } = useAuth();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const currentYear = new Date().getFullYear();
 
   const handleLogout = async () => {
     try {
@@ -206,6 +207,12 @@ export default function Layout({ children, currentPageName }) {
           </button>
         </div>
 
+        <div className="prevention-strip">
+          <p className="prevention-strip-text">
+            Prevention First: Track risk early, stay informed, and protect your family health.
+          </p>
+        </div>
+
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
           <div className="nav-links nav-links--mobile">
@@ -371,7 +378,9 @@ export default function Layout({ children, currentPageName }) {
       </nav>
 
       {/* Main Content */}
-      <main className="app-main">{children}</main>
+      <main className="app-main">
+        <div className="app-main-inner">{children}</div>
+      </main>
 
       {/* Footer */}
       <footer className="app-footer">
@@ -437,7 +446,7 @@ export default function Layout({ children, currentPageName }) {
         </div>
 
         <div className="app-footer-bottom">
-          <p>&copy; 2025 Sillah. All rights reserved.</p>
+          <p>&copy; {currentYear} Sillah. All rights reserved.</p>
         </div>
       </footer>
     </div>

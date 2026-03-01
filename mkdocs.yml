@@ -3,26 +3,28 @@ site_description: Full SE201 Software Engineering Project Documentation
 site_url: https://Sillah.Shoug-Tech.com
 copyright: © 2026 Shoug Fawaz Alomran · All rights reserved
 
-
 theme:
   name: material
   logo: img/tree.png
   language: en
   features:
+    - navigation.tabs
+    - navigation.sections
     - navigation.top
+    - navigation.instant
     - content.code.copy
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
       primary: teal
-      accent: cyan
+      accent: green
       toggle:
         icon: material/weather-night
         name: Switch to dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
       primary: teal
-      accent: cyan
+      accent: green
       toggle:
         icon: material/white-balance-sunny
         name: Switch to light mode
@@ -61,7 +63,6 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - attr_list
   - md_in_html
-
 
 extra_css:
   - https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css
