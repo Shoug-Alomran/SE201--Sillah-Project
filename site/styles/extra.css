@@ -949,6 +949,17 @@ h3,
   font-size: 0.74rem;
 }
 
+.md-copyright__credit a {
+  color: var(--primary) !important;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.md-copyright__credit a:hover {
+  color: var(--primary-strong) !important;
+  text-decoration: underline;
+}
+
 @media (max-width: 1100px) {
   .custom-footer__inner {
     grid-template-columns: 1fr;

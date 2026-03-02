@@ -111,7 +111,7 @@
     applySidebarState();
   }
 
-  function stripMaterialCredit() {
+  function updateFooterCredit() {
     document.querySelectorAll(".md-copyright").forEach((el) => {
       const highlight = el.querySelector(".md-copyright__highlight");
       if (!highlight) return;
@@ -120,8 +120,15 @@
       wrapper.textContent = highlight.textContent.trim();
       el.innerHTML = "";
       el.appendChild(wrapper);
+
+      const credit = document.createElement("span");
+      credit.className = "md-copyright__credit";
+      credit.innerHTML =
+        ' Made by <a href="https://blueprint.shoug-tech.com/" target="_blank" rel="noopener">Blueprint</a>';
+      el.appendChild(credit);
     });
   }
+  
 
   function addFooterBlock() {
     const footer = document.querySelector(".md-footer");
@@ -256,7 +263,7 @@
   function run() {
     addHeaderControls();
     addFooterBlock();
-    stripMaterialCredit();
+    updateFooterCredit();
     applySidebarState();
     makeContentCollapsible();
   }
