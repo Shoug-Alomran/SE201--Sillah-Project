@@ -128,6 +128,7 @@
       el.appendChild(credit);
     });
   }
+  
 
   function addFooterBlock() {
     const footer = document.querySelector(".md-footer");

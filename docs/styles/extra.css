@@ -455,8 +455,9 @@ h3,
   font-weight: 600;
 }
 
-.md-copyright a {
-  display: none !important;
+/* Allow custom footer credit link to show */
+.md-copyright__credit a {
+  display: inline !important;
 }
 
 @media (max-width: 1100px) {
