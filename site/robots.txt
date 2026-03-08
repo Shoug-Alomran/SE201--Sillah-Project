@@ -1,4 +1,12 @@
 User-agent: *
 Allow: /
+Disallow: /*?q=
+Disallow: /*?query=
+Disallow: /*?search=
+Disallow: /*?*utm_
+Disallow: /*?*gclid=
+Disallow: /*?*fbclid=
+Disallow: /*.md$
+Disallow: /404.html
 
 Sitemap: https://sillah.shoug-tech.com/sitemap.xml

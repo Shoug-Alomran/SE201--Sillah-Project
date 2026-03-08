@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block extrahead %}
+  {{ super() }}
+  {% set robots_value = page.meta.robots if page and page.meta and page.meta.robots else "index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1" %}
+  <meta name="robots" content="{{ robots_value }}">
+  <script>
+    (function () {
+      var url = new URL(window.location.href);
+      var blockedParams = ["q", "query", "search", "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content", "gclid", "fbclid"];
+      var hasBlockedParam = blockedParams.some(function (key) {
+        return url.searchParams.has(key);
+      });
+
+      if (!hasBlockedParam) return;
+
+      var cleanUrl = url.origin + url.pathname;
+      var robots = document.querySelector('meta[name="robots"]');
+      if (!robots) {
+        robots = document.createElement("meta");
+        robots.name = "robots";
+        document.head.appendChild(robots);
+      }
+      robots.content = "noindex,follow";
+
+      var canonical = document.querySelector('link[rel="canonical"]');
+      if (canonical) canonical.href = cleanUrl;
+
+      if (
+        url.searchParams.size === 1 &&
+        ((url.searchParams.has("q") && !url.searchParams.get("q")) ||
+          (url.searchParams.has("query") && !url.searchParams.get("query")) ||
+          (url.searchParams.has("search") && !url.searchParams.get("search")))
+      ) {
+        history.replaceState({}, document.title, cleanUrl + url.hash);
+      }
+    })();
+  </script>
+  {% if page and page.is_homepage %}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": {{ config.site_name|tojson }},
+      "url": {{ config.site_url|tojson }},
+      "inLanguage": {{ config.theme.language|default("en")|tojson }}
+    }
+  </script>
+  {% endif %}
+  {% if page %}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": {{ page.title|tojson }},
+      "url": {{ page.canonical_url|tojson }},
+      "description": {{ config.site_description|tojson }},
+      "inLanguage": {{ config.theme.language|default("en")|tojson }},
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": {{ config.site_name|tojson }},
+        "url": {{ config.site_url|tojson }}
+      }
+    }
+  </script>
+  {% endif %}
+{% endblock %}

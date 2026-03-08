@@ -1,12 +1,15 @@
 site_name: SE201 - Sillah (صلة) Family Health Management System
 site_description: Full SE201 Software Engineering Project Documentation
-site_url: https://Sillah.Shoug-Tech.com
+site_url: https://sillah.shoug-tech.com
 copyright: © 2026 Shoug Fawaz Alomran · All rights reserved
+hooks:
+  - hooks/seo.py
 
 theme:
   name: material
   logo: google.png
   favicon: google.png
+  custom_dir: overrides
 
   language: en
   features:
@@ -20,7 +23,6 @@ theme:
     - navigation.path
     - search.suggest
     - search.highlight
-    - search.share
     - content.code.copy
     - toc.follow
   palette:
@@ -38,6 +40,9 @@ theme:
       toggle:
         icon: material/white-balance-sunny
         name: Switch to light mode
+
+plugins:
+  - search
 
 nav:
   - Home: index.md
@@ -79,3 +84,4 @@ extra_css:
   - styles/extra.css
 extra_javascript:
   - javascripts/cta-footer.js
+  - javascripts/seo-guard.js

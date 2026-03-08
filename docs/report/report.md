@@ -1,3 +1,8 @@
+---
+robots: noindex, follow
+sitemap: false
+---
+
 # View & Download
 
 Below is the interactive HTML report (embedded).  

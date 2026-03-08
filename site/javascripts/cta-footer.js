@@ -206,7 +206,7 @@
 
           <div class="footer-col">
             <div class="footer-col__title">Resources</div>
-            <a class="footer-link" href="${LINKS.report}">Report (View &amp; Download)</a>
+            <a class="footer-link" href="${LINKS.report}">Report</a>
             <a class="footer-link" href="${LINKS.codeMain}">Code (Main)</a>
             <a class="footer-link" href="mailto:${EMAIL}">${EMAIL}</a>
           </div>
