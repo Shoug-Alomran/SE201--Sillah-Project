@@ -55,6 +55,7 @@ nav:
   - Team: team.md
   - Report:
       - View & Download: report/report.md
+      - PDF Version: report/pdf-report.pdf
   - Code:
       - Main: code/main.md
       - AlertSystem: code/alertsystem.md
