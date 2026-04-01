@@ -50,6 +50,7 @@ Each class is responsible for a specific aspect of the system’s functionality.
 ![Figure 2: System Architecture Overview](img/Class Diagram.png)
 
 In the UML diagram, the relationships between classes highlight key interactions such as:
+
 - A `User` manages multiple `FamilyMember` records.  
 - Each `FamilyMember` can have several `HealthEvent` and `Appointment` objects.  
 - `BookingSystem` interacts with `Clinic` and `AlertSystem` to manage schedules and reminders.  
@@ -62,11 +63,13 @@ In the UML diagram, the relationships between classes highlight key interactions
 
 The use case model defines how different system actors interact with the system.  
 The main actors include:
+
 - **User:** Registers, manages family information, books appointments, and receives alerts.  
 - **Clinic:** Manages schedules and confirms or cancels appointments.  
 - **Administrator:** Manages clinic profiles and awareness content.
 
 ### Primary Use Cases
+
 1. Register and login to the system.  
 2. Add, update, or remove family members.  
 3. Book and cancel clinic appointments.  
@@ -100,6 +103,7 @@ This diagram captures the logical flow of operations and decision-making within 
 To illustrate the system flow, consider the **appointment booking scenario**, which demonstrates the interaction between key classes.
 
 ### Example Sequence: Booking a Clinic Appointment
+
 1. The **user** selects a family member and chooses the “Book Appointment” option.  
 2. The **BookingSystem** checks available slots in the **Clinic**.  
 3. If a slot is available, the system creates a new **Appointment** and confirms it.  
