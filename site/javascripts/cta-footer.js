@@ -23,12 +23,16 @@
     return titleEl ? titleEl.textContent.trim() : "Website";
   }
 
-  function getBool(key) {
+  function getStored(key) {
     try {
-      return localStorage.getItem(key) === "1";
+      return localStorage.getItem(key);
     } catch (e) {
-      return false;
+      return null;
     }
+  }
+
+  function getBool(key) {
+    return getStored(key) === "1";
   }
 
   function setBool(key, val) {
@@ -37,8 +41,17 @@
     } catch (e) {}
   }
 
+  // On the homepage, the primary nav only ever shows a single "Home" entry —
+  // no navigational benefit, just wasted width — so collapse it there by
+  // default. Any page where the user has explicitly clicked the toggle keeps
+  // that explicit choice (stored value overrides the homepage default).
+  function isPrimaryHidden() {
+    const stored = getStored(LS_PRIMARY);
+    return stored === null ? !!window.__sillahIsHomepage : stored === "1";
+  }
+
   function applySidebarState() {
-    const hidePrimary = getBool(LS_PRIMARY);
+    const hidePrimary = isPrimaryHidden();
     const hideToc = getBool(LS_TOC);
 
     document.body.classList.toggle("hide-primary-nav", hidePrimary);
@@ -70,7 +83,7 @@
 
     btn.addEventListener("click", () => {
       if (target === "primary") {
-        setBool(LS_PRIMARY, !getBool(LS_PRIMARY));
+        setBool(LS_PRIMARY, !isPrimaryHidden());
       } else {
         setBool(LS_TOC, !getBool(LS_TOC));
       }
@@ -260,12 +273,20 @@
     });
   }
 
+  function labelSearchDialog() {
+    const dialog = document.querySelector('.md-search[role="dialog"]');
+    if (dialog && !dialog.hasAttribute("aria-label")) {
+      dialog.setAttribute("aria-label", "Search");
+    }
+  }
+
   function run() {
     addHeaderControls();
     addFooterBlock();
     updateFooterCredit();
     applySidebarState();
     makeContentCollapsible();
+    labelSearchDialog();
   }
 
   if (typeof document$ !== "undefined" && document$.subscribe) {

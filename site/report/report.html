@@ -8,6 +8,17 @@
     <title>Sillah (صلة): Family Health Management System - SE201 Report</title>
     <meta name="robots" content="noindex,follow">
     <link rel="canonical" href="https://sillah.shoug-tech.com/report/report/">
+    <meta name="theme-color" content="#0f766e">
+    <link rel="icon" type="image/png" href="../google.png">
+    <link rel="apple-touch-icon" href="../google.png">
+    <noscript>
+        <style>
+            .section {
+                opacity: 1 !important;
+                transform: none !important;
+            }
+        </style>
+    </noscript>
     <style>
         * {
             margin: 0;
@@ -15,30 +26,250 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary: #0f766e;
+            --primary-strong: #0a544f;
+            --accent: #1d9b84;
+            --accent-light: #56ccb2;
+            --ink: #12322a;
+            --ink-soft: #4c6d64;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--ink);
+            background: #eef8f4;
             padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Ambient animated backdrop */
+        body::before,
+        body::after {
+            content: '';
+            position: fixed;
+            z-index: 0;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.35;
+            pointer-events: none;
+        }
+
+        body::before {
+            top: -12%;
+            left: -10%;
+            width: 45vw;
+            height: 45vw;
+            background: radial-gradient(circle, var(--accent-light), transparent 70%);
+            animation: drift1 22s ease-in-out infinite;
+        }
+
+        body::after {
+            bottom: -14%;
+            right: -10%;
+            width: 40vw;
+            height: 40vw;
+            background: radial-gradient(circle, var(--primary), transparent 70%);
+            animation: drift2 26s ease-in-out infinite;
+        }
+
+        @keyframes drift1 {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            50% {
+                transform: translate(6vw, 8vh) scale(1.15);
+            }
+        }
+
+        @keyframes drift2 {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            50% {
+                transform: translate(-5vw, -6vh) scale(1.1);
+            }
+        }
+
+        .page-shell {
+            position: relative;
+            z-index: 1;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
+            width: 100%;
             background: white;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 40px rgba(15, 60, 50, 0.12);
             border-radius: 15px;
             overflow: hidden;
         }
 
+        /* Use the extra breathing room on laptop-class screens (13"-16" MacBook)
+           by widening the report itself instead of leaving big side margins. */
+        @media (min-width: 1000px) {
+            .container {
+                max-width: min(1500px, 94vw);
+            }
+        }
+
+        /* Quick-nav rail: viewport-fixed panels that fill the empty gutters on very
+           wide desktop/external-display screens. Fixed positioning keeps them fully
+           decoupled from the document's box model so they can never affect/overlap
+           main content flow. At this width the container reverts to a fixed 1200px
+           so there is always a predictable, collision-free gutter for the rails. */
+        .side-rail {
+            display: none;
+        }
+
+        @media (min-width: 1720px) {
+            .container {
+                max-width: 1200px;
+            }
+
+            .side-rail {
+                display: block;
+                position: fixed;
+                top: 96px;
+                width: 220px;
+                max-height: calc(100vh - 120px);
+                overflow-y: auto;
+                z-index: 2;
+            }
+
+            .side-rail.side-rail--left {
+                left: max(16px, calc(50% - 840px));
+            }
+
+            .side-rail.side-rail--right {
+                right: max(16px, calc(50% - 840px));
+            }
+
+            .side-rail__card {
+                background: rgba(255, 255, 255, 0.85);
+                backdrop-filter: blur(6px);
+                border: 1px solid rgba(15, 118, 110, 0.18);
+                border-radius: 14px;
+                padding: 18px 16px;
+                box-shadow: 0 8px 24px rgba(15, 60, 50, 0.08);
+            }
+
+            .side-rail__title {
+                font-size: 0.72em;
+                font-weight: 700;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                color: var(--primary);
+                margin-bottom: 12px;
+            }
+
+            .side-rail__logo {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                margin-bottom: 14px;
+            }
+
+            .side-rail__logo img {
+                width: 96px;
+                height: 96px;
+                border-radius: 22px;
+                box-shadow: 0 10px 26px rgba(15, 60, 50, 0.18);
+                animation: floaty 5s ease-in-out infinite;
+            }
+
+            .side-rail nav a {
+                display: block;
+                padding: 7px 10px;
+                margin-bottom: 3px;
+                border-radius: 8px;
+                color: var(--ink-soft);
+                text-decoration: none;
+                font-size: 0.88em;
+                font-weight: 600;
+                border-left: 3px solid transparent;
+                transition: all 0.2s ease;
+            }
+
+            .side-rail nav a:hover {
+                background: rgba(15, 118, 110, 0.08);
+                color: var(--primary-strong);
+                transform: translateX(3px);
+            }
+
+            .side-rail nav a.active {
+                color: var(--primary-strong);
+                border-left-color: var(--accent);
+                background: rgba(15, 118, 110, 0.1);
+            }
+
+            .side-rail__stats {
+                margin-top: 16px;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .side-rail__stat {
+                display: flex;
+                justify-content: space-between;
+                font-size: 0.78em;
+                color: var(--ink-soft);
+                border-top: 1px dashed rgba(15, 118, 110, 0.2);
+                padding-top: 6px;
+            }
+
+            .side-rail__stat strong {
+                color: var(--primary-strong);
+            }
+        }
+
+        @keyframes floaty {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-6px);
+            }
+        }
+
         .header {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            background: linear-gradient(135deg, var(--primary-strong) 0%, var(--primary) 55%, var(--accent) 100%);
+            background-size: 200% 200%;
+            animation: gradientShift 10s ease infinite;
             color: white;
             padding: 60px 40px;
             text-align: center;
             position: relative;
             overflow: hidden;
+        }
+
+        @keyframes gradientShift {
+
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
         }
 
         .header::before {
@@ -48,7 +279,7 @@
             right: -50%;
             width: 200%;
             height: 200%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, transparent 70%);
             animation: rotate 20s linear infinite;
         }
 
@@ -65,6 +296,16 @@
         .header-content {
             position: relative;
             z-index: 1;
+        }
+
+        .header-logo {
+            width: 84px;
+            height: 84px;
+            border-radius: 20px;
+            margin: 0 auto 16px;
+            display: block;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+            animation: floaty 5s ease-in-out infinite;
         }
 
         .university-logo {
@@ -106,27 +347,38 @@
 
         .section {
             margin-bottom: 50px;
-            animation: fadeIn 0.6s ease-in;
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
+        .section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
+        @media (prefers-reduced-motion: reduce) {
+
+            .section,
+            .header-logo,
+            .side-rail__logo img,
+            .header::before,
+            body::before,
+            body::after,
+            .header {
+                animation: none !important;
+                transition: none !important;
+                opacity: 1 !important;
+                transform: none !important;
             }
         }
 
         h2 {
-            color: #1e3c72;
+            color: var(--primary-strong);
             font-size: 2.2em;
             margin-bottom: 25px;
             padding-bottom: 15px;
-            border-bottom: 3px solid #2a5298;
+            border-bottom: 3px solid var(--accent);
             position: relative;
         }
 
@@ -137,19 +389,30 @@
             left: 0;
             width: 100px;
             height: 3px;
-            background: linear-gradient(90deg, #1e3c72, #2a5298);
+            background: linear-gradient(90deg, var(--primary-strong), var(--accent-light));
+            animation: growLine 1.4s ease-out;
+        }
+
+        @keyframes growLine {
+            from {
+                width: 0;
+            }
+
+            to {
+                width: 100px;
+            }
         }
 
         h3 {
-            color: #2a5298;
+            color: var(--primary);
             font-size: 1.7em;
             margin: 30px 0 20px 0;
             padding-left: 15px;
-            border-left: 4px solid #2a5298;
+            border-left: 4px solid var(--accent);
         }
 
         h4 {
-            color: #1e3c72;
+            color: var(--primary-strong);
             font-size: 1.3em;
             margin: 20px 0 15px 0;
             font-weight: 600;
@@ -183,7 +446,7 @@
         }
 
         thead {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            background: linear-gradient(135deg, #0a544f 0%, #0f766e 100%);
             color: white;
         }
 
@@ -205,9 +468,9 @@
         }
 
         tbody tr:hover {
-            background: linear-gradient(90deg, #f0f4ff 0%, #e8f0ff 100%);
+            background: linear-gradient(90deg, #eafaf4 0%, #dcf3e9 100%);
             transform: scale(1.01);
-            box-shadow: 0 2px 10px rgba(30, 60, 114, 0.1);
+            box-shadow: 0 2px 10px rgba(15, 118, 110, 0.12);
         }
 
         tbody tr:last-child td {
@@ -226,6 +489,12 @@
             font-size: 0.95em;
             line-height: 1.6;
             position: relative;
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .code-block:hover {
+            box-shadow: 0 10px 30px rgba(15, 118, 110, 0.35);
+            transform: translateY(-2px);
         }
 
         .code-block::before {
@@ -233,7 +502,7 @@
             position: absolute;
             top: 10px;
             right: 15px;
-            background: #2a5298;
+            background: #0f766e;
             color: white;
             padding: 4px 12px;
             border-radius: 5px;
@@ -270,17 +539,23 @@
         }
 
         .highlight-box {
-            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-            border-left: 5px solid #2a5298;
+            background: linear-gradient(135deg, #e6f7f1 0%, #cdedde 100%);
+            border-left: 5px solid #0f766e;
             padding: 25px;
             margin: 25px 0;
             border-radius: 8px;
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .highlight-box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 24px rgba(15, 118, 110, 0.18);
         }
 
         .highlight-box h4 {
             margin-top: 0;
-            color: #1e3c72;
+            color: #0a544f;
         }
 
         .toc {
@@ -312,7 +587,7 @@
         }
 
         .toc a {
-            color: #2a5298;
+            color: #0f766e;
             text-decoration: none;
             transition: all 0.3s ease;
             display: block;
@@ -321,9 +596,10 @@
         }
 
         .toc a:hover {
-            background: #e3f2fd;
+            background: #e0f5ed;
             padding-left: 20px;
             font-weight: 600;
+            color: #0a544f;
         }
 
         .badge {
@@ -333,6 +609,11 @@
             font-size: 0.85em;
             font-weight: 600;
             margin: 3px;
+            transition: transform 0.2s ease;
+        }
+
+        .badge:hover {
+            transform: scale(1.08);
         }
 
         .badge-high {
@@ -356,7 +637,7 @@
         }
 
         .footer {
-            background: #1e3c72;
+            background: #0a544f;
             color: white;
             text-align: center;
             padding: 30px;
@@ -365,7 +646,7 @@
 
         .diagram-placeholder {
             background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
-            border: 2px dashed #2a5298;
+            border: 2px dashed #0f766e;
             border-radius: 10px;
             padding: 60px 30px;
             margin: 30px 0;
@@ -375,9 +656,17 @@
         }
 
         @media print {
-            body {
+
+            body,
+            body::before,
+            body::after {
                 background: white;
                 padding: 0;
+                animation: none !important;
+            }
+
+            .side-rail {
+                display: none !important;
             }
 
             .container {
@@ -386,12 +675,34 @@
 
             .section {
                 page-break-inside: avoid;
+                opacity: 1 !important;
+                transform: none !important;
+            }
+        }
+
+        /* iPad / tablet: tighten up spacing, keep single column (side rail hidden below 1340px) */
+        @media (max-width: 1024px) and (min-width: 769px) {
+            .header {
+                padding: 48px 32px;
+            }
+
+            .content {
+                padding: 40px 32px;
+            }
+
+            .main-title {
+                font-size: 2.4em;
             }
         }
 
         @media (max-width: 768px) {
             .header {
                 padding: 40px 20px;
+            }
+
+            .header-logo {
+                width: 64px;
+                height: 64px;
             }
 
             .main-title {
@@ -415,1000 +726,1082 @@
                 padding: 10px 8px;
             }
         }
+
+        @media (max-width: 420px) {
+            .main-title {
+                font-size: 1.6em;
+            }
+
+            .header {
+                padding: 32px 16px;
+            }
+
+            .content {
+                padding: 24px 16px;
+            }
+        }
     </style>
 
 </head>
 
 <body>
-    <div class="container">
-        <!-- HEADER -->
-        <div class="header">
-            <div class="header-content">
-                <div class="university-logo">PRINCE SULTAN UNIVERSITY</div>
-                <div class="subtitle">College of Computer and Information Sciences (CCIS)</div>
-                <h1 class="main-title">Sillah (صلة): Family Health Management System</h1>
-                <div class="course-info">
-                    <div><strong>Course:</strong> SE201 – Introduction to Software Engineering</div>
-                    <div><strong>Instructor:</strong> Ms. Ishrat Khan</div>
-                    <div><strong>Section:</strong> 1320</div>
-                </div>
-                <div class="contributors">
-                    <div><strong>Project Contributors:</strong></div>
-                    <div>SHOUG FAWAZ ADULLAH ALOMRAN 223410392</div>
-                    <div>ALJOHARA WALEED A ALBAWARDI 223410346</div>
-                    <div>ALJAWHARA MOHMMAD NASSER ALRUZUQ 223410216</div>
-                    <div>ALJAWHARAH TURKI ABDULLAH ALSALEH 223410217</div>
+    <div class="page-shell">
+        <!-- SIDE RAIL: fills the free gutter space on wide desktop screens -->
+        <aside class="side-rail side-rail--left">
+            <div class="side-rail__card">
+                <div class="side-rail__logo"><img src="../google.png" alt="Sillah logo" width="96" height="96"
+                        loading="lazy"></div>
+                <div class="side-rail__title">Quick Navigation</div>
+                <nav id="quick-nav">
+                    <a href="#phase1">Phase I: Proposal</a>
+                    <a href="#phase2">Phase II: Requirements</a>
+                    <a href="#phase3">Phase III: Design</a>
+                    <a href="#phase4">Phase IV: Prototype</a>
+                    <a href="#appendix-a">Appendix A: Code</a>
+                    <a href="#appendix-b">Appendix B: Jira</a>
+                </nav>
+            </div>
+        </aside>
+
+        <div class="container">
+            <!-- HEADER -->
+            <div class="header">
+                <div class="header-content">
+                    <img src="../google.png" alt="Sillah (صلة) logo" class="header-logo" width="84" height="84"
+                        loading="lazy">
+                    <div class="university-logo">PRINCE SULTAN UNIVERSITY</div>
+                    <div class="subtitle">College of Computer and Information Sciences (CCIS)</div>
+                    <h1 class="main-title">Sillah (صلة): Family Health Management System</h1>
+                    <div class="course-info">
+                        <div><strong>Course:</strong> SE201 – Introduction to Software Engineering</div>
+                        <div><strong>Instructor:</strong> Ms. Ishrat Khan</div>
+                        <div><strong>Section:</strong> 1320</div>
+                    </div>
+                    <div class="contributors">
+                        <div><strong>Project Contributors:</strong></div>
+                        <div>SHOUG FAWAZ ADULLAH ALOMRAN 223410392</div>
+                        <div>ALJOHARA WALEED A ALBAWARDI 223410346</div>
+                        <div>ALJAWHARA MOHMMAD NASSER ALRUZUQ 223410216</div>
+                        <div>ALJAWHARAH TURKI ABDULLAH ALSALEH 223410217</div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- MAIN CONTENT -->
-        <div class="content">
+            <!-- MAIN CONTENT -->
+            <div class="content">
 
-            <!-- TABLE OF CONTENTS -->
-            <section class="section">
-                <h2>Table of Contents</h2>
-                <div class="toc">
-                    <ul>
-                        <li><a href="#phase1">Phase I: Project Proposal</a></li>
-                        <li><a href="#phase2">Phase II: Requirements Analysis & Documentation</a></li>
-                        <li><a href="#phase3">Phase III: Software Initial Design</a></li>
-                        <li><a href="#phase4">Phase IV: Prototype and Testing</a></li>
-                        <li><a href="#appendix-a">Appendix A: Code Implementation</a></li>
-                        <li><a href="#appendix-b">Appendix B: Project Management</a></li>
-                    </ul>
-                </div>
-            </section>
-
-            <!-- PHASE I: PROJECT PROPOSAL -->
-            <section id="phase1" class="section">
-                <h2>Phase I: Project Proposal</h2>
-
-                <h3>1.1 Introduction</h3>
-                <p>The <strong>Sillah (صلة)</strong> project is a preventive health management system designed to help
-                    Saudi families identify hereditary cardiac risks through an easy-to-use digital platform.</p>
-                <p>It enables users to record their family health history, receive automatic risk alerts, and book
-                    preventive clinic appointments.</p>
-                <p>This report documents all project phases — from requirements to design, prototype, and testing —
-                    demonstrating a full software development process aligned with SE201 objectives.</p>
-
-                <h3>1.2 Project Overview</h3>
-
-                <h4>1.2.1 Goals</h4>
-                <ol>
-                    <li><strong>Promote Preventive Health Awareness:</strong> Promote public awareness regarding
-                        hereditary diseases and encourage early detection.</li>
-                    <li><strong>Simplify Family Health Tracking:</strong> Provide a simple-to-use interface for families
-                        to follow and chart medical histories.</li>
-                    <li><strong>Enable Smart Risk Detection:</strong> Use rule-based reasoning to automatically detect
-                        hereditary cardiac risk patterns.</li>
-                    <li><strong>Support Action Through Integration:</strong> Link users to accredited clinics for
-                        consultations and checkups.</li>
-                    <li><strong>Empower Public Health Systems:</strong> Demonstrate a scalable model that can be
-                        embedded in national healthcare systems.</li>
-                </ol>
-
-                <h4>1.2.2 Objective</h4>
-                <p>To provide a user-friendly system that allows citizens to record family health data, analyze
-                    hereditary patterns, and take proactive steps toward cardiac screening.</p>
-
-                <h4>1.2.3 Main Features</h4>
-                <ul>
-                    <li>Add and manage family members with health events</li>
-                    <li>Detect hereditary risks automatically</li>
-                    <li>Send personalized alerts and recommendations</li>
-                    <li>Access an Awareness Hub with educational content and checklists</li>
-                    <li>Book appointments with local clinics</li>
-                </ul>
-
-                <h4>1.2.4 Users</h4>
-                <ol>
-                    <li>General citizens (families)</li>
-                    <li>Healthcare Providers (view bookings)</li>
-                    <li>Administrators (manage awareness content)</li>
-                </ol>
-            </section>
-
-            <!-- PHASE II: REQUIREMENTS ANALYSIS -->
-            <section id="phase2" class="section">
-                <h2>Phase II: Requirements Analysis & Documentation</h2>
-
-                <h3>2.1 Functional Requirements</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Requirement</th>
-                            <th>Description</th>
-                            <th>Priority</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>FR-01</strong></td>
-                            <td>Add Family Member</td>
-                            <td>User can record family members with name, relation, and health conditions</td>
-                            <td><span class="badge badge-high">High</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>FR-02</strong></td>
-                            <td>Add Health Event</td>
-                            <td>User can specify a condition and age of onset</td>
-                            <td><span class="badge badge-high">High</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>FR-03</strong></td>
-                            <td>Generate Risk Alert</td>
-                            <td>System detects hereditary risk and sends an alert</td>
-                            <td><span class="badge badge-high">High</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>FR-04</strong></td>
-                            <td>Book Appointment</td>
-                            <td>User can select a clinic and confirm booking</td>
-                            <td><span class="badge badge-medium">Medium</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>FR-05</strong></td>
-                            <td>View Awareness Content</td>
-                            <td>User can access health tips and checklists</td>
-                            <td><span class="badge badge-medium">Medium</span></td>
-                        </tr>
-                        <tr>
-                            <td><strong>FR-06</strong></td>
-                            <td>View Alert History</td>
-                            <td>User can view past alerts</td>
-                            <td><span class="badge badge-low">Low</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <h3>2.2 Non-Functional Requirements</h3>
-
-                <h4>2.2.1 Introduction & Overview</h4>
-                <p>This document specifies the Non-Functional Requirements (NFRs) for the Sillah Family Health
-                    Management System across <strong>Usability</strong>, <strong>Reliability</strong>, and
-                    <strong>Security</strong>. The goal is to ensure the platform is simple to use, robust, and safe for
-                    all users in Saudi Arabia. Items marked <em>[Conceptual]</em> indicate production-level
-                    expectations. In Phase IV (Java prototype), those items will be simulated or documented, while core
-                    functionality will be implemented.
-                </p>
-
-                <h4>2.2.2 Usability Requirements</h4>
-
-                <div class="highlight-box">
-                    <h4>UR-01: Mobile-First Responsive Design</h4>
-                    <p><strong>Priority:</strong> <span class="badge badge-critical">Critical</span></p>
-                    <p><strong>Phase IV:</strong> Implement</p>
-                    <p><strong>Rationale:</strong> Most users in Saudi Arabia access services via mobile; optimizing for
-                        phones maximizes reach.</p>
-                    <p><strong>User Stories:</strong> SIL-7 to SIL-16</p>
-                    <p><strong>Requirement:</strong> Interface must work across screen sizes, prioritizing mobile.</p>
-                    <p><strong>Acceptance Criteria:</strong></p>
-                    <ul>
-                        <li>Passes Google Mobile-Friendly Test</li>
-                        <li>Verified on iPhone (Safari) and Android (Chrome)</li>
-                        <li>Viewport meta tag is set correctly</li>
-                        <li>Touch targets ≥ 44×44 px (WCAG)</li>
-                        <li>No horizontal scrolling</li>
-                    </ul>
-                </div>
-
-                <div class="highlight-box">
-                    <h4>UR-02: WCAG 2.1 Level AA Accessibility</h4>
-                    <p><strong>Priority:</strong> <span class="badge badge-high">High</span></p>
-                    <p><strong>Phase IV:</strong> Implement core; document full compliance</p>
-                    <p><strong>Rationale:</strong> Public services must be accessible and legally compliant.</p>
-                    <p><strong>User Stories:</strong> SIL-7 to SIL-16</p>
-                    <p><strong>Requirement:</strong> Meet WCAG 2.1 AA guidelines.</p>
-                    <p><strong>Acceptance Criteria:</strong></p>
-                    <ul>
-                        <li>WAVE/axe automated scan: zero critical errors</li>
-                        <li>Manual test with NVDA or JAWS</li>
-                        <li>Keyboard-only navigation succeeds</li>
-                        <li>Color contrast verified with WebAIM (≥ 4.5:1 normal text)</li>
-                    </ul>
-                </div>
-
-                <div class="highlight-box">
-                    <h4>UR-03: Task Completion Efficiency</h4>
-                    <p><strong>Priority:</strong> <span class="badge badge-high">High</span></p>
-                    <p><strong>Phase IV:</strong> Implement</p>
-                    <p><strong>Rationale:</strong> Faster tasks increase adoption and adherence to preventive actions.
-                    </p>
-                    <p><strong>User Stories:</strong> SIL-7, SIL-13, SIL-14</p>
-                    <p><strong>Requirement:</strong> Key tasks should be quick and low-effort.</p>
-                    <p><strong>Acceptance Criteria:</strong></p>
-                    <ul>
-                        <li>Build a basic family tree in < 5 minutes (≥ 15 participants)</li>
-                        <li>Find & download a checklist in < 3 minutes</li>
-                        <li>≥ 90% success on critical tasks without help</li>
-                    </ul>
-                </div>
-
-                <div class="highlight-box">
-                    <h4>UR-04: Bilingual Interface (Arabic & English)</h4>
-                    <p><strong>Priority:</strong> <span class="badge badge-high">High</span></p>
-                    <p><strong>Phase IV:</strong> Implement</p>
-                    <p><strong>Rationale:</strong> Serves both Arabic speakers and expatriates.</p>
-                    <p><strong>User Stories:</strong> SIL-7 to SIL-16</p>
-                    <p><strong>Requirement:</strong> Full bilingual support.</p>
-                    <p><strong>Acceptance Criteria:</strong></p>
-                    <ul>
-                        <li>100% UI translated</li>
-                        <li>RTL layout correct for Arabic</li>
-                        <li>Language preference persists</li>
-                        <li>Medical terminology reviewed by an Arabic-speaking clinician</li>
-                    </ul>
-                </div>
-
-                <div class="highlight-box">
-                    <h4>UR-05: Clear Error Messages & Guidance</h4>
-                    <p><strong>Priority:</strong> <span class="badge badge-high">High</span></p>
-                    <p><strong>Phase IV:</strong> Implement</p>
-                    <p><strong>Rationale:</strong> Friendly, actionable errors reduce frustration and support load.</p>
-                    <p><strong>User Stories:</strong> SIL-7, SIL-8, SIL-15</p>
-                    <p><strong>Requirement:</strong> Errors must be specific, polite, and near the relevant field.</p>
-                    <p><strong>Acceptance Criteria:</strong></p>
-                    <ul>
-                        <li>Messages free of technical jargon</li>
-                        <li>Inline placement beside fields</li>
-                        <li>Visible success states with confirmation</li>
-                    </ul>
-                </div>
-
-                <div class="highlight-box">
-                    <h4>UR-06: Intuitive Information Architecture</h4>
-                    <p><strong>Priority:</strong> <span class="badge badge-high">High</span></p>
-                    <p><strong>Phase IV:</strong> Implement</p>
-                    <p><strong>Rationale:</strong> Logical structure lowers cognitive load.</p>
-                    <p><strong>User Stories:</strong> SIL-7 to SIL-16</p>
-                    <p><strong>Requirement:</strong> Content and features must be easy to find.</p>
-                    <p><strong>Acceptance Criteria:</strong></p>
-                    <ul>
-                        <li>≤ 3 clicks to any feature</li>
-                        <li>"Ease of finding" rating ≥ 4/5</li>
-                        <li>Breadcrumbs available site-wide</li>
-                    </ul>
-                </div>
-                <div class="highlight-box">
-                    <h4>UR-07: Consistent UI & Design System</h4>
-                    <p><strong>Priority:</strong> <span class="badge badge-high">High</span></p>
-                    <p><strong>Phase IV:</strong> Implement</p>
-                    <p><strong>Rationale:</strong> Consistency reduces cognitive load and errors.</p>
-                    <p><strong>User Stories:</strong> SIL-7 to SIL-16</p>
-                    <p><strong>Requirement:</strong> Use a single component style (buttons, inputs, spacing, headings).
-                    </p>
-                    <p><strong>Acceptance Criteria:</strong></p>
-                    <ul>
-                        <li>One button hierarchy (primary/secondary) applied site-wide</li>
-                        <li>4/8 px spacing scale used consistently</li>
-                        <li>H1–H4 typography consistent across pages</li>
-                    </ul>
-                </div>
-
-                <div class="highlight-box">
-                    <h4>UR-08: Progressive Disclosure</h4>
-                    <p><strong>Priority:</strong> <span class="badge badge-medium">Medium</span></p>
-                    <p><strong>Phase IV:</strong> Implement</p>
-                    <p><strong>Rationale:</strong> Hide advanced options until needed to keep screens simple.</p>
-                    <p><strong>User Stories:</strong> SIL-7, SIL-11, SIL-15</p>
-                    <p><strong>Requirement:</strong> Collapsible/stepwise flows for long forms and settings.</p>
-                    <p><strong>Acceptance Criteria:</strong></p>
-                    <ul>
-                        <li>Long tasks split into ≤ 5 clear steps</li>
-                        <li>Advanced options hidden by default, revealed on demand</li>
-                        <li>User completes add-member flow without scrolling more than one screen per step</li>
-                    </ul>
-                </div>
-
-                <div class="highlight-box">
-                    <h4>UR-09: Forms – Validation, Defaults & Undo</h4>
-                    <p><strong>Priority:</strong> <span class="badge badge-high">High</span></p>
-                    <p><strong>Phase IV:</strong> Implement</p>
-                    <p><strong>Rationale:</strong> Fewer entry errors and easier recovery.</p>
-                    <p><strong>User Stories:</strong> SIL-7, SIL-8, SIL-13</p>
-                    <p><strong>Requirement:</strong> Real-time validation, sensible defaults, and undo for deletes.</p>
-                    <p><strong>Acceptance Criteria:</strong></p>
-                    <ul>
-                        <li>Inline validation fires on blur and submit</li>
-                        <li>Common fields prefilled (e.g., city from profile)</li>
-                        <li>Delete shows snackbar with 10-second “Undo”</li>
-                    </ul>
-                </div>
-
-                <div class="highlight-box">
-                    <h4>UR-10: Help, Hints & Empty States</h4>
-                    <p><strong>Priority:</strong> <span class="badge badge-medium">Medium</span></p>
-                    <p><strong>Phase IV:</strong> Implement</p>
-                    <p><strong>Rationale:</strong> Users succeed without external documentation.</p>
-                    <p><strong>User Stories:</strong> SIL-11, SIL-12, SIL-16</p>
-                    <p><strong>Requirement:</strong> Contextual tips and meaningful empty states.</p>
-                    <p><strong>Acceptance Criteria:</strong></p>
-                    <ul>
-                        <li>Each empty list/page shows a 1–2 step “how to start”</li>
-                        <li>Tooltips/help icons for non-obvious fields</li>
-                        <li>Help links resolve to in-app guidance</li>
-                    </ul>
-                </div>
-
-                <div class="highlight-box">
-                    <h4>UR-11: Status, Loading & Save Feedback</h4>
-                    <p><strong>Priority:</strong> <span class="badge badge-high">High</span></p>
-                    <p><strong>Phase IV:</strong> Implement</p>
-                    <p><strong>Rationale:</strong> Clear feedback improves trust and perceived speed.</p>
-                    <p><strong>User Stories:</strong> SIL-9, SIL-10, SIL-13</p>
-                    <p><strong>Requirement:</strong> Visual loading states and explicit save/booking confirmations.</p>
-                    <p><strong>Acceptance Criteria:</strong></p>
-                    <ul>
-                        <li>Loading shown if action > 300 ms</li>
-                        <li>Save/booking shows success toast with details</li>
-                        <li>Failures include reason + next action</li>
-                    </ul>
-                </div>
-
-                <div class="highlight-box">
-                    <h4>UR-12: Locale Usability (Dates/Numbers/RTL Details)</h4>
-                    <p><strong>Priority:</strong> <span class="badge badge-medium">Medium</span></p>
-                    <p><strong>Phase IV:</strong> Implement</p>
-                    <p><strong>Rationale:</strong> Locale-correct entry/format prevents mistakes.</p>
-                    <p><strong>User Stories:</strong> SIL-7 to SIL-16</p>
-                    <p><strong>Requirement:</strong> Use locale formats and mirror UI for RTL.</p>
-                    <p><strong>Acceptance Criteria:</strong></p>
-                    <ul>
-                        <li>Dates use user locale (e.g., dd/mm/yyyy or Hijri label if shown)</li>
-                        <li>Numbers use Arabic/Western numerals per language</li>
-                        <li>All icons/layouts mirror correctly in RTL</li>
-                    </ul>
-                </div>
-
-                <h4>2.2.3 Reliability Requirements</h4>
-
-                <div class="highlight-box">
-                    <h4>RR-01: Availability & Uptime [Conceptual]</h4>
-                    <p><strong>Priority:</strong> <span class="badge badge-critical">Critical</span></p>
-                    <p><strong>Phase IV:</strong> Document</p>
-                    <p><strong>Rationale:</strong> Users need access when risk alerts matter most.</p>
-                    <p><strong>User Stories:</strong> SIL-7 to SIL-16</p>
-                    <p><strong>Requirement:</strong> High availability with minimal unplanned downtime.</p>
-                    <p><strong>Acceptance Criteria:</strong></p>
-                    <ul>
-                        <li>Monthly uptime target 99.5% (≤ 3.65 hours downtime)</li>
-                        <li>Automated monitoring & alerts</li>
-                        <li>Public status page</li>
-                    </ul>
-                </div>
-                <div class="highlight-box">
-                    <h4>RR-02: Fault Tolerance & Graceful Degradation</h4>
-                    <p><strong>Priority:</strong> <span class="badge badge-high">High</span></p>
-                    <p><strong>Phase IV:</strong> Implement core; document full design</p>
-                    <p><strong>Rationale:</strong> Prevent total failure when a component misbehaves.</p>
-                    <p><strong>User Stories:</strong> SIL-7 to SIL-16</p>
-                    <p><strong>Requirement:</strong> The system continues in a reduced mode if non-critical parts fail.
-                    </p>
-                    <p><strong>Acceptance Criteria:</strong></p>
-                    <ul>
-                        <li>No crashes on data/IO errors; user sees a recoverable message</li>
-                        <li>Automatic retry with exponential backoff (max 3 attempts)</li>
-                        <li>Read-only mode available if writes fail</li>
-                    </ul>
-                </div>
-
-                <div class="highlight-box">
-                    <h4>RR-03: Data Backup & Restore [Conceptual]</h4>
-                    <p><strong>Priority:</strong> <span class="badge badge-critical">Critical</span></p>
-                    <p><strong>Phase IV:</strong> Document; prototype provides export/import</p>
-                    <p><strong>Rationale:</strong> Recover from data loss incidents.</p>
-                    <p><strong>User Stories:</strong> SIL-7 to SIL-16</p>
-                    <p><strong>Requirement:</strong> Define backup schedule and recovery targets.</p>
-                    <p><strong>Acceptance Criteria:</strong></p>
-                    <ul>
-                        <li>RPO ≤ 24h; RTO ≤ 4h</li>
-                        <li>Backups encrypted at rest</li>
-                        <li>Prototype: JSON export/import verified on test data</li>
-                    </ul>
-                </div>
-                <div class="highlight-box">
-                    <h4>RR-04: Data Accuracy & Integrity</h4>
-                    <p><strong>Priority:</strong> <span class="badge badge-critical">Critical</span></p>
-                    <p><strong>Phase IV:</strong> Implement</p>
-                    <p><strong>Rationale:</strong> Incorrect risk results undermine the system's purpose.</p>
-                    <p><strong>User Stories:</strong> SIL-7 to SIL-10</p>
-                    <p><strong>Requirement:</strong> Protect data quality and detect risks accurately.</p>
-                    <p><strong>Acceptance Criteria:</strong></p>
-                    <ul>
-                        <li>False negatives ≤ 1% on a defined test set</li>
-                        <li>False positives < 5% from entry errors</li>
-                        <li>DB constraints prevent impossible data</li>
-                        <li>100% detection on known-risk test trees</li>
-                    </ul>
-                </div>
-                <div class="highlight-box">
-                    <h4>RR-05: Performance & Response Time</h4>
-                    <p><strong>Priority:</strong> <span class="badge badge-high">High</span></p>
-                    <p><strong>Phase IV:</strong> Implement</p>
-                    <p><strong>Rationale:</strong> Fast responses increase trust and task completion.</p>
-                    <p><strong>User Stories:</strong> SIL-7, SIL-9, SIL-13</p>
-                    <p><strong>Requirement:</strong> Keep key actions responsive under typical load.</p>
-                    <p><strong>Acceptance Criteria:</strong></p>
-                    <ul>
-                        <li>P95 response &lt; 1.0s for add member, view alerts, book appointment</li>
-                        <li>P99 response &lt; 2.5s for above actions</li>
-                        <li>Prototype includes simple timing output for these actions</li>
-                    </ul>
-                </div>
-
-                <div class="highlight-box">
-                    <h4>RR-06: Scalability Path [Conceptual]</h4>
-                    <p><strong>Priority:</strong> <span class="badge badge-medium">Medium</span></p>
-                    <p><strong>Phase IV:</strong> Document</p>
-                    <p><strong>Rationale:</strong> Prepare for increased users and data volume.</p>
-                    <p><strong>User Stories:</strong> SIL-7 to SIL-16</p>
-                    <p><strong>Requirement:</strong> Architecture supports horizontal scaling for stateless services.
-                    </p>
-                    <p><strong>Acceptance Criteria:</strong></p>
-                    <ul>
-                        <li>Design notes for scaling UI/API independently</li>
-                        <li>No hard-coded limits in code for list sizes</li>
-                        <li>Prototype uses collections sized dynamically</li>
-                    </ul>
-                </div>
-
-                <div class="highlight-box">
-                    <h4>RR-07: Observability & Logging</h4>
-                    <p><strong>Priority:</strong> <span class="badge badge-high">High</span></p>
-                    <p><strong>Phase IV:</strong> Implement core</p>
-                    <p><strong>Rationale:</strong> Diagnose issues and monitor reliability.</p>
-                    <p><strong>User Stories:</strong> SIL-9, SIL-10, SIL-16</p>
-                    <p><strong>Requirement:</strong> Structured logs with levels and correlation IDs.</p>
-                    <p><strong>Acceptance Criteria:</strong></p>
-                    <ul>
-                        <li>INFO for user actions; WARN/ERROR for failures with reasons</li>
-                        <li>Each request/action includes a correlation ID in logs</li>
-                        <li>Prototype prints structured console logs for main flows</li>
-                    </ul>
-                </div>
-
-                <div class="highlight-box">
-                    <h4>RR-08: Session Reliability & Auto-Save</h4>
-                    <p><strong>Priority:</strong> <span class="badge badge-critical">Critical</span></p>
-                    <p><strong>Phase IV:</strong> Implement</p>
-                    <p><strong>Rationale:</strong> Prevent loss of in-progress data; aligns with SR-03 timeout note.</p>
-                    <p><strong>User Stories:</strong> SIL-7, SIL-8, SIL-15</p>
-                    <p><strong>Requirement:</strong> Stable sessions with safe inactivity handling.</p>
-                    <p><strong>Acceptance Criteria:</strong></p>
-                    <ul>
-                        <li>Auto-save drafts every 30 seconds (or on step change)</li>
-                        <li>Inactivity logout at 15 minutes; warning at 60 seconds before</li>
-                        <li>On restart, user can restore last draft</li>
-                    </ul>
-                </div>
-
-                <div class="highlight-box">
-                    <h4>RR-09: Consistency & Concurrency</h4>
-                    <p><strong>Priority:</strong> <span class="badge badge-high">High</span></p>
-                    <p><strong>Phase IV:</strong> Implement core; document full approach</p>
-                    <p><strong>Rationale:</strong> Avoid lost updates when multiple edits occur.</p>
-                    <p><strong>User Stories:</strong> SIL-7, SIL-8, SIL-10</p>
-                    <p><strong>Requirement:</strong> Use optimistic locking/version checks on updates.</p>
-                    <p><strong>Acceptance Criteria:</strong></p>
-                    <ul>
-                        <li>Conflicting edits are detected and surfaced to the user</li>
-                        <li>Atomic add/edit operations for family members</li>
-                        <li>Prototype simulates version check in memory</li>
-                    </ul>
-                </div>
-                <h4>2.2.4 Security Requirements</h4>
-                <div class="highlight-box">
-                    <h4>SR-01: Data Privacy & PII Protection</h4>
-                    <p><strong>Priority:</strong> <span class="badge badge-critical">Critical</span></p>
-                    <p><strong>Phase IV:</strong> Implement core; document full policy</p>
-                    <p><strong>Rationale:</strong> Protect sensitive family medical data and comply with local
-                        regulations.</p>
-                    <p><strong>User Stories:</strong> SIL-7 to SIL-16</p>
-                    <p><strong>Requirement:</strong> Limit collection, mask sensitive fields, and restrict exposure.</p>
-                    <p><strong>Acceptance Criteria:</strong></p>
-                    <ul>
-                        <li>Only necessary fields collected; optional items clearly labeled</li>
-                        <li>PII redacted in logs and debug output</li>
-                        <li>Access to PII requires authenticated session + role check</li>
-                    </ul>
-                </div>
-
-                <div class="highlight-box">
-                    <h4>SR-02: Encryption (In Transit & At Rest) [Conceptual]</h4>
-                    <p><strong>Priority:</strong> <span class="badge badge-critical">Critical</span></p>
-                    <p><strong>Phase IV:</strong> Document; prototype simulates at-rest via obfuscation</p>
-                    <p><strong>Rationale:</strong> Prevent eavesdropping and data theft.</p>
-                    <p><strong>User Stories:</strong> SIL-7 to SIL-16</p>
-                    <p><strong>Requirement:</strong> TLS 1.2+ for transit; encrypted storage for PII.</p>
-                    <p><strong>Acceptance Criteria:</strong></p>
-                    <ul>
-                        <li>Design notes: TLS required for all endpoints; HSTS enabled</li>
-                        <li>At rest: keys managed outside code; encrypted backups (see RR-03)</li>
-                        <li>Prototype: no plaintext PII persisted to disk</li>
-                    </ul>
-                </div>
-                <div class="highlight-box">
-                    <h4>SR-03: Authentication</h4>
-                    <p><strong>Priority:</strong> <span class="badge badge-critical">Critical</span></p>
-                    <p><strong>Phase IV:</strong> Implement</p>
-                    <p><strong>Rationale:</strong> Only authorized users should access health data.</p>
-                    <p><strong>User Stories:</strong> SIL-15</p>
-                    <p><strong>Requirement:</strong> Follow secure authentication practices.</p>
-                    <p><strong>Acceptance Criteria:</strong></p>
-                    <ul>
-                        <li>Weak passwords rejected</li>
-                        <li>Session tokens rotated at login</li>
-                        <li>Auto-logout after 15 minutes (mirrors RR-08)</li>
-                        <li>Prototype documents hashing policy; production uses bcrypt ≥ 12 rounds + breached-password
-                            checks</li>
-                    </ul>
-                </div>
-
-                <div class="highlight-box">
-                    <h4>SR-04: Role-Based Access Control (RBAC)</h4>
-                    <p><strong>Priority:</strong> <span class="badge badge-critical">Critical</span></p>
-                    <p><strong>Phase IV:</strong> Implement</p>
-                    <p><strong>Rationale:</strong> Enforce least privilege by role.</p>
-                    <p><strong>User Stories:</strong> SIL-7 to SIL-16</p>
-                    <p><strong>Requirement:</strong> Three roles with appropriate permissions.</p>
-                    <p><strong>Acceptance Criteria:</strong></p>
-                    <ul>
-                        <li>Role set at account creation</li>
-                        <li>Unauthorized access attempts blocked and logged</li>
-                        <li>UI hides unavailable options</li>
-                        <li>Server-side role checks on every protected API</li>
-                    </ul>
-                </div>
-                <div class="highlight-box">
-                    <h4>SR-05: Secure Input Validation & Output Encoding</h4>
-                    <p><strong>Priority:</strong> <span class="badge badge-high">High</span></p>
-                    <p><strong>Phase IV:</strong> Implement</p>
-                    <p><strong>Rationale:</strong> Prevent injection and XSS issues.</p>
-                    <p><strong>User Stories:</strong> SIL-7, SIL-8, SIL-15</p>
-                    <p><strong>Requirement:</strong> Validate on server side; encode all untrusted output.</p>
-                    <p><strong>Acceptance Criteria:</strong></p>
-                    <ul>
-                        <li>Server rejects invalid age/relationship values with clear errors</li>
-                        <li>No direct rendering of raw user input without encoding</li>
-                        <li>Prototype unit tests cover typical injection payloads</li>
-                    </ul>
-                </div>
-
-                <div class="highlight-box">
-                    <h4>SR-06: Secrets Management</h4>
-                    <p><strong>Priority:</strong> <span class="badge badge-high">High</span></p>
-                    <p><strong>Phase IV:</strong> Document; implement placeholder mechanism</p>
-                    <p><strong>Rationale:</strong> Prevent credential leaks.</p>
-                    <p><strong>User Stories:</strong> SIL-16</p>
-                    <p><strong>Requirement:</strong> No secrets committed to source control; use environment/config
-                        store.</p>
-                    <p><strong>Acceptance Criteria:</strong></p>
-                    <ul>
-                        <li>Repo scan shows no hard-coded secrets/tokens</li>
-                        <li>Prototype reads secrets from environment variables only</li>
-                    </ul>
-                </div>
-
-                <div class="highlight-box">
-                    <h4>SR-07: Security Logging & Audit Trails</h4>
-                    <p><strong>Priority:</strong> <span class="badge badge-high">High</span></p>
-                    <p><strong>Phase IV:</strong> Implement core (align with RR-07)</p>
-                    <p><strong>Rationale:</strong> Investigate incidents and unauthorized access attempts.</p>
-                    <p><strong>User Stories:</strong> SIL-9, SIL-10, SIL-16</p>
-                    <p><strong>Requirement:</strong> Log auth events, privilege changes, and access denials.</p>
-                    <p><strong>Acceptance Criteria:</strong></p>
-                    <ul>
-                        <li>Login success/failure logged with correlation ID (no PII)</li>
-                        <li>RBAC denials recorded with reason</li>
-                        <li>Prototype prints structured “SECURITY” lines for these events</li>
-                    </ul>
-                </div>
-
-                <div class="highlight-box">
-                    <h4>SR-08: Dependency & Vulnerability Management</h4>
-                    <p><strong>Priority:</strong> <span class="badge badge-medium">Medium</span></p>
-                    <p><strong>Phase IV:</strong> Document; run basic checks</p>
-                    <p><strong>Rationale:</strong> Reduce risk from third-party libraries.</p>
-                    <p><strong>User Stories:</strong> SIL-16</p>
-                    <p><strong>Requirement:</strong> Keep libraries updated; scan for known CVEs.</p>
-                    <p><strong>Acceptance Criteria:</strong></p>
-                    <ul>
-                        <li>Dependency list maintained; updates planned each sprint</li>
-                        <li>Prototype: build step includes a vulnerability check (report attached)</li>
-                    </ul>
-                </div>
-
-                <div class="highlight-box">
-                    <h4>SR-09: Data Retention & Right to Erasure</h4>
-                    <p><strong>Priority:</strong> <span class="badge badge-medium">Medium</span></p>
-                    <p><strong>Phase IV:</strong> Document; prototype supports delete/export</p>
-                    <p><strong>Rationale:</strong> Respect user control over personal data.</p>
-                    <p><strong>User Stories:</strong> SIL-15, SIL-16</p>
-                    <p><strong>Requirement:</strong> Define retention periods; allow user-initiated deletion/export.</p>
-                    <p><strong>Acceptance Criteria:</strong></p>
-                    <ul>
-                        <li>Policy: default retention and deletion triggers defined</li>
-                        <li>Prototype: user data export (JSON) and delete path demonstrated</li>
-                    </ul>
-                </div>
-
-                <div class="highlight-box">
-                    <h4>SR-10: Third-Party/Clinic Integration Security [Conceptual]</h4>
-                    <p><strong>Priority:</strong> <span class="badge badge-high">High</span></p>
-                    <p><strong>Phase IV:</strong> Document</p>
-                    <p><strong>Rationale:</strong> Securely interact with external clinic systems.</p>
-                    <p><strong>User Stories:</strong> SIL-13, SIL-14</p>
-                    <p><strong>Requirement:</strong> Use signed requests, least-privilege tokens, and input sanitization
-                        on responses.</p>
-                    <p><strong>Acceptance Criteria:</strong></p>
-                    <ul>
-                        <li>Design specifies token scopes and rotation</li>
-                        <li>All inbound data validated before use</li>
-                    </ul>
-                </div>
-                <h3>2.4 Traceability Matrix</h3>
-
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Requirement ID</th>
-                            <th>Priority</th>
-                            <th>Phase IV Status</th>
-                            <th>Related User Stories</th>
-                            <th>Verification Method</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Usability Requirements -->
-                        <tr>
-                            <td><strong>UR-01</strong></td>
-                            <td><span class="badge badge-critical">Critical</span></td>
-                            <td>Implement</td>
-                            <td>SIL-7 to SIL-16</td>
-                            <td>Mobile responsive test (Google Mobile-Friendly)</td>
-                        </tr>
-                        <tr>
-                            <td><strong>UR-02</strong></td>
-                            <td><span class="badge badge-high">High</span></td>
-                            <td>Implement</td>
-                            <td>SIL-7 to SIL-16</td>
-                            <td>WAVE/axe scan + manual NVDA test</td>
-                        </tr>
-                        <tr>
-                            <td><strong>UR-03</strong></td>
-                            <td><span class="badge badge-high">High</span></td>
-                            <td>Implement</td>
-                            <td>SIL-7, SIL-13, SIL-14</td>
-                            <td>Usability timing tests (avg <5 min)</td>
-                        </tr>
-                        <tr>
-                            <td><strong>UR-04</strong></td>
-                            <td><span class="badge badge-high">High</span></td>
-                            <td>Implement</td>
-                            <td>SIL-7 to SIL-16</td>
-                            <td>Arabic/English switch verified</td>
-                        </tr>
-                        <tr>
-                            <td><strong>UR-05</strong></td>
-                            <td><span class="badge badge-high">High</span></td>
-                            <td>Implement</td>
-                            <td>SIL-7, SIL-8, SIL-15</td>
-                            <td>Error message placement verified</td>
-                        </tr>
-                        <tr>
-                            <td><strong>UR-06</strong></td>
-                            <td><span class="badge badge-high">High</span></td>
-                            <td>Implement</td>
-                            <td>SIL-7 to SIL-16</td>
-                            <td>Navigation ≤ 3 clicks</td>
-                        </tr>
-                        <tr>
-                            <td><strong>UR-07</strong></td>
-                            <td><span class="badge badge-medium">Medium</span></td>
-                            <td>Document</td>
-                            <td>SIL-7 to SIL-16</td>
-                            <td>Design system audit</td>
-                        </tr>
-                        <tr>
-                            <td><strong>UR-08</strong></td>
-                            <td><span class="badge badge-medium">Medium</span></td>
-                            <td>Document</td>
-                            <td>SIL-10</td>
-                            <td>First-time use UX evaluation</td>
-                        </tr>
-                        <tr>
-                            <td><strong>UR-09</strong></td>
-                            <td><span class="badge badge-medium">Medium</span></td>
-                            <td>Document</td>
-                            <td>SIL-11</td>
-                            <td>Readability test (grade ≤ 9)</td>
-                        </tr>
-                        <tr>
-                            <td><strong>UR-10</strong></td>
-                            <td><span class="badge badge-medium">Medium</span></td>
-                            <td>Document</td>
-                            <td>SIL-11, 12</td>
-                            <td>System feedback responses</td>
-                        </tr>
-                        <tr>
-                            <td><strong>UR-11</strong></td>
-                            <td><span class="badge badge-low">Low</span></td>
-                            <td>Document</td>
-                            <td>SIL-12</td>
-                            <td>Help & support access test</td>
-                        </tr>
-                        <tr>
-                            <td><strong>UR-12</strong></td>
-                            <td><span class="badge badge-low">Low</span></td>
-                            <td>Document</td>
-                            <td>SIL-12</td>
-                            <td>SUS ≥ 80 % target</td>
-                        </tr>
-
-                        <!-- Reliability Requirements -->
-                        <tr>
-                            <td><strong>RR-01</strong></td>
-                            <td><span class="badge badge-critical">Critical</span></td>
-                            <td>Document</td>
-                            <td>SIL-7 – SIL-16</td>
-                            <td>Availability log (target 99.5 %)</td>
-                        </tr>
-                        <tr>
-                            <td><strong>RR-02</strong></td>
-                            <td><span class="badge badge-high">High</span></td>
-                            <td>Document</td>
-                            <td>SIL-7 – SIL-16</td>
-                            <td>Backup policy simulation</td>
-                        </tr>
-                        <tr>
-                            <td><strong>RR-03</strong></td>
-                            <td><span class="badge badge-medium">Medium</span></td>
-                            <td>Document</td>
-                            <td>SIL-7 – SIL-16</td>
-                            <td>Fault-tolerance test scenario</td>
-                        </tr>
-                        <tr>
-                            <td><strong>RR-04</strong></td>
-                            <td><span class="badge badge-critical">Critical</span></td>
-                            <td>Implement</td>
-                            <td>SIL-7 – SIL-10</td>
-                            <td>Data validation + accuracy check</td>
-                        </tr>
-                        <tr>
-                            <td><strong>RR-05</strong></td>
-                            <td><span class="badge badge-high">High</span></td>
-                            <td>Document</td>
-                            <td>SIL-7 – SIL-16</td>
-                            <td>Browser/device compatibility test</td>
-                        </tr>
-                        <tr>
-                            <td><strong>RR-06</strong></td>
-                            <td><span class="badge badge-medium">Medium</span></td>
-                            <td>Document</td>
-                            <td>SIL-7 – SIL-16</td>
-                            <td>Performance load simulation</td>
-                        </tr>
-                        <tr>
-                            <td><strong>RR-07</strong></td>
-                            <td><span class="badge badge-medium">Medium</span></td>
-                            <td>Document</td>
-                            <td>SIL-11</td>
-                            <td>Content update review log</td>
-                        </tr>
-                        <tr>
-                            <td><strong>RR-08</strong></td>
-                            <td><span class="badge badge-high">High</span></td>
-                            <td>Implement</td>
-                            <td>SIL-15</td>
-                            <td>Session persistence & auto-save</td>
-                        </tr>
-                        <tr>
-                            <td><strong>RR-09</strong></td>
-                            <td><span class="badge badge-medium">Medium</span></td>
-                            <td>Document</td>
-                            <td>SIL-14, 15</td>
-                            <td>API timeout/error test</td>
-                        </tr>
-                        <tr>
-                            <td><strong>RR-10</strong></td>
-                            <td><span class="badge badge-low">Low</span></td>
-                            <td>Simulate</td>
-                            <td>SIL-13</td>
-                            <td>Notification delivery mock test</td>
-                        </tr>
-
-                        <!-- Security Requirements -->
-                        <tr>
-                            <td><strong>SR-01</strong></td>
-                            <td><span class="badge badge-critical">Critical</span></td>
-                            <td>Document</td>
-                            <td>SIL-15</td>
-                            <td>Data encryption at rest plan</td>
-                        </tr>
-                        <tr>
-                            <td><strong>SR-02</strong></td>
-                            <td><span class="badge badge-critical">Critical</span></td>
-                            <td>Document</td>
-                            <td>SIL-15</td>
-                            <td>Transport-layer encryption (HTTPS)</td>
-                        </tr>
-                        <tr>
-                            <td><strong>SR-03</strong></td>
-                            <td><span class="badge badge-critical">Critical</span></td>
-                            <td>Implement</td>
-                            <td>SIL-15</td>
-                            <td>Password & session security test</td>
-                        </tr>
-                        <tr>
-                            <td><strong>SR-04</strong></td>
-                            <td><span class="badge badge-critical">Critical</span></td>
-                            <td>Implement</td>
-                            <td>SIL-7 – SIL-16</td>
-                            <td>Role-based access validation</td>
-                        </tr>
-                        <tr>
-                            <td><strong>SR-05</strong></td>
-                            <td><span class="badge badge-high">High</span></td>
-                            <td>Document</td>
-                            <td>SIL-7 – SIL-16</td>
-                            <td>Consent management audit</td>
-                        </tr>
-                        <tr>
-                            <td><strong>SR-06</strong></td>
-                            <td><span class="badge badge-high">High</span></td>
-                            <td>Document</td>
-                            <td>SIL-7 – SIL-16</td>
-                            <td>Audit log review procedure</td>
-                        </tr>
-                        <tr>
-                            <td><strong>SR-07</strong></td>
-                            <td><span class="badge badge-critical">Critical</span></td>
-                            <td>Implement</td>
-                            <td>SIL-7 – SIL-10</td>
-                            <td>Input validation & sanitization test</td>
-                        </tr>
-                        <tr>
-                            <td><strong>SR-08</strong></td>
-                            <td><span class="badge badge-high">High</span></td>
-                            <td>Document</td>
-                            <td>SIL-7 – SIL-10</td>
-                            <td>Privacy review (data minimization)</td>
-                        </tr>
-                        <tr>
-                            <td><strong>SR-09</strong></td>
-                            <td><span class="badge badge-high">High</span></td>
-                            <td>Implement</td>
-                            <td>SIL-15</td>
-                            <td>Secure password reset scenario</td>
-                        </tr>
-                        <tr>
-                            <td><strong>SR-10</strong></td>
-                            <td><span class="badge badge-high">High</span></td>
-                            <td>Document</td>
-                            <td>SIL-12 – SIL-14</td>
-                            <td>Awareness Hub content security check</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <h3>2.5 Implementation Summary</h3>
-
-                <div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:space-between;">
-
-                    <div
-                        style="flex:1 1 30%; background:#f5f6f7; border-radius:12px; padding:20px; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
-                        <h4 style="margin-top:0; color:#1e3c72;">Total NFRs</h4>
-                        <p style="font-size:1.1em; margin-bottom:10px;"><strong>32 Total</strong></p>
-                        <div style="display:flex; flex-direction:column; gap:8px;">
-                            <div style="background:#eee; border-radius:8px; padding:6px 10px;">
-                                <strong>Critical:</strong> 9
-                            </div>
-                            <div style="background:#eee; border-radius:8px; padding:6px 10px;"><strong>High:</strong> 15
-                            </div>
-                            <div style="background:#eee; border-radius:8px; padding:6px 10px;"><strong>Medium:</strong>
-                                8</div>
-                        </div>
-                    </div>
-
-                    <div
-                        style="flex:1 1 35%; background:#f5f6f7; border-radius:12px; padding:20px; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
-                        <h4 style="margin-top:0; color:#1e3c72;">Phase IV Plan</h4>
-                        <ul style="list-style:none; padding-left:0; line-height:1.8;">
-                            <li><strong>Implement:</strong> 18 (prototype core)</li>
-                            <li><strong>Simulate:</strong> 1 (notification delivery)</li>
-                            <li><strong>Document:</strong> 13 (production-scale, conceptual)</li>
+                <!-- TABLE OF CONTENTS -->
+                <section class="section">
+                    <h2>Table of Contents</h2>
+                    <div class="toc">
+                        <ul>
+                            <li><a href="#phase1">Phase I: Project Proposal</a></li>
+                            <li><a href="#phase2">Phase II: Requirements Analysis & Documentation</a></li>
+                            <li><a href="#phase3">Phase III: Software Initial Design</a></li>
+                            <li><a href="#phase4">Phase IV: Prototype and Testing</a></li>
+                            <li><a href="#appendix-a">Appendix A: Code Implementation</a></li>
+                            <li><a href="#appendix-b">Appendix B: Project Management</a></li>
                         </ul>
                     </div>
-                     <div
-                        style="flex:1 1 30%; background:#f5f6f7; border-radius:12px; padding:20px; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
-                        <h4 style="margin-top:0; color:#1e3c72;">Prototype Focus</h4>
-                        <div style="display:flex; flex-wrap:wrap; gap:8px;">
-                            <span
-                                style="background:#e8e9eb; border-radius:20px; padding:8px 12px; font-weight:500;">Responsive
-                                family health tree</span>
-                            <span
-                                style="background:#e8e9eb; border-radius:20px; padding:8px 12px; font-weight:500;">Basic
-                                risk rules + validation</span>
-                            <span
-                                style="background:#e8e9eb; border-radius:20px; padding:8px 12px; font-weight:500;">Arabic/English
-                                content</span>
-                            <span
-                                style="background:#e8e9eb; border-radius:20px; padding:8px 12px; font-weight:500;">Secure
-                                authentication</span>
-                            <span
-                                style="background:#e8e9eb; border-radius:20px; padding:8px 12px; font-weight:500;">Reliable
-                                session + auto-save</span>
-                            <span
-                                style="background:#e8e9eb; border-radius:20px; padding:8px 12px; font-weight:500;">Clear
-                                feedback & messaging</span>
-                        </div>
+                </section>
+
+                <!-- PHASE I: PROJECT PROPOSAL -->
+                <section id="phase1" class="section">
+                    <h2>Phase I: Project Proposal</h2>
+
+                    <h3>1.1 Introduction</h3>
+                    <p>The <strong>Sillah (صلة)</strong> project is a preventive health management system designed to
+                        help
+                        Saudi families identify hereditary cardiac risks through an easy-to-use digital platform.</p>
+                    <p>It enables users to record their family health history, receive automatic risk alerts, and book
+                        preventive clinic appointments.</p>
+                    <p>This report documents all project phases — from requirements to design, prototype, and testing —
+                        demonstrating a full software development process aligned with SE201 objectives.</p>
+
+                    <h3>1.2 Project Overview</h3>
+
+                    <h4>1.2.1 Goals</h4>
+                    <ol>
+                        <li><strong>Promote Preventive Health Awareness:</strong> Promote public awareness regarding
+                            hereditary diseases and encourage early detection.</li>
+                        <li><strong>Simplify Family Health Tracking:</strong> Provide a simple-to-use interface for
+                            families
+                            to follow and chart medical histories.</li>
+                        <li><strong>Enable Smart Risk Detection:</strong> Use rule-based reasoning to automatically
+                            detect
+                            hereditary cardiac risk patterns.</li>
+                        <li><strong>Support Action Through Integration:</strong> Link users to accredited clinics for
+                            consultations and checkups.</li>
+                        <li><strong>Empower Public Health Systems:</strong> Demonstrate a scalable model that can be
+                            embedded in national healthcare systems.</li>
+                    </ol>
+
+                    <h4>1.2.2 Objective</h4>
+                    <p>To provide a user-friendly system that allows citizens to record family health data, analyze
+                        hereditary patterns, and take proactive steps toward cardiac screening.</p>
+
+                    <h4>1.2.3 Main Features</h4>
+                    <ul>
+                        <li>Add and manage family members with health events</li>
+                        <li>Detect hereditary risks automatically</li>
+                        <li>Send personalized alerts and recommendations</li>
+                        <li>Access an Awareness Hub with educational content and checklists</li>
+                        <li>Book appointments with local clinics</li>
+                    </ul>
+
+                    <h4>1.2.4 Users</h4>
+                    <ol>
+                        <li>General citizens (families)</li>
+                        <li>Healthcare Providers (view bookings)</li>
+                        <li>Administrators (manage awareness content)</li>
+                    </ol>
+                </section>
+
+                <!-- PHASE II: REQUIREMENTS ANALYSIS -->
+                <section id="phase2" class="section">
+                    <h2>Phase II: Requirements Analysis & Documentation</h2>
+
+                    <h3>2.1 Functional Requirements</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Requirement</th>
+                                <th>Description</th>
+                                <th>Priority</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>FR-01</strong></td>
+                                <td>Add Family Member</td>
+                                <td>User can record family members with name, relation, and health conditions</td>
+                                <td><span class="badge badge-high">High</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>FR-02</strong></td>
+                                <td>Add Health Event</td>
+                                <td>User can specify a condition and age of onset</td>
+                                <td><span class="badge badge-high">High</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>FR-03</strong></td>
+                                <td>Generate Risk Alert</td>
+                                <td>System detects hereditary risk and sends an alert</td>
+                                <td><span class="badge badge-high">High</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>FR-04</strong></td>
+                                <td>Book Appointment</td>
+                                <td>User can select a clinic and confirm booking</td>
+                                <td><span class="badge badge-medium">Medium</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>FR-05</strong></td>
+                                <td>View Awareness Content</td>
+                                <td>User can access health tips and checklists</td>
+                                <td><span class="badge badge-medium">Medium</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>FR-06</strong></td>
+                                <td>View Alert History</td>
+                                <td>User can view past alerts</td>
+                                <td><span class="badge badge-low">Low</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>2.2 Non-Functional Requirements</h3>
+
+                    <h4>2.2.1 Introduction & Overview</h4>
+                    <p>This document specifies the Non-Functional Requirements (NFRs) for the Sillah Family Health
+                        Management System across <strong>Usability</strong>, <strong>Reliability</strong>, and
+                        <strong>Security</strong>. The goal is to ensure the platform is simple to use, robust, and safe
+                        for
+                        all users in Saudi Arabia. Items marked <em>[Conceptual]</em> indicate production-level
+                        expectations. In Phase IV (Java prototype), those items will be simulated or documented, while
+                        core
+                        functionality will be implemented.
+                    </p>
+
+                    <h4>2.2.2 Usability Requirements</h4>
+
+                    <div class="highlight-box">
+                        <h4>UR-01: Mobile-First Responsive Design</h4>
+                        <p><strong>Priority:</strong> <span class="badge badge-critical">Critical</span></p>
+                        <p><strong>Phase IV:</strong> Implement</p>
+                        <p><strong>Rationale:</strong> Most users in Saudi Arabia access services via mobile; optimizing
+                            for
+                            phones maximizes reach.</p>
+                        <p><strong>User Stories:</strong> SIL-7 to SIL-16</p>
+                        <p><strong>Requirement:</strong> Interface must work across screen sizes, prioritizing mobile.
+                        </p>
+                        <p><strong>Acceptance Criteria:</strong></p>
+                        <ul>
+                            <li>Passes Google Mobile-Friendly Test</li>
+                            <li>Verified on iPhone (Safari) and Android (Chrome)</li>
+                            <li>Viewport meta tag is set correctly</li>
+                            <li>Touch targets ≥ 44×44 px (WCAG)</li>
+                            <li>No horizontal scrolling</li>
+                        </ul>
                     </div>
-                
-                     </div>
-            <!-- ETHICS CONSIDERATIONS -->
-            <h3>2.6 Ethics Considerations</h3>
-            <p>The development and deployment of the Sillah Family Health Management System involve significant ethical considerations due to the sensitive nature of health data and the potential impact on users' healthcare decisions.</p>
 
-            <div class="highlight-box">
-                <h4>2.6.1 Data Privacy and Confidentiality</h4>
-                <ul>
-                    <li><strong>Health Data Sensitivity:</strong> Family health history constitutes highly sensitive personal information requiring the highest level of protection against unauthorized access or disclosure.</li>
-                    <li><strong>Informed Consent:</strong> Users must provide explicit, informed consent before their data is collected or processed, with clear explanations of how their information will be used.</li>
-                    <li><strong>Data Minimization:</strong> Only essential health information required for hereditary risk assessment is collected, avoiding unnecessary personal data storage.</li>
-                </ul>
+                    <div class="highlight-box">
+                        <h4>UR-02: WCAG 2.1 Level AA Accessibility</h4>
+                        <p><strong>Priority:</strong> <span class="badge badge-high">High</span></p>
+                        <p><strong>Phase IV:</strong> Implement core; document full compliance</p>
+                        <p><strong>Rationale:</strong> Public services must be accessible and legally compliant.</p>
+                        <p><strong>User Stories:</strong> SIL-7 to SIL-16</p>
+                        <p><strong>Requirement:</strong> Meet WCAG 2.1 AA guidelines.</p>
+                        <p><strong>Acceptance Criteria:</strong></p>
+                        <ul>
+                            <li>WAVE/axe automated scan: zero critical errors</li>
+                            <li>Manual test with NVDA or JAWS</li>
+                            <li>Keyboard-only navigation succeeds</li>
+                            <li>Color contrast verified with WebAIM (≥ 4.5:1 normal text)</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h4>UR-03: Task Completion Efficiency</h4>
+                        <p><strong>Priority:</strong> <span class="badge badge-high">High</span></p>
+                        <p><strong>Phase IV:</strong> Implement</p>
+                        <p><strong>Rationale:</strong> Faster tasks increase adoption and adherence to preventive
+                            actions.
+                        </p>
+                        <p><strong>User Stories:</strong> SIL-7, SIL-13, SIL-14</p>
+                        <p><strong>Requirement:</strong> Key tasks should be quick and low-effort.</p>
+                        <p><strong>Acceptance Criteria:</strong></p>
+                        <ul>
+                            <li>Build a basic family tree in < 5 minutes (≥ 15 participants)</li>
+                            <li>Find & download a checklist in < 3 minutes</li>
+                            <li>≥ 90% success on critical tasks without help</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h4>UR-04: Bilingual Interface (Arabic & English)</h4>
+                        <p><strong>Priority:</strong> <span class="badge badge-high">High</span></p>
+                        <p><strong>Phase IV:</strong> Implement</p>
+                        <p><strong>Rationale:</strong> Serves both Arabic speakers and expatriates.</p>
+                        <p><strong>User Stories:</strong> SIL-7 to SIL-16</p>
+                        <p><strong>Requirement:</strong> Full bilingual support.</p>
+                        <p><strong>Acceptance Criteria:</strong></p>
+                        <ul>
+                            <li>100% UI translated</li>
+                            <li>RTL layout correct for Arabic</li>
+                            <li>Language preference persists</li>
+                            <li>Medical terminology reviewed by an Arabic-speaking clinician</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h4>UR-05: Clear Error Messages & Guidance</h4>
+                        <p><strong>Priority:</strong> <span class="badge badge-high">High</span></p>
+                        <p><strong>Phase IV:</strong> Implement</p>
+                        <p><strong>Rationale:</strong> Friendly, actionable errors reduce frustration and support load.
+                        </p>
+                        <p><strong>User Stories:</strong> SIL-7, SIL-8, SIL-15</p>
+                        <p><strong>Requirement:</strong> Errors must be specific, polite, and near the relevant field.
+                        </p>
+                        <p><strong>Acceptance Criteria:</strong></p>
+                        <ul>
+                            <li>Messages free of technical jargon</li>
+                            <li>Inline placement beside fields</li>
+                            <li>Visible success states with confirmation</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h4>UR-06: Intuitive Information Architecture</h4>
+                        <p><strong>Priority:</strong> <span class="badge badge-high">High</span></p>
+                        <p><strong>Phase IV:</strong> Implement</p>
+                        <p><strong>Rationale:</strong> Logical structure lowers cognitive load.</p>
+                        <p><strong>User Stories:</strong> SIL-7 to SIL-16</p>
+                        <p><strong>Requirement:</strong> Content and features must be easy to find.</p>
+                        <p><strong>Acceptance Criteria:</strong></p>
+                        <ul>
+                            <li>≤ 3 clicks to any feature</li>
+                            <li>"Ease of finding" rating ≥ 4/5</li>
+                            <li>Breadcrumbs available site-wide</li>
+                        </ul>
+                    </div>
+                    <div class="highlight-box">
+                        <h4>UR-07: Consistent UI & Design System</h4>
+                        <p><strong>Priority:</strong> <span class="badge badge-high">High</span></p>
+                        <p><strong>Phase IV:</strong> Implement</p>
+                        <p><strong>Rationale:</strong> Consistency reduces cognitive load and errors.</p>
+                        <p><strong>User Stories:</strong> SIL-7 to SIL-16</p>
+                        <p><strong>Requirement:</strong> Use a single component style (buttons, inputs, spacing,
+                            headings).
+                        </p>
+                        <p><strong>Acceptance Criteria:</strong></p>
+                        <ul>
+                            <li>One button hierarchy (primary/secondary) applied site-wide</li>
+                            <li>4/8 px spacing scale used consistently</li>
+                            <li>H1–H4 typography consistent across pages</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h4>UR-08: Progressive Disclosure</h4>
+                        <p><strong>Priority:</strong> <span class="badge badge-medium">Medium</span></p>
+                        <p><strong>Phase IV:</strong> Implement</p>
+                        <p><strong>Rationale:</strong> Hide advanced options until needed to keep screens simple.</p>
+                        <p><strong>User Stories:</strong> SIL-7, SIL-11, SIL-15</p>
+                        <p><strong>Requirement:</strong> Collapsible/stepwise flows for long forms and settings.</p>
+                        <p><strong>Acceptance Criteria:</strong></p>
+                        <ul>
+                            <li>Long tasks split into ≤ 5 clear steps</li>
+                            <li>Advanced options hidden by default, revealed on demand</li>
+                            <li>User completes add-member flow without scrolling more than one screen per step</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h4>UR-09: Forms – Validation, Defaults & Undo</h4>
+                        <p><strong>Priority:</strong> <span class="badge badge-high">High</span></p>
+                        <p><strong>Phase IV:</strong> Implement</p>
+                        <p><strong>Rationale:</strong> Fewer entry errors and easier recovery.</p>
+                        <p><strong>User Stories:</strong> SIL-7, SIL-8, SIL-13</p>
+                        <p><strong>Requirement:</strong> Real-time validation, sensible defaults, and undo for deletes.
+                        </p>
+                        <p><strong>Acceptance Criteria:</strong></p>
+                        <ul>
+                            <li>Inline validation fires on blur and submit</li>
+                            <li>Common fields prefilled (e.g., city from profile)</li>
+                            <li>Delete shows snackbar with 10-second “Undo”</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h4>UR-10: Help, Hints & Empty States</h4>
+                        <p><strong>Priority:</strong> <span class="badge badge-medium">Medium</span></p>
+                        <p><strong>Phase IV:</strong> Implement</p>
+                        <p><strong>Rationale:</strong> Users succeed without external documentation.</p>
+                        <p><strong>User Stories:</strong> SIL-11, SIL-12, SIL-16</p>
+                        <p><strong>Requirement:</strong> Contextual tips and meaningful empty states.</p>
+                        <p><strong>Acceptance Criteria:</strong></p>
+                        <ul>
+                            <li>Each empty list/page shows a 1–2 step “how to start”</li>
+                            <li>Tooltips/help icons for non-obvious fields</li>
+                            <li>Help links resolve to in-app guidance</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h4>UR-11: Status, Loading & Save Feedback</h4>
+                        <p><strong>Priority:</strong> <span class="badge badge-high">High</span></p>
+                        <p><strong>Phase IV:</strong> Implement</p>
+                        <p><strong>Rationale:</strong> Clear feedback improves trust and perceived speed.</p>
+                        <p><strong>User Stories:</strong> SIL-9, SIL-10, SIL-13</p>
+                        <p><strong>Requirement:</strong> Visual loading states and explicit save/booking confirmations.
+                        </p>
+                        <p><strong>Acceptance Criteria:</strong></p>
+                        <ul>
+                            <li>Loading shown if action > 300 ms</li>
+                            <li>Save/booking shows success toast with details</li>
+                            <li>Failures include reason + next action</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h4>UR-12: Locale Usability (Dates/Numbers/RTL Details)</h4>
+                        <p><strong>Priority:</strong> <span class="badge badge-medium">Medium</span></p>
+                        <p><strong>Phase IV:</strong> Implement</p>
+                        <p><strong>Rationale:</strong> Locale-correct entry/format prevents mistakes.</p>
+                        <p><strong>User Stories:</strong> SIL-7 to SIL-16</p>
+                        <p><strong>Requirement:</strong> Use locale formats and mirror UI for RTL.</p>
+                        <p><strong>Acceptance Criteria:</strong></p>
+                        <ul>
+                            <li>Dates use user locale (e.g., dd/mm/yyyy or Hijri label if shown)</li>
+                            <li>Numbers use Arabic/Western numerals per language</li>
+                            <li>All icons/layouts mirror correctly in RTL</li>
+                        </ul>
+                    </div>
+
+                    <h4>2.2.3 Reliability Requirements</h4>
+
+                    <div class="highlight-box">
+                        <h4>RR-01: Availability & Uptime [Conceptual]</h4>
+                        <p><strong>Priority:</strong> <span class="badge badge-critical">Critical</span></p>
+                        <p><strong>Phase IV:</strong> Document</p>
+                        <p><strong>Rationale:</strong> Users need access when risk alerts matter most.</p>
+                        <p><strong>User Stories:</strong> SIL-7 to SIL-16</p>
+                        <p><strong>Requirement:</strong> High availability with minimal unplanned downtime.</p>
+                        <p><strong>Acceptance Criteria:</strong></p>
+                        <ul>
+                            <li>Monthly uptime target 99.5% (≤ 3.65 hours downtime)</li>
+                            <li>Automated monitoring & alerts</li>
+                            <li>Public status page</li>
+                        </ul>
+                    </div>
+                    <div class="highlight-box">
+                        <h4>RR-02: Fault Tolerance & Graceful Degradation</h4>
+                        <p><strong>Priority:</strong> <span class="badge badge-high">High</span></p>
+                        <p><strong>Phase IV:</strong> Implement core; document full design</p>
+                        <p><strong>Rationale:</strong> Prevent total failure when a component misbehaves.</p>
+                        <p><strong>User Stories:</strong> SIL-7 to SIL-16</p>
+                        <p><strong>Requirement:</strong> The system continues in a reduced mode if non-critical parts
+                            fail.
+                        </p>
+                        <p><strong>Acceptance Criteria:</strong></p>
+                        <ul>
+                            <li>No crashes on data/IO errors; user sees a recoverable message</li>
+                            <li>Automatic retry with exponential backoff (max 3 attempts)</li>
+                            <li>Read-only mode available if writes fail</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h4>RR-03: Data Backup & Restore [Conceptual]</h4>
+                        <p><strong>Priority:</strong> <span class="badge badge-critical">Critical</span></p>
+                        <p><strong>Phase IV:</strong> Document; prototype provides export/import</p>
+                        <p><strong>Rationale:</strong> Recover from data loss incidents.</p>
+                        <p><strong>User Stories:</strong> SIL-7 to SIL-16</p>
+                        <p><strong>Requirement:</strong> Define backup schedule and recovery targets.</p>
+                        <p><strong>Acceptance Criteria:</strong></p>
+                        <ul>
+                            <li>RPO ≤ 24h; RTO ≤ 4h</li>
+                            <li>Backups encrypted at rest</li>
+                            <li>Prototype: JSON export/import verified on test data</li>
+                        </ul>
+                    </div>
+                    <div class="highlight-box">
+                        <h4>RR-04: Data Accuracy & Integrity</h4>
+                        <p><strong>Priority:</strong> <span class="badge badge-critical">Critical</span></p>
+                        <p><strong>Phase IV:</strong> Implement</p>
+                        <p><strong>Rationale:</strong> Incorrect risk results undermine the system's purpose.</p>
+                        <p><strong>User Stories:</strong> SIL-7 to SIL-10</p>
+                        <p><strong>Requirement:</strong> Protect data quality and detect risks accurately.</p>
+                        <p><strong>Acceptance Criteria:</strong></p>
+                        <ul>
+                            <li>False negatives ≤ 1% on a defined test set</li>
+                            <li>False positives < 5% from entry errors</li>
+                            <li>DB constraints prevent impossible data</li>
+                            <li>100% detection on known-risk test trees</li>
+                        </ul>
+                    </div>
+                    <div class="highlight-box">
+                        <h4>RR-05: Performance & Response Time</h4>
+                        <p><strong>Priority:</strong> <span class="badge badge-high">High</span></p>
+                        <p><strong>Phase IV:</strong> Implement</p>
+                        <p><strong>Rationale:</strong> Fast responses increase trust and task completion.</p>
+                        <p><strong>User Stories:</strong> SIL-7, SIL-9, SIL-13</p>
+                        <p><strong>Requirement:</strong> Keep key actions responsive under typical load.</p>
+                        <p><strong>Acceptance Criteria:</strong></p>
+                        <ul>
+                            <li>P95 response &lt; 1.0s for add member, view alerts, book appointment</li>
+                            <li>P99 response &lt; 2.5s for above actions</li>
+                            <li>Prototype includes simple timing output for these actions</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h4>RR-06: Scalability Path [Conceptual]</h4>
+                        <p><strong>Priority:</strong> <span class="badge badge-medium">Medium</span></p>
+                        <p><strong>Phase IV:</strong> Document</p>
+                        <p><strong>Rationale:</strong> Prepare for increased users and data volume.</p>
+                        <p><strong>User Stories:</strong> SIL-7 to SIL-16</p>
+                        <p><strong>Requirement:</strong> Architecture supports horizontal scaling for stateless
+                            services.
+                        </p>
+                        <p><strong>Acceptance Criteria:</strong></p>
+                        <ul>
+                            <li>Design notes for scaling UI/API independently</li>
+                            <li>No hard-coded limits in code for list sizes</li>
+                            <li>Prototype uses collections sized dynamically</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h4>RR-07: Observability & Logging</h4>
+                        <p><strong>Priority:</strong> <span class="badge badge-high">High</span></p>
+                        <p><strong>Phase IV:</strong> Implement core</p>
+                        <p><strong>Rationale:</strong> Diagnose issues and monitor reliability.</p>
+                        <p><strong>User Stories:</strong> SIL-9, SIL-10, SIL-16</p>
+                        <p><strong>Requirement:</strong> Structured logs with levels and correlation IDs.</p>
+                        <p><strong>Acceptance Criteria:</strong></p>
+                        <ul>
+                            <li>INFO for user actions; WARN/ERROR for failures with reasons</li>
+                            <li>Each request/action includes a correlation ID in logs</li>
+                            <li>Prototype prints structured console logs for main flows</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h4>RR-08: Session Reliability & Auto-Save</h4>
+                        <p><strong>Priority:</strong> <span class="badge badge-critical">Critical</span></p>
+                        <p><strong>Phase IV:</strong> Implement</p>
+                        <p><strong>Rationale:</strong> Prevent loss of in-progress data; aligns with SR-03 timeout note.
+                        </p>
+                        <p><strong>User Stories:</strong> SIL-7, SIL-8, SIL-15</p>
+                        <p><strong>Requirement:</strong> Stable sessions with safe inactivity handling.</p>
+                        <p><strong>Acceptance Criteria:</strong></p>
+                        <ul>
+                            <li>Auto-save drafts every 30 seconds (or on step change)</li>
+                            <li>Inactivity logout at 15 minutes; warning at 60 seconds before</li>
+                            <li>On restart, user can restore last draft</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h4>RR-09: Consistency & Concurrency</h4>
+                        <p><strong>Priority:</strong> <span class="badge badge-high">High</span></p>
+                        <p><strong>Phase IV:</strong> Implement core; document full approach</p>
+                        <p><strong>Rationale:</strong> Avoid lost updates when multiple edits occur.</p>
+                        <p><strong>User Stories:</strong> SIL-7, SIL-8, SIL-10</p>
+                        <p><strong>Requirement:</strong> Use optimistic locking/version checks on updates.</p>
+                        <p><strong>Acceptance Criteria:</strong></p>
+                        <ul>
+                            <li>Conflicting edits are detected and surfaced to the user</li>
+                            <li>Atomic add/edit operations for family members</li>
+                            <li>Prototype simulates version check in memory</li>
+                        </ul>
+                    </div>
+                    <h4>2.2.4 Security Requirements</h4>
+                    <div class="highlight-box">
+                        <h4>SR-01: Data Privacy & PII Protection</h4>
+                        <p><strong>Priority:</strong> <span class="badge badge-critical">Critical</span></p>
+                        <p><strong>Phase IV:</strong> Implement core; document full policy</p>
+                        <p><strong>Rationale:</strong> Protect sensitive family medical data and comply with local
+                            regulations.</p>
+                        <p><strong>User Stories:</strong> SIL-7 to SIL-16</p>
+                        <p><strong>Requirement:</strong> Limit collection, mask sensitive fields, and restrict exposure.
+                        </p>
+                        <p><strong>Acceptance Criteria:</strong></p>
+                        <ul>
+                            <li>Only necessary fields collected; optional items clearly labeled</li>
+                            <li>PII redacted in logs and debug output</li>
+                            <li>Access to PII requires authenticated session + role check</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h4>SR-02: Encryption (In Transit & At Rest) [Conceptual]</h4>
+                        <p><strong>Priority:</strong> <span class="badge badge-critical">Critical</span></p>
+                        <p><strong>Phase IV:</strong> Document; prototype simulates at-rest via obfuscation</p>
+                        <p><strong>Rationale:</strong> Prevent eavesdropping and data theft.</p>
+                        <p><strong>User Stories:</strong> SIL-7 to SIL-16</p>
+                        <p><strong>Requirement:</strong> TLS 1.2+ for transit; encrypted storage for PII.</p>
+                        <p><strong>Acceptance Criteria:</strong></p>
+                        <ul>
+                            <li>Design notes: TLS required for all endpoints; HSTS enabled</li>
+                            <li>At rest: keys managed outside code; encrypted backups (see RR-03)</li>
+                            <li>Prototype: no plaintext PII persisted to disk</li>
+                        </ul>
+                    </div>
+                    <div class="highlight-box">
+                        <h4>SR-03: Authentication</h4>
+                        <p><strong>Priority:</strong> <span class="badge badge-critical">Critical</span></p>
+                        <p><strong>Phase IV:</strong> Implement</p>
+                        <p><strong>Rationale:</strong> Only authorized users should access health data.</p>
+                        <p><strong>User Stories:</strong> SIL-15</p>
+                        <p><strong>Requirement:</strong> Follow secure authentication practices.</p>
+                        <p><strong>Acceptance Criteria:</strong></p>
+                        <ul>
+                            <li>Weak passwords rejected</li>
+                            <li>Session tokens rotated at login</li>
+                            <li>Auto-logout after 15 minutes (mirrors RR-08)</li>
+                            <li>Prototype documents hashing policy; production uses bcrypt ≥ 12 rounds +
+                                breached-password
+                                checks</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h4>SR-04: Role-Based Access Control (RBAC)</h4>
+                        <p><strong>Priority:</strong> <span class="badge badge-critical">Critical</span></p>
+                        <p><strong>Phase IV:</strong> Implement</p>
+                        <p><strong>Rationale:</strong> Enforce least privilege by role.</p>
+                        <p><strong>User Stories:</strong> SIL-7 to SIL-16</p>
+                        <p><strong>Requirement:</strong> Three roles with appropriate permissions.</p>
+                        <p><strong>Acceptance Criteria:</strong></p>
+                        <ul>
+                            <li>Role set at account creation</li>
+                            <li>Unauthorized access attempts blocked and logged</li>
+                            <li>UI hides unavailable options</li>
+                            <li>Server-side role checks on every protected API</li>
+                        </ul>
+                    </div>
+                    <div class="highlight-box">
+                        <h4>SR-05: Secure Input Validation & Output Encoding</h4>
+                        <p><strong>Priority:</strong> <span class="badge badge-high">High</span></p>
+                        <p><strong>Phase IV:</strong> Implement</p>
+                        <p><strong>Rationale:</strong> Prevent injection and XSS issues.</p>
+                        <p><strong>User Stories:</strong> SIL-7, SIL-8, SIL-15</p>
+                        <p><strong>Requirement:</strong> Validate on server side; encode all untrusted output.</p>
+                        <p><strong>Acceptance Criteria:</strong></p>
+                        <ul>
+                            <li>Server rejects invalid age/relationship values with clear errors</li>
+                            <li>No direct rendering of raw user input without encoding</li>
+                            <li>Prototype unit tests cover typical injection payloads</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h4>SR-06: Secrets Management</h4>
+                        <p><strong>Priority:</strong> <span class="badge badge-high">High</span></p>
+                        <p><strong>Phase IV:</strong> Document; implement placeholder mechanism</p>
+                        <p><strong>Rationale:</strong> Prevent credential leaks.</p>
+                        <p><strong>User Stories:</strong> SIL-16</p>
+                        <p><strong>Requirement:</strong> No secrets committed to source control; use environment/config
+                            store.</p>
+                        <p><strong>Acceptance Criteria:</strong></p>
+                        <ul>
+                            <li>Repo scan shows no hard-coded secrets/tokens</li>
+                            <li>Prototype reads secrets from environment variables only</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h4>SR-07: Security Logging & Audit Trails</h4>
+                        <p><strong>Priority:</strong> <span class="badge badge-high">High</span></p>
+                        <p><strong>Phase IV:</strong> Implement core (align with RR-07)</p>
+                        <p><strong>Rationale:</strong> Investigate incidents and unauthorized access attempts.</p>
+                        <p><strong>User Stories:</strong> SIL-9, SIL-10, SIL-16</p>
+                        <p><strong>Requirement:</strong> Log auth events, privilege changes, and access denials.</p>
+                        <p><strong>Acceptance Criteria:</strong></p>
+                        <ul>
+                            <li>Login success/failure logged with correlation ID (no PII)</li>
+                            <li>RBAC denials recorded with reason</li>
+                            <li>Prototype prints structured “SECURITY” lines for these events</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h4>SR-08: Dependency & Vulnerability Management</h4>
+                        <p><strong>Priority:</strong> <span class="badge badge-medium">Medium</span></p>
+                        <p><strong>Phase IV:</strong> Document; run basic checks</p>
+                        <p><strong>Rationale:</strong> Reduce risk from third-party libraries.</p>
+                        <p><strong>User Stories:</strong> SIL-16</p>
+                        <p><strong>Requirement:</strong> Keep libraries updated; scan for known CVEs.</p>
+                        <p><strong>Acceptance Criteria:</strong></p>
+                        <ul>
+                            <li>Dependency list maintained; updates planned each sprint</li>
+                            <li>Prototype: build step includes a vulnerability check (report attached)</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h4>SR-09: Data Retention & Right to Erasure</h4>
+                        <p><strong>Priority:</strong> <span class="badge badge-medium">Medium</span></p>
+                        <p><strong>Phase IV:</strong> Document; prototype supports delete/export</p>
+                        <p><strong>Rationale:</strong> Respect user control over personal data.</p>
+                        <p><strong>User Stories:</strong> SIL-15, SIL-16</p>
+                        <p><strong>Requirement:</strong> Define retention periods; allow user-initiated deletion/export.
+                        </p>
+                        <p><strong>Acceptance Criteria:</strong></p>
+                        <ul>
+                            <li>Policy: default retention and deletion triggers defined</li>
+                            <li>Prototype: user data export (JSON) and delete path demonstrated</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h4>SR-10: Third-Party/Clinic Integration Security [Conceptual]</h4>
+                        <p><strong>Priority:</strong> <span class="badge badge-high">High</span></p>
+                        <p><strong>Phase IV:</strong> Document</p>
+                        <p><strong>Rationale:</strong> Securely interact with external clinic systems.</p>
+                        <p><strong>User Stories:</strong> SIL-13, SIL-14</p>
+                        <p><strong>Requirement:</strong> Use signed requests, least-privilege tokens, and input
+                            sanitization
+                            on responses.</p>
+                        <p><strong>Acceptance Criteria:</strong></p>
+                        <ul>
+                            <li>Design specifies token scopes and rotation</li>
+                            <li>All inbound data validated before use</li>
+                        </ul>
+                    </div>
+                    <h3>2.4 Traceability Matrix</h3>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Requirement ID</th>
+                                <th>Priority</th>
+                                <th>Phase IV Status</th>
+                                <th>Related User Stories</th>
+                                <th>Verification Method</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Usability Requirements -->
+                            <tr>
+                                <td><strong>UR-01</strong></td>
+                                <td><span class="badge badge-critical">Critical</span></td>
+                                <td>Implement</td>
+                                <td>SIL-7 to SIL-16</td>
+                                <td>Mobile responsive test (Google Mobile-Friendly)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>UR-02</strong></td>
+                                <td><span class="badge badge-high">High</span></td>
+                                <td>Implement</td>
+                                <td>SIL-7 to SIL-16</td>
+                                <td>WAVE/axe scan + manual NVDA test</td>
+                            </tr>
+                            <tr>
+                                <td><strong>UR-03</strong></td>
+                                <td><span class="badge badge-high">High</span></td>
+                                <td>Implement</td>
+                                <td>SIL-7, SIL-13, SIL-14</td>
+                                <td>Usability timing tests (avg <5 min)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>UR-04</strong></td>
+                                <td><span class="badge badge-high">High</span></td>
+                                <td>Implement</td>
+                                <td>SIL-7 to SIL-16</td>
+                                <td>Arabic/English switch verified</td>
+                            </tr>
+                            <tr>
+                                <td><strong>UR-05</strong></td>
+                                <td><span class="badge badge-high">High</span></td>
+                                <td>Implement</td>
+                                <td>SIL-7, SIL-8, SIL-15</td>
+                                <td>Error message placement verified</td>
+                            </tr>
+                            <tr>
+                                <td><strong>UR-06</strong></td>
+                                <td><span class="badge badge-high">High</span></td>
+                                <td>Implement</td>
+                                <td>SIL-7 to SIL-16</td>
+                                <td>Navigation ≤ 3 clicks</td>
+                            </tr>
+                            <tr>
+                                <td><strong>UR-07</strong></td>
+                                <td><span class="badge badge-medium">Medium</span></td>
+                                <td>Document</td>
+                                <td>SIL-7 to SIL-16</td>
+                                <td>Design system audit</td>
+                            </tr>
+                            <tr>
+                                <td><strong>UR-08</strong></td>
+                                <td><span class="badge badge-medium">Medium</span></td>
+                                <td>Document</td>
+                                <td>SIL-10</td>
+                                <td>First-time use UX evaluation</td>
+                            </tr>
+                            <tr>
+                                <td><strong>UR-09</strong></td>
+                                <td><span class="badge badge-medium">Medium</span></td>
+                                <td>Document</td>
+                                <td>SIL-11</td>
+                                <td>Readability test (grade ≤ 9)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>UR-10</strong></td>
+                                <td><span class="badge badge-medium">Medium</span></td>
+                                <td>Document</td>
+                                <td>SIL-11, 12</td>
+                                <td>System feedback responses</td>
+                            </tr>
+                            <tr>
+                                <td><strong>UR-11</strong></td>
+                                <td><span class="badge badge-low">Low</span></td>
+                                <td>Document</td>
+                                <td>SIL-12</td>
+                                <td>Help & support access test</td>
+                            </tr>
+                            <tr>
+                                <td><strong>UR-12</strong></td>
+                                <td><span class="badge badge-low">Low</span></td>
+                                <td>Document</td>
+                                <td>SIL-12</td>
+                                <td>SUS ≥ 80 % target</td>
+                            </tr>
+
+                            <!-- Reliability Requirements -->
+                            <tr>
+                                <td><strong>RR-01</strong></td>
+                                <td><span class="badge badge-critical">Critical</span></td>
+                                <td>Document</td>
+                                <td>SIL-7 – SIL-16</td>
+                                <td>Availability log (target 99.5 %)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>RR-02</strong></td>
+                                <td><span class="badge badge-high">High</span></td>
+                                <td>Document</td>
+                                <td>SIL-7 – SIL-16</td>
+                                <td>Backup policy simulation</td>
+                            </tr>
+                            <tr>
+                                <td><strong>RR-03</strong></td>
+                                <td><span class="badge badge-medium">Medium</span></td>
+                                <td>Document</td>
+                                <td>SIL-7 – SIL-16</td>
+                                <td>Fault-tolerance test scenario</td>
+                            </tr>
+                            <tr>
+                                <td><strong>RR-04</strong></td>
+                                <td><span class="badge badge-critical">Critical</span></td>
+                                <td>Implement</td>
+                                <td>SIL-7 – SIL-10</td>
+                                <td>Data validation + accuracy check</td>
+                            </tr>
+                            <tr>
+                                <td><strong>RR-05</strong></td>
+                                <td><span class="badge badge-high">High</span></td>
+                                <td>Document</td>
+                                <td>SIL-7 – SIL-16</td>
+                                <td>Browser/device compatibility test</td>
+                            </tr>
+                            <tr>
+                                <td><strong>RR-06</strong></td>
+                                <td><span class="badge badge-medium">Medium</span></td>
+                                <td>Document</td>
+                                <td>SIL-7 – SIL-16</td>
+                                <td>Performance load simulation</td>
+                            </tr>
+                            <tr>
+                                <td><strong>RR-07</strong></td>
+                                <td><span class="badge badge-medium">Medium</span></td>
+                                <td>Document</td>
+                                <td>SIL-11</td>
+                                <td>Content update review log</td>
+                            </tr>
+                            <tr>
+                                <td><strong>RR-08</strong></td>
+                                <td><span class="badge badge-high">High</span></td>
+                                <td>Implement</td>
+                                <td>SIL-15</td>
+                                <td>Session persistence & auto-save</td>
+                            </tr>
+                            <tr>
+                                <td><strong>RR-09</strong></td>
+                                <td><span class="badge badge-medium">Medium</span></td>
+                                <td>Document</td>
+                                <td>SIL-14, 15</td>
+                                <td>API timeout/error test</td>
+                            </tr>
+                            <tr>
+                                <td><strong>RR-10</strong></td>
+                                <td><span class="badge badge-low">Low</span></td>
+                                <td>Simulate</td>
+                                <td>SIL-13</td>
+                                <td>Notification delivery mock test</td>
+                            </tr>
+
+                            <!-- Security Requirements -->
+                            <tr>
+                                <td><strong>SR-01</strong></td>
+                                <td><span class="badge badge-critical">Critical</span></td>
+                                <td>Document</td>
+                                <td>SIL-15</td>
+                                <td>Data encryption at rest plan</td>
+                            </tr>
+                            <tr>
+                                <td><strong>SR-02</strong></td>
+                                <td><span class="badge badge-critical">Critical</span></td>
+                                <td>Document</td>
+                                <td>SIL-15</td>
+                                <td>Transport-layer encryption (HTTPS)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>SR-03</strong></td>
+                                <td><span class="badge badge-critical">Critical</span></td>
+                                <td>Implement</td>
+                                <td>SIL-15</td>
+                                <td>Password & session security test</td>
+                            </tr>
+                            <tr>
+                                <td><strong>SR-04</strong></td>
+                                <td><span class="badge badge-critical">Critical</span></td>
+                                <td>Implement</td>
+                                <td>SIL-7 – SIL-16</td>
+                                <td>Role-based access validation</td>
+                            </tr>
+                            <tr>
+                                <td><strong>SR-05</strong></td>
+                                <td><span class="badge badge-high">High</span></td>
+                                <td>Document</td>
+                                <td>SIL-7 – SIL-16</td>
+                                <td>Consent management audit</td>
+                            </tr>
+                            <tr>
+                                <td><strong>SR-06</strong></td>
+                                <td><span class="badge badge-high">High</span></td>
+                                <td>Document</td>
+                                <td>SIL-7 – SIL-16</td>
+                                <td>Audit log review procedure</td>
+                            </tr>
+                            <tr>
+                                <td><strong>SR-07</strong></td>
+                                <td><span class="badge badge-critical">Critical</span></td>
+                                <td>Implement</td>
+                                <td>SIL-7 – SIL-10</td>
+                                <td>Input validation & sanitization test</td>
+                            </tr>
+                            <tr>
+                                <td><strong>SR-08</strong></td>
+                                <td><span class="badge badge-high">High</span></td>
+                                <td>Document</td>
+                                <td>SIL-7 – SIL-10</td>
+                                <td>Privacy review (data minimization)</td>
+                            </tr>
+                            <tr>
+                                <td><strong>SR-09</strong></td>
+                                <td><span class="badge badge-high">High</span></td>
+                                <td>Implement</td>
+                                <td>SIL-15</td>
+                                <td>Secure password reset scenario</td>
+                            </tr>
+                            <tr>
+                                <td><strong>SR-10</strong></td>
+                                <td><span class="badge badge-high">High</span></td>
+                                <td>Document</td>
+                                <td>SIL-12 – SIL-14</td>
+                                <td>Awareness Hub content security check</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>2.5 Implementation Summary</h3>
+
+                    <div style="display:flex; flex-wrap:wrap; gap:20px; justify-content:space-between;">
+
+                        <div
+                            style="flex:1 1 30%; background:#f5f6f7; border-radius:12px; padding:20px; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+                            <h4 style="margin-top:0; color:#0a544f;">Total NFRs</h4>
+                            <p style="font-size:1.1em; margin-bottom:10px;"><strong>32 Total</strong></p>
+                            <div style="display:flex; flex-direction:column; gap:8px;">
+                                <div style="background:#eee; border-radius:8px; padding:6px 10px;">
+                                    <strong>Critical:</strong> 9
+                                </div>
+                                <div style="background:#eee; border-radius:8px; padding:6px 10px;">
+                                    <strong>High:</strong> 15
+                                </div>
+                                <div style="background:#eee; border-radius:8px; padding:6px 10px;">
+                                    <strong>Medium:</strong>
+                                    8</div>
+                            </div>
+                        </div>
+
+                        <div
+                            style="flex:1 1 35%; background:#f5f6f7; border-radius:12px; padding:20px; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+                            <h4 style="margin-top:0; color:#0a544f;">Phase IV Plan</h4>
+                            <ul style="list-style:none; padding-left:0; line-height:1.8;">
+                                <li><strong>Implement:</strong> 18 (prototype core)</li>
+                                <li><strong>Simulate:</strong> 1 (notification delivery)</li>
+                                <li><strong>Document:</strong> 13 (production-scale, conceptual)</li>
+                            </ul>
+                        </div>
+                        <div
+                            style="flex:1 1 30%; background:#f5f6f7; border-radius:12px; padding:20px; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+                            <h4 style="margin-top:0; color:#0a544f;">Prototype Focus</h4>
+                            <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                                <span
+                                    style="background:#e8e9eb; border-radius:20px; padding:8px 12px; font-weight:500;">Responsive
+                                    family health tree</span>
+                                <span
+                                    style="background:#e8e9eb; border-radius:20px; padding:8px 12px; font-weight:500;">Basic
+                                    risk rules + validation</span>
+                                <span
+                                    style="background:#e8e9eb; border-radius:20px; padding:8px 12px; font-weight:500;">Arabic/English
+                                    content</span>
+                                <span
+                                    style="background:#e8e9eb; border-radius:20px; padding:8px 12px; font-weight:500;">Secure
+                                    authentication</span>
+                                <span
+                                    style="background:#e8e9eb; border-radius:20px; padding:8px 12px; font-weight:500;">Reliable
+                                    session + auto-save</span>
+                                <span
+                                    style="background:#e8e9eb; border-radius:20px; padding:8px 12px; font-weight:500;">Clear
+                                    feedback & messaging</span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- ETHICS CONSIDERATIONS -->
+                    <h3>2.6 Ethics Considerations</h3>
+                    <p>The development and deployment of the Sillah Family Health Management System involve significant
+                        ethical considerations due to the sensitive nature of health data and the potential impact on
+                        users' healthcare decisions.</p>
+
+                    <div class="highlight-box">
+                        <h4>2.6.1 Data Privacy and Confidentiality</h4>
+                        <ul>
+                            <li><strong>Health Data Sensitivity:</strong> Family health history constitutes highly
+                                sensitive personal information requiring the highest level of protection against
+                                unauthorized access or disclosure.</li>
+                            <li><strong>Informed Consent:</strong> Users must provide explicit, informed consent before
+                                their data is collected or processed, with clear explanations of how their information
+                                will be used.</li>
+                            <li><strong>Data Minimization:</strong> Only essential health information required for
+                                hereditary risk assessment is collected, avoiding unnecessary personal data storage.
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h4>2.6.2 Algorithmic Fairness and Bias</h4>
+                        <ul>
+                            <li><strong>Inclusive Risk Assessment:</strong> The rule-based risk detection algorithms
+                                must be designed to work equitably across different demographic groups and family
+                                structures.</li>
+                            <li><strong>Transparent Logic:</strong> Risk calculation methodologies should be explainable
+                                to users, avoiding "black box" decisions that cannot be justified or understood.</li>
+                            <li><strong>Regular Validation:</strong> Risk detection rules should be periodically
+                                reviewed by medical professionals to ensure accuracy and prevent misdiagnosis.</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h4>2.6.3 User Autonomy and Decision-Making</h4>
+                        <ul>
+                            <li><strong>Educational Purpose:</strong> The system explicitly states that risk alerts are
+                                for educational and screening purposes only, not medical diagnoses.</li>
+                            <li><strong>User Empowerment:</strong> The system provides information and recommendations
+                                while preserving users' autonomy in healthcare decisions.</li>
+                            <li><strong>Voluntary Participation:</strong> All system usage is voluntary, with clear
+                                options to withdraw consent and request data deletion.</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h4>2.6.4 Social and Cultural Considerations</h4>
+                        <ul>
+                            <li><strong>Family Dynamics:</strong> The system respects potential cultural sensitivities
+                                around hereditary conditions and family health discussions.</li>
+                            <li><strong>Language Accessibility:</strong> Bilingual support ensures equitable access for
+                                both Arabic and English speakers in Saudi Arabia.</li>
+                            <li><strong>Digital Inclusion:</strong> Mobile-first design and accessibility features
+                                prevent exclusion of users with disabilities or limited technology access.</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight-box">
+                        <h4>2.6.5 Professional Responsibility</h4>
+                        <ul>
+                            <li><strong>Medical Disclaimer:</strong> Clear disclaimers indicate that the system
+                                complements but does not replace professional medical advice.</li>
+                            <li><strong>Content Accuracy:</strong> All educational materials are medically reviewed to
+                                prevent misinformation.</li>
+                            <li><strong>Referral Integrity:</strong> Clinic recommendations are based on objective
+                                criteria without commercial influence or bias.</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight-box">
+
+                        <h4>2.6.6 Implementation Ethics</h4>
+                        <ul>
+                            <li><strong>Transparent Development:</strong> The development process maintains transparency
+                                about system capabilities and limitations.</li>
+                            <li><strong>Testing Ethics:</strong> User testing follows ethical guidelines with proper
+                                consent and data protection.</li>
+                            <li><strong>Continuous Oversight:</strong> Regular ethical reviews ensure the system
+                                continues to operate responsibly as it evolves.</li>
+                        </ul>
+                        <p>These ethical guidelines ensure that Sillah not only meets technical and functional
+                            requirements but also operates as a responsible, trustworthy healthcare technology that
+                            respects user rights and promotes equitable health outcomes.</p>
+                    </div>
+
+
             </div>
-
-            <div class="highlight-box">
-                <h4>2.6.2 Algorithmic Fairness and Bias</h4>
-                <ul>
-                    <li><strong>Inclusive Risk Assessment:</strong> The rule-based risk detection algorithms must be designed to work equitably across different demographic groups and family structures.</li>
-                    <li><strong>Transparent Logic:</strong> Risk calculation methodologies should be explainable to users, avoiding "black box" decisions that cannot be justified or understood.</li>
-                    <li><strong>Regular Validation:</strong> Risk detection rules should be periodically reviewed by medical professionals to ensure accuracy and prevent misdiagnosis.</li>
-                </ul>
-            </div>
-
-            <div class="highlight-box">
-                <h4>2.6.3 User Autonomy and Decision-Making</h4>
-                <ul>
-                    <li><strong>Educational Purpose:</strong> The system explicitly states that risk alerts are for educational and screening purposes only, not medical diagnoses.</li>
-                    <li><strong>User Empowerment:</strong> The system provides information and recommendations while preserving users' autonomy in healthcare decisions.</li>
-                    <li><strong>Voluntary Participation:</strong> All system usage is voluntary, with clear options to withdraw consent and request data deletion.</li>
-                </ul>
-            </div>
-
-            <div class="highlight-box">
-                <h4>2.6.4 Social and Cultural Considerations</h4>
-                <ul>
-                    <li><strong>Family Dynamics:</strong> The system respects potential cultural sensitivities around hereditary conditions and family health discussions.</li>
-                    <li><strong>Language Accessibility:</strong> Bilingual support ensures equitable access for both Arabic and English speakers in Saudi Arabia.</li>
-                    <li><strong>Digital Inclusion:</strong> Mobile-first design and accessibility features prevent exclusion of users with disabilities or limited technology access.</li>
-                </ul>
-            </div>
-
-            <div class="highlight-box">
-                <h4>2.6.5 Professional Responsibility</h4>
-                <ul>
-                    <li><strong>Medical Disclaimer:</strong> Clear disclaimers indicate that the system complements but does not replace professional medical advice.</li>
-                    <li><strong>Content Accuracy:</strong> All educational materials are medically reviewed to prevent misinformation.</li>
-                    <li><strong>Referral Integrity:</strong> Clinic recommendations are based on objective criteria without commercial influence or bias.</li>
-                </ul>
-            </div>
-
-            <div class="highlight-box">
-                
-                <h4>2.6.6 Implementation Ethics</h4>
-                <ul>
-                    <li><strong>Transparent Development:</strong> The development process maintains transparency about system capabilities and limitations.</li>
-                    <li><strong>Testing Ethics:</strong> User testing follows ethical guidelines with proper consent and data protection.</li>
-                    <li><strong>Continuous Oversight:</strong> Regular ethical reviews ensure the system continues to operate responsibly as it evolves.</li>
-                </ul>
-                <p>These ethical guidelines ensure that Sillah not only meets technical and functional requirements but also operates as a responsible, trustworthy healthcare technology that respects user rights and promotes equitable health outcomes.</p>
-            </div>
-                   
-
-                </div>
             </section>
 
             <!-- PHASE III: SOFTWARE INITIAL DESIGN -->
@@ -1776,11 +2169,11 @@
             <p>Alomran, S. F. (2025). <em>Sillah (صلة): Preventive Family Health Risk Detection System</em> [Java
                 project]. Prince Sultan University, SE201 – Introduction to Software Engineering.</p>
             <p>GitHub Repository: <a href="https://github.com/Shoug-Alomran/SE201--Sillah-Project" target="_blank"
-                    style="color: #2a5298;">https://github.com/Shoug-Alomran/SE201--Sillah-Project</a></p>
+                    style="color: #0f766e;">https://github.com/Shoug-Alomran/SE201--Sillah-Project</a></p>
             <p>Atlassian Jira (2025). <em>Sillah Project Management Board</em>. Prince Sultan University – SE201
                 Course.</p>
             <p>Jira Board: <a href="https://sillah.atlassian.net" target="_blank"
-                    style="color: #2a5298;">https://sillah.atlassian.net</a></p>
+                    style="color: #0f766e;">https://sillah.atlassian.net</a></p>
         </section>
 
         <!-- APPENDIX A: CODE IMPLEMENTATION -->
@@ -2062,6 +2455,66 @@
         <p>© 2025 | Developed by Team Sillah</p>
     </div>
     </div>
+
+    <!-- SIDE RAIL: report facts, fills the right gutter on wide desktop screens -->
+    <aside class="side-rail side-rail--right">
+        <div class="side-rail__card">
+            <div class="side-rail__title">At a Glance</div>
+            <div class="side-rail__stats">
+                <div class="side-rail__stat"><span>Phases</span><strong>4</strong></div>
+                <div class="side-rail__stat"><span>Functional Reqs</span><strong>6</strong></div>
+                <div class="side-rail__stat"><span>NFRs Tracked</span><strong>31</strong></div>
+                <div class="side-rail__stat"><span>Java Classes</span><strong>10</strong></div>
+                <div class="side-rail__stat"><span>Contributors</span><strong>4</strong></div>
+            </div>
+        </div>
+    </aside>
+    </div>
+
+    <script>
+        // Scroll-reveal for report sections
+        var sections = document.querySelectorAll('.section');
+        if ('IntersectionObserver' in window) {
+            var revealObserver = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        revealObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0, rootMargin: '0px 0px -40px 0px' });
+            sections.forEach(function (section) { revealObserver.observe(section); });
+        } else {
+            sections.forEach(function (section) { section.classList.add('is-visible'); });
+        }
+
+        // Safety net: guarantee every section is readable even if the observer
+        // logic above ever misses one (e.g. a very tall section).
+        setTimeout(function () {
+            sections.forEach(function (section) { section.classList.add('is-visible'); });
+        }, 4000);
+
+        // Active-link highlighting for the sticky quick-nav rail
+        var navLinks = document.querySelectorAll('#quick-nav a');
+        var targets = Array.prototype.map.call(navLinks, function (link) {
+            return document.querySelector(link.getAttribute('href'));
+        }).filter(Boolean);
+
+        if ('IntersectionObserver' in window && targets.length) {
+            var navObserver = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    var id = entry.target.getAttribute('id');
+                    var link = document.querySelector('#quick-nav a[href="#' + id + '"]');
+                    if (!link) return;
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(function (l) { l.classList.remove('active'); });
+                        link.classList.add('active');
+                    }
+                });
+            }, { rootMargin: '-40% 0px -50% 0px' });
+            targets.forEach(function (target) { navObserver.observe(target); });
+        }
+    </script>
 </body>
 
 </html>

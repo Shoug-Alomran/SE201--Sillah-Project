@@ -1,6 +1,6 @@
 # Team Members
 
-### Prince Sultan University  
+## Prince Sultan University  
 **Course:** SE201 – Software Engineering  
 **Project Title:** Sillah (صلة) – Family Health Management System
 

@@ -1,20 +1,20 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap');
-
 :root {
-  --bg: #f4fbf8;
-  --bg-soft: #ecf8f3;
+  --bg: #eef8f4;
+  --bg-soft: #e3f4ec;
   --surface: #ffffff;
   --surface-soft: #f6fcfa;
-  --text: #12322a;
-  --text-soft: #4c6d64;
-  --line: #cce5db;
-  --line-strong: #9ccfbc;
-  --primary: #0f766e;
-  --primary-strong: #0a544f;
-  --accent: #1d9b84;
+  --text: #0a2620;
+  --text-soft: #3d5f56;
+  --line: #bfe2d3;
+  --line-strong: #7dc4a9;
+  --primary: #0d9488;
+  --primary-strong: #065f46;
+  --accent: #14b8a6;
+  --pop: #d97706;
+  --pop-strong: #92400e;
   --danger: #b42318;
-  --shadow-sm: 0 6px 18px rgba(13, 62, 51, 0.08);
-  --shadow-md: 0 14px 32px rgba(13, 62, 51, 0.12);
+  --shadow-sm: 0 6px 18px rgba(6, 40, 34, 0.1);
+  --shadow-md: 0 14px 32px rgba(6, 40, 34, 0.16);
 }
 
 [data-md-color-scheme='slate'] {
@@ -41,10 +41,18 @@ body,
 
 body {
   background:
+    radial-gradient(circle at 12% 8%, rgba(20, 184, 166, 0.22), transparent 32%),
+    radial-gradient(circle at 90% 4%, rgba(13, 148, 136, 0.2), transparent 34%),
+    radial-gradient(circle at 78% 68%, rgba(217, 119, 6, 0.1), transparent 38%),
+    linear-gradient(150deg, var(--bg), var(--bg-soft));
+  color: var(--text);
+}
+
+[data-md-color-scheme='slate'] body {
+  background:
     radial-gradient(circle at 12% 8%, rgba(29, 155, 132, 0.1), transparent 26%),
     radial-gradient(circle at 88% 0%, rgba(15, 118, 110, 0.12), transparent 28%),
     linear-gradient(150deg, var(--bg), var(--bg-soft));
-  color: var(--text);
 }
 
 h1,
@@ -56,14 +64,12 @@ h3,
   color: var(--text);
 }
 
+/* Unified saturated brand bar (header + tabs) in both light and dark mode —
+   a flat pastel header was the biggest source of "boring" in light mode. */
 .md-header {
-  background: linear-gradient(125deg, #e5f7f0 0%, #d8f1ea 55%, #e8f9f6 100%) !important;
-  border-bottom: 1px solid var(--line);
-  box-shadow: var(--shadow-sm);
-}
-
-[data-md-color-scheme='slate'] .md-header {
-  background: linear-gradient(125deg, #15332d 0%, #12342d 55%, #133a32 100%) !important;
+  background: linear-gradient(125deg, #054135 0%, #0d9488 55%, #14b8a6 100%) !important;
+  border-bottom: none;
+  box-shadow: 0 10px 26px rgba(5, 65, 53, 0.28);
 }
 
 .md-header__title,
@@ -71,23 +77,23 @@ h3,
 .md-search__icon,
 .md-search__input,
 .md-search__input::placeholder {
-  color: var(--text) !important;
+  color: #fff !important;
 }
 
 .md-search__form {
-  background: rgba(255, 255, 255, 0.58) !important;
-  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.18) !important;
+  border: 1px solid rgba(255, 255, 255, 0.32);
   border-radius: 999px;
 }
 
-[data-md-color-scheme='slate'] .md-search__form {
-  background: rgba(17, 35, 30, 0.75) !important;
+.md-search__form:hover {
+  background: rgba(255, 255, 255, 0.26) !important;
 }
 
 .md-tabs {
   display: block !important;
-  background: transparent !important;
-  border-top: 1px solid rgba(156, 207, 188, 0.35);
+  background: linear-gradient(125deg, #043a2f 0%, #0b8377 100%) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
 }
 
 .md-tabs__list {
@@ -104,8 +110,8 @@ h3,
 
 .md-tabs__link {
   border-radius: 999px;
-  background: rgba(15, 118, 110, 0.08);
-  color: var(--text-soft) !important;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.82) !important;
   font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.02em;
@@ -114,15 +120,16 @@ h3,
 }
 
 .md-tabs__link:hover {
-  transform: translateY(-1px);
-  background: rgba(15, 118, 110, 0.16);
-  color: var(--text) !important;
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff !important;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
 }
 
 .md-tabs__link--active {
-  background: linear-gradient(135deg, var(--primary), var(--accent));
-  color: #fff !important;
-  box-shadow: 0 8px 16px rgba(11, 84, 79, 0.28);
+  background: linear-gradient(135deg, var(--pop), #f59e0b);
+  color: #3a2205 !important;
+  box-shadow: 0 8px 16px rgba(146, 64, 14, 0.35);
 }
 
 .md-main {
@@ -134,8 +141,7 @@ h3,
 }
 
 .md-content,
-.md-sidebar__scrollwrap,
-.md-nav--secondary {
+.md-sidebar__scrollwrap {
   background: transparent;
 }
 
@@ -151,46 +157,278 @@ h3,
   background: linear-gradient(160deg, rgba(16, 38, 33, 0.86), rgba(19, 45, 38, 0.92));
 }
 
-.md-nav--primary .md-nav__link,
-.md-nav--secondary .md-nav__link {
-  border-radius: 12px;
-  padding: 0.38rem 0.65rem;
+/* ===== SIDEBAR NAV + TOC: cohesive cards instead of loose floating text =====
+   Material's own mobile-drawer nav title (white pill + hard box-shadow) was
+   leaking into the desktop layout and clashing with the rest of the design —
+   that's the "feels broken" bit. Everything below replaces it with one
+   consistent card treatment shared by the primary nav and the TOC. */
+.md-sidebar--primary .md-sidebar__inner,
+.md-sidebar--secondary .md-sidebar__inner {
+  background: linear-gradient(170deg, rgba(255, 255, 255, 0.82), rgba(246, 252, 249, 0.88));
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 0.7rem 0.6rem;
+  box-shadow: var(--shadow-sm);
 }
 
-.md-nav--primary .md-nav__link:hover,
-.md-nav--secondary .md-nav__link:hover {
-  background: rgba(15, 118, 110, 0.1);
+[data-md-color-scheme='slate'] .md-sidebar--primary .md-sidebar__inner,
+[data-md-color-scheme='slate'] .md-sidebar--secondary .md-sidebar__inner {
+  background: linear-gradient(160deg, rgba(16, 38, 33, 0.8), rgba(19, 45, 38, 0.86));
 }
 
-.md-nav--primary .md-nav__link--active,
-.md-nav--secondary .md-nav__link--active {
-  background: rgba(15, 118, 110, 0.16) !important;
-  color: var(--primary) !important;
-  font-weight: 700;
+/* Pages with no headings render an empty <nav class="md-nav--secondary">
+   (no title, no list) — without this the TOC card still shows as a blank
+   floating box. Hide the card entirely when there's nothing in it. */
+.md-sidebar--secondary:not(:has(.md-nav__list)) {
+  display: none !important;
+}
+
+.md-nav__title {
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--text-soft) !important;
+  font-weight: 700 !important;
+  font-size: 0.72rem !important;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.4rem 0.5rem !important;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 0.35rem;
+}
+
+.md-nav__title .md-nav__icon {
+  filter: none;
+}
+
+/* The nested "section index" title (e.g. "Code") reuses .md-nav__title too —
+   give it a bit more presence than the plain uppercase TOC/nav label above. */
+.md-nav__item--section > .md-nav__link,
+.md-nav__item .md-nav--primary > .md-nav__title {
+  color: var(--text) !important;
 }
 
 .md-nav--secondary .md-nav__title {
   border-radius: 12px;
   border: 1px solid var(--line);
-  background: linear-gradient(120deg, rgba(15, 118, 110, 0.14), rgba(29, 155, 132, 0.12));
+  background: linear-gradient(120deg, rgba(13, 148, 136, 0.16), rgba(20, 184, 166, 0.14)) !important;
+  color: var(--text) !important;
+  text-transform: none;
+  font-size: 0.85rem !important;
+  letter-spacing: normal;
+  padding: 0.55rem 0.75rem !important;
+  border-bottom: none;
+  margin-bottom: 0.5rem;
+}
+
+.md-nav--primary .md-nav__list,
+.md-nav--secondary .md-nav__list {
+  padding: 0 0.1rem;
+}
+
+.md-nav--primary .md-nav__link,
+.md-nav--secondary .md-nav__link {
+  position: relative;
+  border-radius: 10px;
+  padding: 0.4rem 0.65rem 0.4rem 0.85rem;
+  color: var(--text-soft);
+  transition: background 0.16s ease, transform 0.16s ease, color 0.16s ease;
+}
+
+.md-nav--primary .md-nav__link::before,
+.md-nav--secondary .md-nav__link::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 0;
+  border-radius: 999px;
+  background: var(--pop);
+  transition: height 0.18s ease;
+}
+
+.md-nav--primary .md-nav__link:hover,
+.md-nav--secondary .md-nav__link:hover {
+  background: rgba(13, 148, 136, 0.1);
   color: var(--text);
+  transform: translateX(3px);
+}
+
+.md-nav--primary .md-nav__link--active,
+.md-nav--secondary .md-nav__link--active {
+  background: rgba(13, 148, 136, 0.16) !important;
+  color: var(--primary-strong) !important;
+  font-weight: 700;
+}
+
+.md-nav--primary .md-nav__link--active::before,
+.md-nav--secondary .md-nav__link--active::before {
+  height: 60%;
+}
+
+.md-nav--primary .md-nav__item .md-nav {
+  border-left: 1px dashed var(--line-strong);
+  margin-left: 0.55rem;
+  padding-left: 0.35rem;
+}
+
+.md-typeset {
+  line-height: 1.75;
 }
 
 .md-typeset p,
-.md-typeset li,
+.md-typeset li {
+  color: var(--text);
+  font-size: 1.02rem;
+}
+
 .md-typeset td,
 .md-typeset th,
 .md-typeset blockquote {
   color: var(--text-soft);
 }
 
+.md-typeset p {
+  margin-bottom: 1.1rem;
+}
+
+.md-typeset strong {
+  color: var(--primary-strong);
+  font-weight: 800;
+  background: linear-gradient(transparent 62%, rgba(20, 184, 166, 0.22) 62%);
+}
+
+[data-md-color-scheme='slate'] .md-typeset strong {
+  background: linear-gradient(transparent 62%, rgba(86, 204, 178, 0.22) 62%);
+}
+
+/* Tables use bold routinely for structure (IDs, row titles) rather than for
+   emphasis — the highlighter-marker treatment above reads as noise when
+   nearly every cell has it, so keep table strong text plain. */
+.md-typeset table strong {
+  color: inherit;
+  font-weight: 700;
+  background: none;
+}
+
+.md-typeset em {
+  color: var(--text);
+}
+
+.md-typeset code {
+  background: rgba(13, 148, 136, 0.1);
+  color: var(--primary-strong);
+  border: 1px solid rgba(13, 148, 136, 0.18);
+  border-radius: 6px;
+  padding: 0.1em 0.4em;
+  font-weight: 600;
+}
+
+[data-md-color-scheme='slate'] .md-typeset code {
+  color: var(--accent);
+}
+
+.md-typeset pre code {
+  background: none;
+  border: none;
+  color: inherit;
+  padding: 0;
+  font-weight: 400;
+}
+
 .md-typeset a {
   color: var(--primary);
-  font-weight: 600;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: rgba(13, 148, 136, 0.35);
+  text-underline-offset: 3px;
+  transition: color 0.16s ease, text-decoration-color 0.16s ease;
 }
 
 .md-typeset a:hover {
   color: var(--primary-strong);
+  text-decoration-color: currentColor;
+}
+
+.md-typeset hr {
+  border: none;
+  height: 2px;
+  margin: 2rem 0;
+  background: linear-gradient(90deg, var(--primary), var(--pop), transparent);
+  border-radius: 999px;
+  opacity: 0.5;
+}
+
+/* Custom bullets/numbers instead of the default browser markers — small
+   branded accents that carry through the teal/amber palette used elsewhere. */
+.md-typeset ul > li,
+.md-typeset ol > li {
+  margin-bottom: 0.55rem;
+  padding-left: 0.3rem;
+}
+
+.md-typeset ul {
+  list-style: none;
+  margin-left: 0.4rem;
+}
+
+.md-typeset ul > li {
+  position: relative;
+  padding-left: 1.3rem;
+}
+
+.md-typeset ul > li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+}
+
+.md-typeset ol {
+  list-style: none;
+  counter-reset: sillah-ol;
+  margin-left: 0.4rem;
+}
+
+.md-typeset ol > li {
+  position: relative;
+  counter-increment: sillah-ol;
+  padding-left: 2.1rem;
+}
+
+.md-typeset ol > li::before {
+  content: counter(sillah-ol);
+  position: absolute;
+  left: 0;
+  top: 0.05em;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: rgba(13, 148, 136, 0.14);
+  color: var(--primary-strong);
+  font-weight: 800;
+  font-size: 0.78rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.md-typeset ul ul,
+.md-typeset ol ol,
+.md-typeset ul ol,
+.md-typeset ol ul {
+  margin-top: 0.5rem;
+}
+
+.md-typeset ul ul > li::before {
+  width: 5px;
+  height: 5px;
+  background: var(--line-strong);
 }
 
 .md-typeset table:not([class]) {
@@ -215,22 +453,22 @@ h3,
 .header-cta {
   margin-left: auto;
   border-radius: 999px;
-  background: linear-gradient(135deg, var(--primary), var(--accent));
-  color: #fff !important;
+  background: linear-gradient(135deg, var(--pop), #f59e0b);
+  color: #3a2205 !important;
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.02em;
   padding: 0.42rem 0.85rem;
-  box-shadow: 0 8px 18px rgba(15, 118, 110, 0.25);
+  box-shadow: 0 8px 18px rgba(146, 64, 14, 0.35);
 }
 
 .header-cta:hover {
-  background: linear-gradient(135deg, var(--primary-strong), var(--primary));
+  background: linear-gradient(135deg, #f59e0b, #fbbf24);
 }
 
 .custom-footer {
   margin-top: 2rem;
-  background: linear-gradient(120deg, #ddf4ec 0%, #e8f8f3 45%, #dff5ef 100%) !important;
+  background: linear-gradient(120deg, #d5f0e6 0%, #c7ebdc 45%, #d9f2e8 100%) !important;
   color: var(--text) !important;
   border-top: 1px solid var(--line) !important;
   padding: 2.8rem 1rem !important;
@@ -273,6 +511,13 @@ h3,
 .custom-footer__note,
 .footer-link {
   color: var(--text-soft) !important;
+}
+
+.footer-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0.15rem 0;
 }
 
 .custom-footer__form {
@@ -425,7 +670,7 @@ h3,
 .md-footer {
   margin-top: 2rem;
   border-top: 1px solid var(--line);
-  background: linear-gradient(118deg, #ddf4ec 0%, #e8f8f3 48%, #e1f6ef 100%) !important;
+  background: linear-gradient(118deg, #d5f0e6 0%, #c7ebdc 48%, #d9f2e8 100%) !important;
 }
 
 [data-md-color-scheme='slate'] .md-footer {
@@ -745,6 +990,10 @@ h3,
     align-items: start;
   }
 
+  .md-main__inner:not(:has(.md-sidebar--secondary .md-nav__list)) {
+    grid-template-columns: 280px minmax(0, 1fr) !important;
+  }
+
   .md-sidebar--primary,
   .md-sidebar--secondary {
     display: block;
@@ -984,5 +1233,420 @@ h3,
 
   .custom-footer__right {
     grid-template-columns: 1fr;
+  }
+}
+
+/* ===== MOVEMENT: ambient header motion, hero, scroll reveal, hover life ===== */
+@keyframes sillah-gradient-shift {
+
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes sillah-drift {
+
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate(3vw, 2vh) scale(1.08);
+  }
+}
+
+@keyframes sillah-float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes sillah-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Page-load entrance for the main panels — a simple CSS animation (not
+   scroll-triggered) so it can never get stuck at opacity:0. */
+.md-content__inner {
+  animation: sillah-enter 0.5s ease both;
+}
+
+.md-sidebar--primary .md-sidebar__inner {
+  animation: sillah-enter 0.5s ease 0.06s both;
+}
+
+.md-sidebar--secondary .md-sidebar__inner {
+  animation: sillah-enter 0.5s ease 0.12s both;
+}
+
+/* Nav links cascade in one after another instead of popping in all at once. */
+.md-nav--primary .md-nav__item,
+.md-nav--secondary .md-nav__item {
+  animation: sillah-enter 0.4s ease both;
+}
+
+.md-nav__item:nth-child(1) {
+  animation-delay: 0.05s;
+}
+
+.md-nav__item:nth-child(2) {
+  animation-delay: 0.08s;
+}
+
+.md-nav__item:nth-child(3) {
+  animation-delay: 0.11s;
+}
+
+.md-nav__item:nth-child(4) {
+  animation-delay: 0.14s;
+}
+
+.md-nav__item:nth-child(5) {
+  animation-delay: 0.17s;
+}
+
+.md-nav__item:nth-child(6) {
+  animation-delay: 0.2s;
+}
+
+.md-nav__item:nth-child(7) {
+  animation-delay: 0.23s;
+}
+
+.md-nav__item:nth-child(8) {
+  animation-delay: 0.26s;
+}
+
+.md-nav__item:nth-child(n + 9) {
+  animation-delay: 0.29s;
+}
+
+/* Scroll progress bar, filled in by javascripts/reveal.js */
+#sillah-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0%;
+  z-index: 100;
+  background: linear-gradient(90deg, var(--pop), #fbbf24, var(--accent));
+  box-shadow: 0 0 8px rgba(217, 119, 6, 0.6);
+  transition: width 0.1s linear;
+}
+
+.md-header {
+  background-size: 200% 200% !important;
+  animation: sillah-gradient-shift 14s ease infinite;
+  position: relative;
+}
+
+.md-header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background: radial-gradient(circle at 85% 0%, rgba(15, 118, 110, 0.16), transparent 55%);
+  animation: sillah-drift 16s ease-in-out infinite;
+}
+
+.md-header__button.md-logo img,
+.md-header__button.md-logo svg {
+  animation: sillah-float 5s ease-in-out infinite;
+}
+
+.header-cta {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.header-cta:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 12px 22px rgba(15, 118, 110, 0.32);
+}
+
+.footer-link {
+  display: inline-flex;
+  transition: color 0.16s ease, transform 0.16s ease;
+}
+
+.footer-link:hover {
+  transform: translateX(3px);
+}
+
+/* Scroll reveal: javascripts/reveal.js tags elements with data-sillah-reveal,
+   then data-sillah-revealed on entry. Data attributes (not classes) so this
+   can never collide with class-dependent styling elsewhere — it did once,
+   silently stripping the table styles below by adding class="reveal" to
+   every table, which broke the `table:not([class])` selectors. */
+[data-sillah-reveal] {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+[data-sillah-reveal][data-sillah-revealed] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Card-like content blocks get a gentle hover lift for tactile feedback */
+.md-typeset .admonition,
+.md-typeset details,
+.md-typeset table:not([class]) {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.md-typeset .admonition:hover,
+.md-typeset details:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.md-typeset table:not([class]) tbody tr {
+  transition: background 0.18s ease;
+}
+
+.md-typeset table:not([class]) tbody tr:hover {
+  background: rgba(15, 118, 110, 0.08);
+}
+
+/* Hero banner used on the homepage */
+.sillah-hero {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  padding: 2.2rem 2rem;
+  margin: 0 0 1.6rem;
+  border-radius: 22px;
+  background: linear-gradient(125deg, #054135 0%, #0d9488 55%, #14b8a6 100%);
+  background-size: 200% 200%;
+  animation: sillah-gradient-shift 12s ease infinite;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: var(--shadow-md);
+}
+
+.sillah-hero::before {
+  content: '';
+  position: absolute;
+  top: -30%;
+  right: -10%;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(217, 119, 6, 0.4), transparent 70%);
+  animation: sillah-drift 10s ease-in-out infinite;
+}
+
+.sillah-hero__logo {
+  width: 104px;
+  height: 104px;
+  border-radius: 24px;
+  box-shadow: 0 14px 30px rgba(15, 60, 50, 0.22);
+  animation: sillah-float 5s ease-in-out infinite;
+  flex: 0 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.sillah-hero__text {
+  position: relative;
+  z-index: 1;
+  min-width: 240px;
+  flex: 1 1 320px;
+}
+
+.sillah-hero__eyebrow {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #3a2205;
+  background: linear-gradient(135deg, var(--pop), #f59e0b);
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  margin-bottom: 0.6rem;
+}
+
+.sillah-hero__title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 2rem;
+  line-height: 1.15;
+  color: #fff;
+  margin-bottom: 0.4rem;
+}
+
+.sillah-hero__subtitle {
+  color: rgba(255, 255, 255, 0.86) !important;
+  font-size: 1.02rem;
+  max-width: 46ch;
+}
+
+.sillah-hero__stats {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: 1.4rem;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+.sillah-hero__stat {
+  text-align: center;
+}
+
+.sillah-hero__stat strong {
+  display: block;
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 1.6rem;
+  color: #fbbf24;
+}
+
+.sillah-hero__stat span {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+/* ===== PAGE HERO CARDS =====
+   Every page's title (the first h1 Material renders from the page's
+   heading) becomes a small branded hero card, echoing the homepage hero
+   instead of sitting as plain dark text on the content card. */
+.md-typeset h1 {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(125deg, #054135 0%, #0d9488 55%, #14b8a6 100%);
+  background-size: 200% 200%;
+  animation: sillah-gradient-shift 14s ease infinite;
+  color: #fff !important;
+  font-size: 2rem;
+  line-height: 1.25;
+  padding: 1.7rem 2rem;
+  margin: 0 0 1.8rem;
+  border-radius: 20px;
+  box-shadow: 0 12px 28px rgba(5, 65, 53, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.md-typeset h1::before {
+  content: '';
+  position: absolute;
+  top: -45%;
+  right: -8%;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(217, 119, 6, 0.38), transparent 70%);
+  animation: sillah-drift 10s ease-in-out infinite;
+}
+
+.md-typeset h1 > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* The homepage builds its own richer .sillah-hero card above the markdown
+   title — keep that title in the DOM (SEO / a11y / <title> derivation) but
+   don't paint a second, redundant hero card right underneath it. */
+.sillah-hero + h1 {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  animation: none;
+}
+
+@media (max-width: 700px) {
+  .md-typeset h1 {
+    font-size: 1.5rem;
+    padding: 1.3rem 1.4rem;
+    border-radius: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .md-typeset h1,
+  .md-typeset h1::before {
+    animation: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .md-header,
+  .md-header::after,
+  .md-header__button.md-logo img,
+  .md-header__button.md-logo svg,
+  .sillah-hero,
+  .sillah-hero::before,
+  .sillah-hero__logo,
+  [data-sillah-reveal],
+  .md-content__inner,
+  .md-sidebar--primary .md-sidebar__inner,
+  .md-sidebar--secondary .md-sidebar__inner,
+  .md-nav--primary .md-nav__item,
+  .md-nav--secondary .md-nav__item {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  #sillah-progress {
+    display: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .sillah-hero {
+    padding: 1.6rem 1.2rem;
+    gap: 1.2rem;
+  }
+
+  .sillah-hero__logo {
+    width: 76px;
+    height: 76px;
+  }
+
+  .sillah-hero__title {
+    font-size: 1.5rem;
+  }
+
+  .sillah-hero__stats {
+    margin-left: 0;
+    gap: 1rem;
   }
 }

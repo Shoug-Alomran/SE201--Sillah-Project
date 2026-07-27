@@ -1,7 +1,20 @@
-![Logo](img/tree.png)
+<div class="sillah-hero">
+<img src="google.png" alt="Sillah (صلة) logo" class="sillah-hero__logo" width="241" height="256">
+<div class="sillah-hero__text">
+<span class="sillah-hero__eyebrow">SE201 · Prince Sultan University</span>
+<div class="sillah-hero__title">Sillah (صلة): Family Health Management System</div>
+<p class="sillah-hero__subtitle">A preventive health platform that helps Saudi families track hereditary cardiac risk, get smart alerts, and book care before it's urgent.</p>
+</div>
+<div class="sillah-hero__stats">
+<div class="sillah-hero__stat"><strong>4</strong><span>Phases</span></div>
+<div class="sillah-hero__stat"><strong>31</strong><span>Requirements</span></div>
+<div class="sillah-hero__stat"><strong>10</strong><span>Java Classes</span></div>
+</div>
+</div>
+
 # SE201 – Sillah (صلة): Family Health Management System
 
-### Prince Sultan University
+## Prince Sultan University
 
 **College:** College of Computer and Information Sciences (CCIS)  
 **Course:** SE201 – Introduction to Software Engineering  
