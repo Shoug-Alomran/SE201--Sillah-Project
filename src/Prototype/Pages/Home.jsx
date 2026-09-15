@@ -11,6 +11,8 @@ import {
   Check,
   Stethoscope,
   Plus,
+  Phone,
+  Mail,
 } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
 import "./Home.css";
@@ -159,6 +161,9 @@ export default function Home() {
             <a href="#features">Why Sillah</a>
             <a href="#how-it-works">How it works</a>
             <a href="#for-doctors">For doctors</a>
+            <a href="#contact" className="sl-contact-button">
+              Contact
+            </a>
           </div>
           <div className="sl-nav-actions">
             {!currentUser && (
@@ -329,6 +334,41 @@ export default function Home() {
             <ArrowRight size={18} />
           </Link>
         </section>
+        <section
+          className="sl-contact sl-section sl-width"
+          id="contact"
+          aria-labelledby="contact-title"
+        >
+          <div>
+            <p className="sl-eyebrow">GET IN TOUCH</p>
+            <h2 id="contact-title">Let’s connect.</h2>
+            <p className="sl-contact-intro">
+              Have a question about Sillah? Get in touch by phone or email.
+            </p>
+          </div>
+          <address className="sl-contact-details">
+            <a href="tel:+966531007472">
+              <span className="sl-contact-icon">
+                <Phone size={21} aria-hidden="true" />
+              </span>
+              <span>
+                <small>Phone</small>
+                <strong dir="ltr">0531007472</strong>
+              </span>
+              <ArrowRight size={18} aria-hidden="true" />
+            </a>
+            <a href="mailto:shoug.alomran@shoug-tech.com">
+              <span className="sl-contact-icon">
+                <Mail size={21} aria-hidden="true" />
+              </span>
+              <span>
+                <small>Email</small>
+                <strong>shoug.alomran@shoug-tech.com</strong>
+              </span>
+              <ArrowRight size={18} aria-hidden="true" />
+            </a>
+          </address>
+        </section>
       </main>
       <footer className="sl-footer sl-width">
         <div className="sl-footer-top">
@@ -344,6 +384,7 @@ export default function Home() {
             <p>Connected by family. Informed by history.</p>
           </div>
           <nav aria-label="Footer navigation">
+            <a href="#contact">Contact</a>
             <a href="#features">Why Sillah</a>
             <a href="#how-it-works">How it works</a>
             <Link to={currentUser ? "/dashboard" : "/login"}>
