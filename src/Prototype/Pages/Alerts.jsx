@@ -1,7 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { Bell, CheckCircle, AlertTriangle, Info, ExternalLink } from "lucide-react";
+import {
+  Bell,
+  CheckCircle,
+  AlertTriangle,
+  Info,
+  ExternalLink,
+} from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
-import { collection, query, where, getDocs, updateDoc, doc } from "firebase/firestore";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  updateDoc,
+  doc,
+} from "firebase/firestore";
 import { db } from "../../firebase/config";
 
 export default function Alerts() {
@@ -34,7 +47,9 @@ export default function Alerts() {
       });
 
       // Sort by date (newest first)
-      alertsData.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      alertsData.sort(
+        (a, b) => new Date(b.created_at) - new Date(a.created_at),
+      );
       setAlerts(alertsData);
       setError(null);
     } catch (err) {
@@ -49,12 +64,14 @@ export default function Alerts() {
     try {
       await updateDoc(doc(db, "alerts", alertId), {
         is_read: true,
-        read_at: new Date().toISOString()
+        read_at: new Date().toISOString(),
       });
-      
-      setAlerts(alerts.map(alert => 
-        alert.id === alertId ? { ...alert, is_read: true } : alert
-      ));
+
+      setAlerts(
+        alerts.map((alert) =>
+          alert.id === alertId ? { ...alert, is_read: true } : alert,
+        ),
+      );
     } catch (err) {
       console.error("Error marking alert as read:", err);
       alert("Failed to mark as read");
@@ -63,16 +80,16 @@ export default function Alerts() {
 
   const handleMarkAllAsRead = async () => {
     try {
-      const unreadAlerts = alerts.filter(a => !a.is_read);
-      
+      const unreadAlerts = alerts.filter((a) => !a.is_read);
+
       for (const alert of unreadAlerts) {
         await updateDoc(doc(db, "alerts", alert.id), {
           is_read: true,
-          read_at: new Date().toISOString()
+          read_at: new Date().toISOString(),
         });
       }
-      
-      setAlerts(alerts.map(alert => ({ ...alert, is_read: true })));
+
+      setAlerts(alerts.map((alert) => ({ ...alert, is_read: true })));
     } catch (err) {
       console.error("Error marking all as read:", err);
       alert("Failed to mark all as read");
@@ -81,34 +98,38 @@ export default function Alerts() {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      month: 'short', 
-      day: 'numeric', 
-      year: 'numeric' 
-    }) + ' · ' + date.toLocaleTimeString('en-US', { 
-      hour: 'numeric', 
-      minute: '2-digit',
-      hour12: true 
-    });
+    return (
+      date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      }) +
+      " · " +
+      date.toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      })
+    );
   };
 
   const getFilteredAlerts = () => {
     switch (filter) {
       case "unread":
-        return alerts.filter(a => !a.is_read);
+        return alerts.filter((a) => !a.is_read);
       case "read":
-        return alerts.filter(a => a.is_read);
+        return alerts.filter((a) => a.is_read);
       case "high":
-        return alerts.filter(a => a.priority === "high");
+        return alerts.filter((a) => a.priority === "high");
       case "moderate":
-        return alerts.filter(a => a.priority === "moderate");
+        return alerts.filter((a) => a.priority === "moderate");
       default:
         return alerts;
     }
   };
 
   const filteredAlerts = getFilteredAlerts();
-  const unreadCount = alerts.filter(a => !a.is_read).length;
+  const unreadCount = alerts.filter((a) => !a.is_read).length;
 
   if (loading) {
     return (
@@ -135,8 +156,13 @@ export default function Alerts() {
           <div className="error-state">
             <AlertTriangle className="error-icon" />
             <p className="error-title">{error}</p>
-            <p className="error-text">Please check your connection or try again later.</p>
-            <button onClick={() => window.location.reload()} className="retry-btn">
+            <p className="error-text">
+              Please check your connection or try again later.
+            </p>
+            <button
+              onClick={() => window.location.reload()}
+              className="retry-btn"
+            >
               Try Again
             </button>
           </div>
@@ -156,7 +182,7 @@ export default function Alerts() {
               Medical Alerts
             </h1>
             <p className="alerts-subtitle">
-              {unreadCount} unread reminder{unreadCount !== 1 ? 's' : ''}
+              {unreadCount} unread reminder{unreadCount !== 1 ? "s" : ""}
             </p>
           </div>
           {unreadCount > 0 && (
@@ -207,7 +233,7 @@ export default function Alerts() {
             <Bell className="empty-icon" />
             <p className="empty-title">No Alerts</p>
             <p className="empty-text">
-              {filter === "all" 
+              {filter === "all"
                 ? "You're all caught up! No alerts at this time."
                 : `No ${filter} alerts found.`}
             </p>
@@ -215,8 +241,8 @@ export default function Alerts() {
         ) : (
           <div className="alerts-list">
             {filteredAlerts.map((alertItem) => (
-              <div 
-                key={alertItem.id} 
+              <div
+                key={alertItem.id}
                 className={`alert-card ${!alertItem.is_read ? "unread" : ""}`}
               >
                 {/* Alert Header */}
@@ -231,7 +257,9 @@ export default function Alerts() {
                         <span className="new-badge">New</span>
                       )}
                     </div>
-                    <p className="alert-date">{formatDate(alertItem.created_at)}</p>
+                    <p className="alert-date">
+                      {formatDate(alertItem.created_at)}
+                    </p>
                   </div>
                 </div>
 
@@ -259,7 +287,7 @@ export default function Alerts() {
                     )}
                     {alertItem.link && (
                       <button
-                        onClick={() => window.open(alertItem.link, '_blank')}
+                        onClick={() => window.open(alertItem.link, "_blank")}
                         className="learn-more-btn"
                       >
                         <ExternalLink size={16} />

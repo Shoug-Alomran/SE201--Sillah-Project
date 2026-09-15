@@ -1,7 +1,25 @@
 import React, { useState, useEffect } from "react";
-import { Heart, Plus, Calendar, Pill, FileText, Edit, Trash2, Activity } from "lucide-react";
+import {
+  Heart,
+  Plus,
+  Calendar,
+  Pill,
+  FileText,
+  Edit,
+  Trash2,
+  Activity,
+} from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
-import { collection, query, where, getDocs, addDoc, updateDoc, deleteDoc, doc } from "firebase/firestore";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
 import { db } from "../../firebase/config";
 
 export default function MyHealth() {
@@ -19,7 +37,7 @@ export default function MyHealth() {
     doctor_name: "",
     treatment_plan: "",
     notes: "",
-    is_chronic: false
+    is_chronic: false,
   });
 
   useEffect(() => {
@@ -45,7 +63,9 @@ export default function MyHealth() {
       });
 
       // Sort by diagnosis date (newest first)
-      records.sort((a, b) => new Date(b.diagnosis_date) - new Date(a.diagnosis_date));
+      records.sort(
+        (a, b) => new Date(b.diagnosis_date) - new Date(a.diagnosis_date),
+      );
       setHealthRecords(records);
       setError(null);
     } catch (err) {
@@ -70,20 +90,31 @@ export default function MyHealth() {
         notes: formData.notes,
         is_chronic: formData.is_chronic,
         created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       };
 
       if (editingRecord) {
         await updateDoc(doc(db, "personal_health_records", editingRecord.id), {
           ...newRecord,
-          created_at: editingRecord.created_at // Keep original creation date
+          created_at: editingRecord.created_at, // Keep original creation date
         });
-        setHealthRecords(healthRecords.map(r => 
-          r.id === editingRecord.id ? { ...newRecord, id: editingRecord.id, created_at: editingRecord.created_at } : r
-        ));
+        setHealthRecords(
+          healthRecords.map((r) =>
+            r.id === editingRecord.id
+              ? {
+                  ...newRecord,
+                  id: editingRecord.id,
+                  created_at: editingRecord.created_at,
+                }
+              : r,
+          ),
+        );
         alert("Health record updated successfully!");
       } else {
-        const docRef = await addDoc(collection(db, "personal_health_records"), newRecord);
+        const docRef = await addDoc(
+          collection(db, "personal_health_records"),
+          newRecord,
+        );
         setHealthRecords([{ id: docRef.id, ...newRecord }, ...healthRecords]);
         alert("Health record added successfully!");
       }
@@ -95,7 +126,7 @@ export default function MyHealth() {
         doctor_name: "",
         treatment_plan: "",
         notes: "",
-        is_chronic: false
+        is_chronic: false,
       });
       setShowAddModal(false);
       setEditingRecord(null);
@@ -114,7 +145,7 @@ export default function MyHealth() {
       doctor_name: record.doctor_name || "",
       treatment_plan: record.treatment_plan || "",
       notes: record.notes || "",
-      is_chronic: record.is_chronic || false
+      is_chronic: record.is_chronic || false,
     });
     setShowAddModal(true);
   };
@@ -124,7 +155,7 @@ export default function MyHealth() {
 
     try {
       await deleteDoc(doc(db, "personal_health_records", recordId));
-      setHealthRecords(healthRecords.filter(r => r.id !== recordId));
+      setHealthRecords(healthRecords.filter((r) => r.id !== recordId));
       alert("Health record deleted successfully!");
     } catch (err) {
       console.error("Error deleting health record:", err);
@@ -135,7 +166,11 @@ export default function MyHealth() {
   const formatDate = (dateString) => {
     if (!dateString) return "Not specified";
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
   };
 
   if (loading) {
@@ -158,7 +193,9 @@ export default function MyHealth() {
               <Heart className="title-icon" />
               My Health Records
             </h1>
-            <p className="my-health-subtitle">Your personal medical history and current treatments</p>
+            <p className="my-health-subtitle">
+              Your personal medical history and current treatments
+            </p>
           </div>
           <button
             onClick={() => {
@@ -170,7 +207,7 @@ export default function MyHealth() {
                 doctor_name: "",
                 treatment_plan: "",
                 notes: "",
-                is_chronic: false
+                is_chronic: false,
               });
               setShowAddModal(true);
             }}
@@ -186,9 +223,13 @@ export default function MyHealth() {
             <Heart className="empty-icon" />
             <p className="empty-title">No Health Records Yet</p>
             <p className="empty-text">
-              Start tracking your personal health history by adding your diagnoses, medications, and treatments.
+              Start tracking your personal health history by adding your
+              diagnoses, medications, and treatments.
             </p>
-            <button onClick={() => setShowAddModal(true)} className="empty-action-btn">
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="empty-action-btn"
+            >
               <Plus className="empty-action-icon" />
               Add Your First Health Record
             </button>
@@ -199,23 +240,27 @@ export default function MyHealth() {
               <div key={record.id} className="health-record-card">
                 <div className="health-card-header">
                   <div className="health-card-header-left">
-                    <h3 className="health-condition-name">{record.condition_name}</h3>
+                    <h3 className="health-condition-name">
+                      {record.condition_name}
+                    </h3>
                     <div className="health-diagnosis-date">
                       <Calendar size={14} />
-                      <span>Diagnosed: {formatDate(record.diagnosis_date)}</span>
+                      <span>
+                        Diagnosed: {formatDate(record.diagnosis_date)}
+                      </span>
                     </div>
                   </div>
                   <div className="health-card-header-right">
-                    <button 
-                      onClick={() => handleEdit(record)} 
-                      className="health-edit-btn" 
+                    <button
+                      onClick={() => handleEdit(record)}
+                      className="health-edit-btn"
                       title="Edit"
                     >
                       <Edit size={18} />
                     </button>
-                    <button 
-                      onClick={() => handleDelete(record.id)} 
-                      className="health-delete-btn" 
+                    <button
+                      onClick={() => handleDelete(record.id)}
+                      className="health-delete-btn"
                       title="Delete"
                     >
                       <Trash2 size={18} />
@@ -244,7 +289,9 @@ export default function MyHealth() {
                         <Pill size={16} />
                         <strong>Current Medications:</strong>
                       </div>
-                      <p className="medication-text">{record.current_medications}</p>
+                      <p className="medication-text">
+                        {record.current_medications}
+                      </p>
                     </div>
                   )}
 
@@ -278,18 +325,30 @@ export default function MyHealth() {
               <h2 className="modal-title">
                 {editingRecord ? "Edit Health Record" : "Add Health Record"}
               </h2>
-              <button onClick={() => setShowAddModal(false)} className="modal-close">×</button>
+              <button
+                onClick={() => setShowAddModal(false)}
+                className="modal-close"
+              >
+                ×
+              </button>
             </div>
 
             <form onSubmit={handleAddRecord} className="modal-body">
               <div className="form-content">
                 <div className="form-field">
-                  <label htmlFor="condition_name" className="form-label">Condition/Diagnosis *</label>
+                  <label htmlFor="condition_name" className="form-label">
+                    Condition/Diagnosis *
+                  </label>
                   <input
                     id="condition_name"
                     type="text"
                     value={formData.condition_name}
-                    onChange={(e) => setFormData({ ...formData, condition_name: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        condition_name: e.target.value,
+                      })
+                    }
                     className="form-input"
                     placeholder="e.g., Type 2 Diabetes, Hypertension"
                     required
@@ -297,35 +356,53 @@ export default function MyHealth() {
                 </div>
 
                 <div className="form-field">
-                  <label htmlFor="diagnosis_date" className="form-label">Diagnosis Date *</label>
+                  <label htmlFor="diagnosis_date" className="form-label">
+                    Diagnosis Date *
+                  </label>
                   <input
                     id="diagnosis_date"
                     type="date"
                     value={formData.diagnosis_date}
-                    onChange={(e) => setFormData({ ...formData, diagnosis_date: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        diagnosis_date: e.target.value,
+                      })
+                    }
                     className="form-input"
                     required
                   />
                 </div>
 
                 <div className="form-field">
-                  <label htmlFor="doctor_name" className="form-label">Doctor/Healthcare Provider</label>
+                  <label htmlFor="doctor_name" className="form-label">
+                    Doctor/Healthcare Provider
+                  </label>
                   <input
                     id="doctor_name"
                     type="text"
                     value={formData.doctor_name}
-                    onChange={(e) => setFormData({ ...formData, doctor_name: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, doctor_name: e.target.value })
+                    }
                     className="form-input"
                     placeholder="Dr. John Smith"
                   />
                 </div>
 
                 <div className="form-field">
-                  <label htmlFor="current_medications" className="form-label">Current Medications</label>
+                  <label htmlFor="current_medications" className="form-label">
+                    Current Medications
+                  </label>
                   <textarea
                     id="current_medications"
                     value={formData.current_medications}
-                    onChange={(e) => setFormData({ ...formData, current_medications: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        current_medications: e.target.value,
+                      })
+                    }
                     className="form-input form-textarea"
                     rows="3"
                     placeholder="List your current medications (e.g., Metformin 500mg twice daily, Lisinopril 10mg once daily)"
@@ -333,11 +410,18 @@ export default function MyHealth() {
                 </div>
 
                 <div className="form-field">
-                  <label htmlFor="treatment_plan" className="form-label">Treatment Plan</label>
+                  <label htmlFor="treatment_plan" className="form-label">
+                    Treatment Plan
+                  </label>
                   <textarea
                     id="treatment_plan"
                     value={formData.treatment_plan}
-                    onChange={(e) => setFormData({ ...formData, treatment_plan: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        treatment_plan: e.target.value,
+                      })
+                    }
                     className="form-input form-textarea"
                     rows="3"
                     placeholder="Describe your current treatment plan, lifestyle changes, or therapies"
@@ -345,11 +429,15 @@ export default function MyHealth() {
                 </div>
 
                 <div className="form-field">
-                  <label htmlFor="notes" className="form-label">Additional Notes</label>
+                  <label htmlFor="notes" className="form-label">
+                    Additional Notes
+                  </label>
                   <textarea
                     id="notes"
                     value={formData.notes}
-                    onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, notes: e.target.value })
+                    }
                     className="form-input form-textarea"
                     rows="2"
                     placeholder="Any additional information about this condition"
@@ -361,7 +449,12 @@ export default function MyHealth() {
                     <input
                       type="checkbox"
                       checked={formData.is_chronic}
-                      onChange={(e) => setFormData({ ...formData, is_chronic: e.target.checked })}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          is_chronic: e.target.checked,
+                        })
+                      }
                       className="form-checkbox"
                     />
                     <span>This is a chronic condition (ongoing/long-term)</span>

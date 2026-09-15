@@ -30,7 +30,7 @@ export default function Patients() {
         const assignmentsQuery = query(
           assignmentsRef,
           where("doctor_id", "==", currentUser.uid),
-          where("status", "==", "active")
+          where("status", "==", "active"),
         );
         const assignmentsSnapshot = await getDocs(assignmentsQuery);
 
@@ -60,7 +60,7 @@ export default function Patients() {
             const familyMembersRef = collection(db, "family_members");
             const familyQuery = query(
               familyMembersRef,
-              where("user_id", "==", patientId)
+              where("user_id", "==", patientId),
             );
             const familySnapshot = await getDocs(familyQuery);
 
@@ -101,14 +101,14 @@ export default function Patients() {
   // Calculate stats
   const totalPatients = patients.length;
   const highRiskCount = patients.filter(
-    (p) => (p.risk_level || "none").toLowerCase() === "high"
+    (p) => (p.risk_level || "none").toLowerCase() === "high",
   ).length;
   const moderateRiskCount = patients.filter(
-    (p) => (p.risk_level || "none").toLowerCase() === "moderate"
+    (p) => (p.risk_level || "none").toLowerCase() === "moderate",
   ).length;
   const totalFamilyMembers = patients.reduce(
     (sum, p) => sum + (p.family_members_count || 0),
-    0
+    0,
   );
 
   // Loading State
@@ -141,9 +141,14 @@ export default function Patients() {
             <p className="patients-subtitle">Unable to load patients</p>
           </header>
           <div className="empty-state">
-            <AlertTriangle className="empty-icon" style={{ color: "#ef4444" }} />
+            <AlertTriangle
+              className="empty-icon"
+              style={{ color: "#ef4444" }}
+            />
             <p className="empty-title">{error}</p>
-            <p className="empty-text">Please check your connection or try again later.</p>
+            <p className="empty-text">
+              Please check your connection or try again later.
+            </p>
             <button
               onClick={() => window.location.reload()}
               className="empty-action-btn"
@@ -172,8 +177,8 @@ export default function Patients() {
             <Users className="empty-icon" />
             <p className="empty-title">No Patients Assigned</p>
             <p className="empty-text">
-              You don't have any patients assigned to you yet. Contact your administrator
-              to get patients assigned to your care.
+              You don't have any patients assigned to you yet. Contact your
+              administrator to get patients assigned to your care.
             </p>
           </div>
         </div>
@@ -232,7 +237,10 @@ export default function Patients() {
                 <p className="stat-label">Total Patients</p>
                 <p className="stat-value">{totalPatients}</p>
               </div>
-              <Users className="stat-icon" style={{ color: "#3b82f6", opacity: 0.2 }} />
+              <Users
+                className="stat-icon"
+                style={{ color: "#3b82f6", opacity: 0.2 }}
+              />
             </div>
           </div>
 
@@ -253,7 +261,9 @@ export default function Patients() {
             <div className="stat-card-content">
               <div className="stat-info">
                 <p className="stat-label">Moderate Risk</p>
-                <p className="stat-value stat-value-amber">{moderateRiskCount}</p>
+                <p className="stat-value stat-value-amber">
+                  {moderateRiskCount}
+                </p>
               </div>
               <TrendingUp
                 className="stat-icon"
@@ -268,7 +278,10 @@ export default function Patients() {
                 <p className="stat-label">Total Family Members</p>
                 <p className="stat-value">{totalFamilyMembers}</p>
               </div>
-              <Users className="stat-icon" style={{ color: "#10b981", opacity: 0.2 }} />
+              <Users
+                className="stat-icon"
+                style={{ color: "#10b981", opacity: 0.2 }}
+              />
             </div>
           </div>
         </div>
@@ -278,7 +291,9 @@ export default function Patients() {
           <div className="empty-state">
             <Search className="empty-icon" />
             <p className="empty-title">No patients found</p>
-            <p className="empty-text">Try adjusting your search or filter criteria.</p>
+            <p className="empty-text">
+              Try adjusting your search or filter criteria.
+            </p>
           </div>
         ) : (
           <div className="patients-grid">
@@ -290,7 +305,9 @@ export default function Patients() {
                       <Users className="patient-user-icon" />
                     </div>
                     <div className="patient-info-component">
-                      <h3 className="patient-name-component">{patient.full_name}</h3>
+                      <h3 className="patient-name-component">
+                        {patient.full_name}
+                      </h3>
                       <p className="patient-email-component">{patient.email}</p>
                     </div>
                   </div>
@@ -300,8 +317,8 @@ export default function Patients() {
                         patient.risk_level === "high"
                           ? "status-diagnosed"
                           : patient.risk_level === "moderate"
-                          ? "status-at-risk"
-                          : "status-healthy"
+                            ? "status-at-risk"
+                            : "status-healthy"
                       }`}
                     >
                       <AlertTriangle className="risk-icon-tiny" />
@@ -317,16 +334,18 @@ export default function Patients() {
                       {patient.family_members_count !== 1 ? "s" : ""}
                     </p>
                   </div>
-                  
+
                   {/* PATIENT ID DISPLAY - FIXED: Added this section */}
                   <div className="patient-id-section">
-                    <div className="patient-id-label">PATIENT ID FOR PRESCRIBING:</div>
+                    <div className="patient-id-label">
+                      PATIENT ID FOR PRESCRIBING:
+                    </div>
                     <div className="patient-id-copy-box">
                       <div className="patient-id-code">{patient.id}</div>
-                      <button 
+                      <button
                         onClick={() => {
                           navigator.clipboard.writeText(patient.id);
-                          alert('Patient ID copied to clipboard!');
+                          alert("Patient ID copied to clipboard!");
                         }}
                         className="copy-id-btn-small"
                         title="Copy Patient ID"
@@ -335,7 +354,7 @@ export default function Patients() {
                       </button>
                     </div>
                   </div>
-                  
+
                   <div className="patient-family-count-section">
                     {/* FIXED: Changed from ?id= to / for URL parameters */}
                     <button

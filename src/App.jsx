@@ -1,8 +1,9 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import RoleBasedRoute from "./components/RoleBasedRoute";
 import Layout from "./Prototype/Layout.jsx";
+import Home from "./Prototype/Pages/Home.jsx";
 import Login from "./Prototype/Pages/Login.jsx";
 import Signup from "./Prototype/Pages/Signup.jsx";
 import Dashboard from "./Prototype/Pages/Dashboard.jsx";
@@ -22,12 +23,11 @@ function App() {
     <AuthProvider>
       <Routes>
         {/* Public Routes */}
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        
+
         {/* Protected Routes */}
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        
         {/* Common Routes (Both Patient & Doctor) */}
         <Route path="/dashboard" element={
           <ProtectedRoute>

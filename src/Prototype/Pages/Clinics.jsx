@@ -30,14 +30,16 @@ export default function Clinics() {
 
   const handleBookAppointment = (clinic) => {
     if (isDoctor) {
-      alert("Doctors cannot book appointments. This feature is for patients only.");
+      alert(
+        "Doctors cannot book appointments. This feature is for patients only.",
+      );
       return;
     }
-    navigate("/appointments", { 
-      state: { 
+    navigate("/appointments", {
+      state: {
         clinic: clinic,
-        isBooking: true 
-      } 
+        isBooking: true,
+      },
     });
   };
 
@@ -50,8 +52,8 @@ export default function Clinics() {
             Nearby Certified Clinics
           </h1>
           <p className="clinics-subtitle">
-            {isDoctor 
-              ? "View clinic information and details" 
+            {isDoctor
+              ? "View clinic information and details"
               : "Book preventive screening appointments"}
           </p>
         </header>
@@ -62,7 +64,8 @@ export default function Clinics() {
             <div className="privacy-content">
               <p className="privacy-title">Information Only</p>
               <p className="privacy-text">
-                As a healthcare provider, you can view clinic information but cannot book appointments through this system.
+                As a healthcare provider, you can view clinic information but
+                cannot book appointments through this system.
               </p>
             </div>
           </div>
@@ -115,7 +118,9 @@ export default function Clinics() {
           <div className="empty-state">
             <MapPin className="empty-icon" />
             <p className="empty-title">No clinics found</p>
-            <p className="empty-text">Try adjusting your search or filter criteria.</p>
+            <p className="empty-text">
+              Try adjusting your search or filter criteria.
+            </p>
           </div>
         ) : (
           <div className="clinics-grid">
@@ -164,35 +169,36 @@ export default function Clinics() {
                     </span>
                   </div>
 
-                  {clinic.available_slots && clinic.available_slots.length > 0 && (
-                    <div className="clinic-slots-section">
-                      <p className="slots-label">Available Today:</p>
-                      <div className="slots-badges">
-                        {clinic.available_slots.map((slot, index) => (
-                          <span key={index} className="slot-badge">
-                            {slot}
-                          </span>
-                        ))}
+                  {clinic.available_slots &&
+                    clinic.available_slots.length > 0 && (
+                      <div className="clinic-slots-section">
+                        <p className="slots-label">Available Today:</p>
+                        <div className="slots-badges">
+                          {clinic.available_slots.map((slot, index) => (
+                            <span key={index} className="slot-badge">
+                              {slot}
+                            </span>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
                 </div>
 
                 <div className="clinic-card-footer-component">
                   {isPatient ? (
-                    <button 
+                    <button
                       className="clinic-book-btn"
                       onClick={() => handleBookAppointment(clinic)}
                     >
                       Book Appointment
                     </button>
                   ) : (
-                    <button 
+                    <button
                       className="clinic-book-btn"
-                      style={{ 
-                        background: "#d1d5db", 
+                      style={{
+                        background: "#d1d5db",
                         cursor: "not-allowed",
-                        opacity: 0.6 
+                        opacity: 0.6,
                       }}
                       disabled
                     >

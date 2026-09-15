@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { AlertTriangle, Heart, Users, Info, ArrowRight, TrendingUp } from "lucide-react";
+import {
+  AlertTriangle,
+  Heart,
+  Users,
+  Info,
+  ArrowRight,
+  TrendingUp,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { collection, query, where, getDocs } from "firebase/firestore";
@@ -8,7 +15,7 @@ import { db } from "../../firebase/config";
 export default function RiskAssessment() {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
-  
+
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -27,12 +34,12 @@ export default function RiskAssessment() {
         const membersRef = collection(db, "family_members");
         const q = query(membersRef, where("user_id", "==", currentUser.uid));
         const querySnapshot = await getDocs(q);
-        
+
         const familyData = [];
         querySnapshot.forEach((doc) => {
           familyData.push({ id: doc.id, ...doc.data() });
         });
-        
+
         setMembers(familyData);
         setError(null);
       } catch (err) {
@@ -51,7 +58,7 @@ export default function RiskAssessment() {
     // Check if diagnosed with SCD
     const healthStatus = member.health_status?.toLowerCase() || "";
     const medicalNotes = member.medical_notes?.toLowerCase() || "";
-    
+
     return (
       healthStatus === "diagnosed" ||
       healthStatus.includes("scd") ||
@@ -99,7 +106,7 @@ export default function RiskAssessment() {
       return {
         level: "High Risk",
         color: "red",
-        message: `${scdCount} family member(s) diagnosed with SCD. ${earlyOnsetCount > 0 ? 'Including early-onset cases. ' : ''}Immediate screening recommended.`,
+        message: `${scdCount} family member(s) diagnosed with SCD. ${earlyOnsetCount > 0 ? "Including early-onset cases. " : ""}Immediate screening recommended.`,
         severity: "critical",
       };
     }
@@ -109,7 +116,7 @@ export default function RiskAssessment() {
       return {
         level: "Moderate Risk",
         color: "amber",
-        message: `${scdCount === 1 ? '1 diagnosed case and ' : ''}${atRiskCount} family member(s) at risk. Regular monitoring advised.`,
+        message: `${scdCount === 1 ? "1 diagnosed case and " : ""}${atRiskCount} family member(s) at risk. Regular monitoring advised.`,
         severity: "moderate",
       };
     }
@@ -119,7 +126,8 @@ export default function RiskAssessment() {
       return {
         level: "Low-Moderate Risk",
         color: "yellow",
-        message: "1 family member at risk. Stay vigilant with regular checkups.",
+        message:
+          "1 family member at risk. Stay vigilant with regular checkups.",
         severity: "low-moderate",
       };
     }
@@ -128,7 +136,8 @@ export default function RiskAssessment() {
     return {
       level: "Low Risk",
       color: "green",
-      message: "No immediate hereditary risk detected. Continue healthy lifestyle habits.",
+      message:
+        "No immediate hereditary risk detected. Continue healthy lifestyle habits.",
       severity: "low",
     };
   };
@@ -145,7 +154,7 @@ export default function RiskAssessment() {
         "Consult with a genetic counselor for family planning guidance",
         "Begin regular cardiovascular health monitoring (every 3-6 months)",
         "Share your complete family health history with all healthcare providers",
-        "Consider genetic testing for all immediate family members"
+        "Consider genetic testing for all immediate family members",
       );
     } else if (risk.severity === "moderate") {
       base.push(
@@ -153,7 +162,7 @@ export default function RiskAssessment() {
         "Discuss family history in detail with your primary care physician",
         "Monitor for early warning signs (chest pain, shortness of breath)",
         "Maintain a heart-healthy diet and regular exercise routine",
-        "Keep detailed records of family health history"
+        "Keep detailed records of family health history",
       );
     } else if (risk.severity === "low-moderate") {
       base.push(
@@ -161,7 +170,7 @@ export default function RiskAssessment() {
         "Track and update family health history regularly",
         "Maintain healthy lifestyle habits (diet, exercise, no smoking)",
         "Stay informed about SCD symptoms and warning signs",
-        "Consider preventive genetic counseling if planning a family"
+        "Consider preventive genetic counseling if planning a family",
       );
     } else {
       base.push(
@@ -169,7 +178,7 @@ export default function RiskAssessment() {
         "Maintain a healthy lifestyle with balanced diet and exercise",
         "Keep family health history updated in the Sillah app",
         "Stay educated about hereditary health conditions",
-        "Monitor any new symptoms and report to your doctor"
+        "Monitor any new symptoms and report to your doctor",
       );
     }
 
@@ -181,19 +190,19 @@ export default function RiskAssessment() {
   // Calculate risk percentage for visualization
   const getRiskPercentage = () => {
     if (members.length === 0) return 0;
-    
+
     let score = 0;
     const maxScore = members.length * 100;
-    
+
     // Diagnosed members contribute most to risk
     score += scdMembers.length * 50;
-    
+
     // Early onset is especially risky
     score += earlyOnsetMembers.length * 30;
-    
+
     // At-risk members contribute moderately
     score += atRiskMembers.length * 20;
-    
+
     return Math.min(Math.round((score / maxScore) * 100), 100);
   };
 
@@ -214,7 +223,10 @@ export default function RiskAssessment() {
             </p>
           </div>
           <div className="empty-state">
-            <Heart className="empty-icon" style={{ animation: "pulse 2s infinite" }} />
+            <Heart
+              className="empty-icon"
+              style={{ animation: "pulse 2s infinite" }}
+            />
             <p className="empty-title">Analyzing Family Health Data...</p>
             <p className="empty-text">
               Please wait while we calculate your hereditary risk assessment.
@@ -240,7 +252,10 @@ export default function RiskAssessment() {
             </p>
           </div>
           <div className="empty-state">
-            <AlertTriangle className="empty-icon" style={{ color: "#ef4444" }} />
+            <AlertTriangle
+              className="empty-icon"
+              style={{ color: "#ef4444" }}
+            />
             <p className="empty-title">{error}</p>
             <p className="empty-text">
               Please check your connection or try again later.
@@ -275,7 +290,8 @@ export default function RiskAssessment() {
             <Users className="empty-icon" />
             <p className="empty-title">No Family Members Added Yet</p>
             <p className="empty-text">
-              Add family members to your family tree to generate a personalized risk assessment.
+              Add family members to your family tree to generate a personalized
+              risk assessment.
             </p>
             <button
               onClick={() => navigate("/family-tree")}
@@ -301,7 +317,8 @@ export default function RiskAssessment() {
             Risk Assessment
           </h1>
           <p className="risk-assessment-subtitle">
-            Based on {members.length} family member{members.length !== 1 ? "s" : ""} in your family tree
+            Based on {members.length} family member
+            {members.length !== 1 ? "s" : ""} in your family tree
           </p>
         </div>
 
@@ -345,8 +362,11 @@ export default function RiskAssessment() {
                 </h4>
                 <p className="critical-alert-text">
                   {scdMembers.length} family member
-                  {scdMembers.length > 1 ? "s" : ""} diagnosed with 
-                  Sickle Cell Disease. {earlyOnsetMembers.length > 0 && `Including ${earlyOnsetMembers.length} early-onset case(s).`} Immediate medical consultation recommended.
+                  {scdMembers.length > 1 ? "s" : ""} diagnosed with Sickle Cell
+                  Disease.{" "}
+                  {earlyOnsetMembers.length > 0 &&
+                    `Including ${earlyOnsetMembers.length} early-onset case(s).`}{" "}
+                  Immediate medical consultation recommended.
                 </p>
                 <button
                   className="critical-alert-btn"
@@ -417,7 +437,9 @@ export default function RiskAssessment() {
 
         {/* Recommendations */}
         <div className="recommendations-card">
-          <h2 className="recommendations-title">Personalized Recommendations</h2>
+          <h2 className="recommendations-title">
+            Personalized Recommendations
+          </h2>
           <div className="recommendations-list">
             {recommendations.map((rec, idx) => (
               <div key={idx} className="recommendation-item">
@@ -441,12 +463,15 @@ export default function RiskAssessment() {
                         {member.name || "Unknown"}
                       </h4>
                       <p className="high-risk-member-relation">
-                        {member.relationship || "Family Member"} • Age {member.age}
+                        {member.relationship || "Family Member"} • Age{" "}
+                        {member.age}
                       </p>
                     </div>
                     <div className="high-risk-member-diagnosis">
                       <p className="diagnosis-age">
-                        {getDiagnosisAge(member) ? `Diagnosed at age ${getDiagnosisAge(member)}` : 'Diagnosed'}
+                        {getDiagnosisAge(member)
+                          ? `Diagnosed at age ${getDiagnosisAge(member)}`
+                          : "Diagnosed"}
                       </p>
                     </div>
                   </div>
@@ -469,11 +494,15 @@ export default function RiskAssessment() {
                         {member.name || "Unknown"}
                       </h4>
                       <p className="high-risk-member-relation">
-                        {member.relationship || "Family Member"} • Age {member.age}
+                        {member.relationship || "Family Member"} • Age{" "}
+                        {member.age}
                       </p>
                     </div>
                     <div className="high-risk-member-diagnosis">
-                      <span className="diagnosis-age" style={{ color: "#f59e0b", fontWeight: "600" }}>
+                      <span
+                        className="diagnosis-age"
+                        style={{ color: "#f59e0b", fontWeight: "600" }}
+                      >
                         At Risk - Monitoring Recommended
                       </span>
                     </div>
@@ -493,7 +522,7 @@ export default function RiskAssessment() {
             <Users className="risk-action-icon" />
             Update Family Tree
           </button>
-          
+
           {risk.severity !== "low" && (
             <button
               onClick={() => navigate("/clinics")}

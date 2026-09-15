@@ -1,7 +1,25 @@
 import React, { useState, useEffect } from "react";
-import { Users, Plus, Search, Edit, Trash2, Heart, AlertCircle, Activity } from "lucide-react";
+import {
+  Users,
+  Plus,
+  Search,
+  Edit,
+  Trash2,
+  Heart,
+  AlertCircle,
+  Activity,
+} from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
-import { collection, query, where, getDocs, addDoc, updateDoc, deleteDoc, doc } from "firebase/firestore";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
 import { db } from "../../firebase/config";
 
 export default function FamilyTree() {
@@ -20,7 +38,7 @@ export default function FamilyTree() {
     health_status: "healthy",
     conditions: [],
     diagnosis_age: "",
-    medical_notes: ""
+    medical_notes: "",
   });
 
   const hereditaryConditions = [
@@ -36,7 +54,7 @@ export default function FamilyTree() {
     "Stroke",
     "Obesity",
     "Osteoporosis",
-    "Mental Health Conditions"
+    "Mental Health Conditions",
   ];
 
   useEffect(() => {
@@ -82,19 +100,28 @@ export default function FamilyTree() {
         age: parseInt(formData.age),
         health_status: formData.health_status,
         conditions: formData.conditions,
-        diagnosis_age: formData.diagnosis_age ? parseInt(formData.diagnosis_age) : null,
+        diagnosis_age: formData.diagnosis_age
+          ? parseInt(formData.diagnosis_age)
+          : null,
         medical_notes: formData.medical_notes,
-        created_at: new Date().toISOString()
+        created_at: new Date().toISOString(),
       };
 
       if (editingMember) {
         await updateDoc(doc(db, "family_members", editingMember.id), newMember);
-        setFamilyMembers(familyMembers.map(m => 
-          m.id === editingMember.id ? { ...newMember, id: editingMember.id } : m
-        ));
+        setFamilyMembers(
+          familyMembers.map((m) =>
+            m.id === editingMember.id
+              ? { ...newMember, id: editingMember.id }
+              : m,
+          ),
+        );
         alert("Family member updated successfully!");
       } else {
-        const docRef = await addDoc(collection(db, "family_members"), newMember);
+        const docRef = await addDoc(
+          collection(db, "family_members"),
+          newMember,
+        );
         setFamilyMembers([...familyMembers, { id: docRef.id, ...newMember }]);
         alert("Family member added successfully!");
       }
@@ -106,7 +133,7 @@ export default function FamilyTree() {
         health_status: "healthy",
         conditions: [],
         diagnosis_age: "",
-        medical_notes: ""
+        medical_notes: "",
       });
       setShowAddModal(false);
       setEditingMember(null);
@@ -124,8 +151,10 @@ export default function FamilyTree() {
       age: member.age.toString(),
       health_status: member.health_status,
       conditions: member.conditions || [],
-      diagnosis_age: member.diagnosis_age ? member.diagnosis_age.toString() : "",
-      medical_notes: member.medical_notes || ""
+      diagnosis_age: member.diagnosis_age
+        ? member.diagnosis_age.toString()
+        : "",
+      medical_notes: member.medical_notes || "",
     });
     setShowAddModal(true);
   };
@@ -135,7 +164,7 @@ export default function FamilyTree() {
 
     try {
       await deleteDoc(doc(db, "family_members", memberId));
-      setFamilyMembers(familyMembers.filter(m => m.id !== memberId));
+      setFamilyMembers(familyMembers.filter((m) => m.id !== memberId));
       alert("Family member deleted successfully!");
     } catch (err) {
       console.error("Error deleting family member:", err);
@@ -147,19 +176,20 @@ export default function FamilyTree() {
     if (formData.conditions.includes(condition)) {
       setFormData({
         ...formData,
-        conditions: formData.conditions.filter(c => c !== condition)
+        conditions: formData.conditions.filter((c) => c !== condition),
       });
     } else {
       setFormData({
         ...formData,
-        conditions: [...formData.conditions, condition]
+        conditions: [...formData.conditions, condition],
       });
     }
   };
 
-  const filteredMembers = familyMembers.filter(member =>
-    member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    member.relationship.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredMembers = familyMembers.filter(
+    (member) =>
+      member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      member.relationship.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   if (loading) {
@@ -179,7 +209,9 @@ export default function FamilyTree() {
         <header className="family-tree-header">
           <div>
             <h1 className="family-tree-title">Family Health Tree</h1>
-            <p className="family-tree-subtitle">Manage your family's health history</p>
+            <p className="family-tree-subtitle">
+              Manage your family's health history
+            </p>
           </div>
           <button
             onClick={() => {
@@ -191,7 +223,7 @@ export default function FamilyTree() {
                 health_status: "healthy",
                 conditions: [],
                 diagnosis_age: "",
-                medical_notes: ""
+                medical_notes: "",
               });
               setShowAddModal(true);
             }}
@@ -217,8 +249,13 @@ export default function FamilyTree() {
           <div className="empty-state">
             <Users className="empty-icon" />
             <p className="empty-title">No Family Members Added Yet</p>
-            <p className="empty-text">Start building your family health tree by adding family members.</p>
-            <button onClick={() => setShowAddModal(true)} className="empty-action-btn">
+            <p className="empty-text">
+              Start building your family health tree by adding family members.
+            </p>
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="empty-action-btn"
+            >
               <Plus className="empty-action-icon" />
               Add Your First Family Member
             </button>
@@ -230,19 +267,21 @@ export default function FamilyTree() {
                 <div className="family-card-header-new">
                   <div className="family-card-header-left">
                     <h3 className="family-member-name-new">{member.name}</h3>
-                    <p className="family-member-relationship-new">{member.relationship}</p>
+                    <p className="family-member-relationship-new">
+                      {member.relationship}
+                    </p>
                   </div>
                   <div className="family-card-header-right">
-                    <button 
-                      onClick={() => handleEdit(member)} 
-                      className="family-edit-btn-new" 
+                    <button
+                      onClick={() => handleEdit(member)}
+                      className="family-edit-btn-new"
                       title="Edit"
                     >
                       <Edit size={18} />
                     </button>
-                    <button 
-                      onClick={() => handleDelete(member.id)} 
-                      className="family-delete-btn-new" 
+                    <button
+                      onClick={() => handleDelete(member.id)}
+                      className="family-delete-btn-new"
                       title="Delete"
                     >
                       <Trash2 size={18} />
@@ -259,17 +298,28 @@ export default function FamilyTree() {
                     <strong>Health Status:</strong>
                     <span
                       className={`family-health-badge-new ${
-                        member.health_status === "healthy" ? "badge-healthy" :
-                        member.health_status === "at_risk" ? "badge-at-risk" :
-                        "badge-diagnosed"
+                        member.health_status === "healthy"
+                          ? "badge-healthy"
+                          : member.health_status === "at_risk"
+                            ? "badge-at-risk"
+                            : "badge-diagnosed"
                       }`}
                     >
-                      {member.health_status === "healthy" && <Heart size={14} />}
-                      {member.health_status === "at_risk" && <AlertCircle size={14} />}
-                      {member.health_status === "diagnosed" && <Activity size={14} />}
+                      {member.health_status === "healthy" && (
+                        <Heart size={14} />
+                      )}
+                      {member.health_status === "at_risk" && (
+                        <AlertCircle size={14} />
+                      )}
+                      {member.health_status === "diagnosed" && (
+                        <Activity size={14} />
+                      )}
                       <span>
-                        {member.health_status === "healthy" ? "No Condition" :
-                         member.health_status === "at_risk" ? "At Risk" : "Has Condition(s)"}
+                        {member.health_status === "healthy"
+                          ? "No Condition"
+                          : member.health_status === "at_risk"
+                            ? "At Risk"
+                            : "Has Condition(s)"}
                       </span>
                     </span>
                   </div>
@@ -279,7 +329,12 @@ export default function FamilyTree() {
                       <strong>Conditions:</strong>
                       <div className="family-conditions-list-new">
                         {member.conditions.map((condition, index) => (
-                          <span key={index} className="family-condition-tag-new">{condition}</span>
+                          <span
+                            key={index}
+                            className="family-condition-tag-new"
+                          >
+                            {condition}
+                          </span>
                         ))}
                       </div>
                     </div>
@@ -287,14 +342,17 @@ export default function FamilyTree() {
 
                   {member.diagnosis_age && (
                     <p className="family-diagnosis-age-new">
-                      <strong>Diagnosed at:</strong> {member.diagnosis_age} years
+                      <strong>Diagnosed at:</strong> {member.diagnosis_age}{" "}
+                      years
                     </p>
                   )}
 
                   {member.medical_notes && (
                     <div className="family-notes-section-new">
                       <strong>Medical Notes:</strong>
-                      <p className="family-notes-text-new">{member.medical_notes}</p>
+                      <p className="family-notes-text-new">
+                        {member.medical_notes}
+                      </p>
                     </div>
                   )}
                 </div>
@@ -311,29 +369,42 @@ export default function FamilyTree() {
               <h2 className="modal-title">
                 {editingMember ? "Edit Family Member" : "Add Family Member"}
               </h2>
-              <button onClick={() => setShowAddModal(false)} className="modal-close">×</button>
+              <button
+                onClick={() => setShowAddModal(false)}
+                className="modal-close"
+              >
+                ×
+              </button>
             </div>
 
             <form onSubmit={handleAddMember} className="modal-body">
               <div className="form-content">
                 <div className="form-field">
-                  <label htmlFor="name" className="form-label">Name *</label>
+                  <label htmlFor="name" className="form-label">
+                    Name *
+                  </label>
                   <input
                     id="name"
                     type="text"
                     value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
                     className="form-input"
                     required
                   />
                 </div>
 
                 <div className="form-field">
-                  <label htmlFor="relationship" className="form-label">Relationship *</label>
+                  <label htmlFor="relationship" className="form-label">
+                    Relationship *
+                  </label>
                   <select
                     id="relationship"
                     value={formData.relationship}
-                    onChange={(e) => setFormData({ ...formData, relationship: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, relationship: e.target.value })
+                    }
                     className="form-input"
                     required
                   >
@@ -353,29 +424,42 @@ export default function FamilyTree() {
                 </div>
 
                 <div className="form-field">
-                  <label htmlFor="age" className="form-label">Age *</label>
+                  <label htmlFor="age" className="form-label">
+                    Age *
+                  </label>
                   <input
                     id="age"
                     type="number"
                     value={formData.age}
-                    onChange={(e) => setFormData({ ...formData, age: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, age: e.target.value })
+                    }
                     className="form-input"
                     required
                   />
                 </div>
 
                 <div className="form-field">
-                  <label htmlFor="health_status" className="form-label">Health Status *</label>
+                  <label htmlFor="health_status" className="form-label">
+                    Health Status *
+                  </label>
                   <select
                     id="health_status"
                     value={formData.health_status}
-                    onChange={(e) => setFormData({ ...formData, health_status: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        health_status: e.target.value,
+                      })
+                    }
                     className="form-input"
                     required
                   >
                     <option value="healthy">No Condition</option>
                     <option value="at_risk">At Risk</option>
-                    <option value="diagnosed">Has Hereditary Condition(s)</option>
+                    <option value="diagnosed">
+                      Has Hereditary Condition(s)
+                    </option>
                   </select>
                 </div>
 
@@ -385,7 +469,10 @@ export default function FamilyTree() {
                       <label className="form-label">Select Conditions *</label>
                       <div className="conditions-checkbox-grid">
                         {hereditaryConditions.map((condition) => (
-                          <label key={condition} className="condition-checkbox-label">
+                          <label
+                            key={condition}
+                            className="condition-checkbox-label"
+                          >
                             <input
                               type="checkbox"
                               checked={formData.conditions.includes(condition)}
@@ -398,12 +485,19 @@ export default function FamilyTree() {
                     </div>
 
                     <div className="form-field">
-                      <label htmlFor="diagnosis_age" className="form-label">Age at Diagnosis</label>
+                      <label htmlFor="diagnosis_age" className="form-label">
+                        Age at Diagnosis
+                      </label>
                       <input
                         id="diagnosis_age"
                         type="number"
                         value={formData.diagnosis_age}
-                        onChange={(e) => setFormData({ ...formData, diagnosis_age: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            diagnosis_age: e.target.value,
+                          })
+                        }
                         className="form-input"
                       />
                     </div>
@@ -411,11 +505,18 @@ export default function FamilyTree() {
                 )}
 
                 <div className="form-field">
-                  <label htmlFor="medical_notes" className="form-label">Medical Notes</label>
+                  <label htmlFor="medical_notes" className="form-label">
+                    Medical Notes
+                  </label>
                   <textarea
                     id="medical_notes"
                     value={formData.medical_notes}
-                    onChange={(e) => setFormData({ ...formData, medical_notes: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        medical_notes: e.target.value,
+                      })
+                    }
                     className="form-input form-textarea"
                     rows="3"
                     placeholder="Any additional medical information..."

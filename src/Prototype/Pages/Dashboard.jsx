@@ -1,20 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { 
-  Heart, 
-  Bell, 
-  Calendar, 
-  BookOpen, 
-  Users, 
-  Activity, 
+import {
+  Heart,
+  Bell,
+  Calendar,
+  BookOpen,
+  Users,
+  Activity,
   Stethoscope,
   TrendingUp,
   AlertTriangle,
   FileText,
-  Shield
+  Shield,
 } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
-import { collection, query, where, getDocs, orderBy, limit } from "firebase/firestore";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  orderBy,
+  limit,
+} from "firebase/firestore";
 import { db } from "../../firebase/config";
 
 export default function Dashboard() {
@@ -23,7 +30,7 @@ export default function Dashboard() {
     patientCount: 0,
     appointmentCount: 0,
     highRiskCount: 0,
-    familyMembersCount: 0
+    familyMembersCount: 0,
   });
   const [recentAppointments, setRecentAppointments] = useState([]);
   const [recentAlerts, setRecentAlerts] = useState([]);
@@ -36,28 +43,36 @@ export default function Dashboard() {
       try {
         setLoading(true);
 
-        if (userProfile?.user_type === 'doctor') {
+        if (userProfile?.user_type === "doctor") {
           // DOCTOR DASHBOARD DATA
           const assignmentsQuery = query(
             collection(db, "doctor_patients"),
             where("doctor_id", "==", currentUser.uid),
-            where("status", "==", "active")
+            where("status", "==", "active"),
           );
           const assignmentsSnapshot = await getDocs(assignmentsQuery);
-          const patientIds = assignmentsSnapshot.docs.map(doc => doc.data().patient_id);
-          
+          const patientIds = assignmentsSnapshot.docs.map(
+            (doc) => doc.data().patient_id,
+          );
+
           let highRiskCount = 0;
           let totalFamilyMembers = 0;
 
           for (const patientId of patientIds) {
-            const userQuery = query(collection(db, "users"), where("uid", "==", patientId));
+            const userQuery = query(
+              collection(db, "users"),
+              where("uid", "==", patientId),
+            );
             const userSnapshot = await getDocs(userQuery);
-            
+
             if (!userSnapshot.empty) {
               const patientData = userSnapshot.docs[0].data();
-              if (patientData.risk_level === 'high') highRiskCount++;
+              if (patientData.risk_level === "high") highRiskCount++;
 
-              const familyQuery = query(collection(db, "family_members"), where("user_id", "==", patientId));
+              const familyQuery = query(
+                collection(db, "family_members"),
+                where("user_id", "==", patientId),
+              );
               const familySnapshot = await getDocs(familyQuery);
               totalFamilyMembers += familySnapshot.size;
             }
@@ -68,25 +83,27 @@ export default function Dashboard() {
             where("doctor_id", "==", currentUser.uid),
             where("status", "==", "scheduled"),
             orderBy("appointment_date", "asc"),
-            limit(5)
+            limit(5),
           );
           const appointmentsSnapshot = await getDocs(appointmentsQuery);
-          const appointmentsData = appointmentsSnapshot.docs.map(doc => ({
+          const appointmentsData = appointmentsSnapshot.docs.map((doc) => ({
             id: doc.id,
-            ...doc.data()
+            ...doc.data(),
           }));
 
           setStats({
             patientCount: patientIds.length,
             appointmentCount: appointmentsData.length,
             highRiskCount: highRiskCount,
-            familyMembersCount: totalFamilyMembers
+            familyMembersCount: totalFamilyMembers,
           });
           setRecentAppointments(appointmentsData);
-
         } else {
           // PATIENT DASHBOARD DATA
-          const familyQuery = query(collection(db, "family_members"), where("user_id", "==", currentUser.uid));
+          const familyQuery = query(
+            collection(db, "family_members"),
+            where("user_id", "==", currentUser.uid),
+          );
           const familySnapshot = await getDocs(familyQuery);
           const familyCount = familySnapshot.size;
 
@@ -95,15 +112,18 @@ export default function Dashboard() {
             where("patient_id", "==", currentUser.uid),
             where("status", "==", "scheduled"),
             orderBy("appointment_date", "asc"),
-            limit(5)
+            limit(5),
           );
           const appointmentsSnapshot = await getDocs(appointmentsQuery);
-          const appointmentsData = appointmentsSnapshot.docs.map(doc => ({
+          const appointmentsData = appointmentsSnapshot.docs.map((doc) => ({
             id: doc.id,
-            ...doc.data()
+            ...doc.data(),
           }));
 
-          const healthQuery = query(collection(db, "personal_health_records"), where("user_id", "==", currentUser.uid));
+          const healthQuery = query(
+            collection(db, "personal_health_records"),
+            where("user_id", "==", currentUser.uid),
+          );
           const healthSnapshot = await getDocs(healthQuery);
           const healthRecordsCount = healthSnapshot.size;
 
@@ -111,11 +131,10 @@ export default function Dashboard() {
             patientCount: 0,
             appointmentCount: appointmentsData.length,
             highRiskCount: healthRecordsCount,
-            familyMembersCount: familyCount
+            familyMembersCount: familyCount,
           });
           setRecentAppointments(appointmentsData);
         }
-
       } catch (error) {
         console.error("Error fetching dashboard data:", error);
       } finally {
@@ -126,7 +145,7 @@ export default function Dashboard() {
     fetchDashboardData();
   }, [currentUser, userProfile]);
 
-  const isDoctor = userProfile?.user_type === 'doctor';
+  const isDoctor = userProfile?.user_type === "doctor";
 
   if (loading) {
     return (
@@ -143,16 +162,18 @@ export default function Dashboard() {
       <div className="dashboard-container">
         {/* Welcome Header */}
         <div className="dashboard-header">
-          <h1 className="dashboard-title">Welcome back, {userProfile?.full_name || 'User'}</h1>
+          <h1 className="dashboard-title">
+            Welcome back, {userProfile?.full_name || "User"}
+          </h1>
           <p className="dashboard-subtitle">
-            {isDoctor ? 'Healthcare Provider Portal' : 'Family Health Portal'}
+            {isDoctor ? "Healthcare Provider Portal" : "Family Health Portal"}
           </p>
           <p className="dashboard-welcome">
-            {new Date().toLocaleDateString('en-US', { 
-              weekday: 'long', 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
+            {new Date().toLocaleDateString("en-US", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
             })}
           </p>
         </div>
@@ -299,7 +320,10 @@ export default function Dashboard() {
                   <Activity className="quick-action-icon" />
                   My Health Records
                 </Link>
-                <Link to="/appointments" className="quick-action-btn btn-purple">
+                <Link
+                  to="/appointments"
+                  className="quick-action-btn btn-purple"
+                >
                   <Calendar className="quick-action-icon" />
                   My Appointments
                 </Link>
@@ -314,15 +338,23 @@ export default function Dashboard() {
 
         {/* Privacy Notice */}
         <div className="quick-actions-card">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+              marginBottom: "1rem",
+            }}
+          >
             <Shield size={24} color="#14b8a6" />
-            <h2 className="quick-actions-title" style={{ margin: 0 }}>Patient Privacy & Access</h2>
+            <h2 className="quick-actions-title" style={{ margin: 0 }}>
+              Patient Privacy & Access
+            </h2>
           </div>
           <p>
-            {isDoctor 
+            {isDoctor
               ? `You have access to ${stats.patientCount} patients assigned to you. Patient data is protected by healthcare privacy regulations. You can only view and manage patients who have been specifically assigned to your care.`
-              : 'Your health information is protected and secure. Only healthcare providers directly involved in your care have access to your medical records in accordance with privacy regulations.'
-            }
+              : "Your health information is protected and secure. Only healthcare providers directly involved in your care have access to your medical records in accordance with privacy regulations."}
           </p>
         </div>
       </div>
