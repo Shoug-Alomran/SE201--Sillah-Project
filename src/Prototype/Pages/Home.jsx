@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import {
   Heart,
@@ -8,243 +7,353 @@ import {
   BookOpen,
   MapPin,
   Pill,
-  UserPlus,
-  ClipboardList,
-  ShieldCheck,
-  Stethoscope,
   ArrowRight,
-  LayoutDashboard,
+  Check,
+  Stethoscope,
+  Plus,
 } from "lucide-react";
 import { useAuth } from "../../contexts/AuthContext";
+import "./Home.css";
 
 const features = [
   {
     icon: Users,
-    title: "Family Tree",
-    text: "Record the health history of your parents, siblings, and relatives in one organized place.",
+    title: "A fuller picture of your family",
+    text: "Connect generations of health history in a family tree that grows with you.",
+    label: "Family history",
   },
   {
     icon: Activity,
-    title: "Hereditary Risk Detection",
-    text: "Rule-based analysis spots hereditary cardiac risk patterns across your family history.",
-  },
-  {
-    icon: Bell,
-    title: "Personalized Alerts",
-    text: "Get timely alerts and recommendations when a potential risk is detected.",
-  },
-  {
-    icon: BookOpen,
-    title: "Awareness Hub",
-    text: "Learn about heart health, genetic screening, and prevention through trusted educational content.",
+    title: "Make sense of the connections",
+    text: "Explore potential hereditary heart health risks based on your family history.",
+    label: "Health insights",
   },
   {
     icon: MapPin,
-    title: "Clinic Booking",
-    text: "Explore clinics and book appointments for preventive care.",
+    title: "Turn awareness into action",
+    text: "Find clinics and organize appointments for the next step in your care.",
+    label: "Preventive care",
   },
-  {
-    icon: Pill,
-    title: "Medication Tracking",
-    text: "Keep track of active medications and stay on top of your treatment plan.",
-  },
+];
+const steps = [
+  [
+    "Make it yours",
+    "Create your account and set up your personal health profile.",
+  ],
+  [
+    "Connect your history",
+    "Add family members and record the health details that matter.",
+  ],
+  [
+    "Plan your next step",
+    "Review your insights and discuss your care with your doctor.",
+  ],
 ];
 
-const steps = [
-  {
-    icon: UserPlus,
-    title: "Create your account",
-    text: "Sign up as a patient or a doctor. Patients can link with their doctor during sign up.",
-  },
-  {
-    icon: ClipboardList,
-    title: "Add your family history",
-    text: "Add family members and the health conditions they have been diagnosed with.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Act early",
-    text: "Review your risk level, follow the recommendations, and book a screening before problems start.",
-  },
-];
+function ProductPreview() {
+  return (
+    <div className="sl-preview-wrap">
+      <div
+        className="sl-preview"
+        aria-label="Illustrative preview of the Sillah dashboard"
+      >
+        <div className="sl-preview-bar">
+          <span>
+            <Heart size={18} /> Sillah
+          </span>
+          <span className="sl-demo-label">Product preview</span>
+        </div>
+        <div className="sl-preview-body">
+          <div className="sl-preview-heading">
+            <div>
+              <span className="sl-overline">MY HEALTH OVERVIEW</span>
+              <h2>
+                A little clarity.
+                <br />A healthier tomorrow.
+              </h2>
+            </div>
+            <div className="sl-avatar">S</div>
+          </div>
+          <div className="sl-preview-stats">
+            <div>
+              <Users size={18} />
+              <strong>Family history</strong>
+              <span>Connected across generations</span>
+            </div>
+            <div>
+              <Heart size={18} />
+              <strong>Your care, together</strong>
+              <span>One place for what matters</span>
+            </div>
+          </div>
+          <div className="sl-tree-panel">
+            <div className="sl-panel-heading">
+              <strong>Your family circle</strong>
+              <span>
+                <Plus size={14} /> Family tree
+              </span>
+            </div>
+            <div className="sl-tree">
+              <div className="sl-tree-row">
+                <div>
+                  <span className="sl-person">A</span>
+                  <small>Parent</small>
+                </div>
+                <div>
+                  <span className="sl-person sl-person-alt">M</span>
+                  <small>Parent</small>
+                </div>
+              </div>
+              <div className="sl-tree-connector" />
+              <div className="sl-tree-self">
+                <span className="sl-person">S</span>
+                <small>You</small>
+              </div>
+            </div>
+          </div>
+          <div className="sl-preview-note">
+            <span className="sl-note-icon">
+              <Bell size={18} />
+            </span>
+            <div>
+              <strong>Small steps. Meaningful care.</strong>
+              <p>Keep your health history up to date.</p>
+            </div>
+            <ArrowRight size={17} />
+          </div>
+        </div>
+      </div>
+      <div className="sl-floating-note">
+        <span>
+          <Check size={17} />
+        </span>
+        <div>
+          <strong>Better connected.</strong>
+          <small>Family health, all in one place.</small>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function Home() {
   const { currentUser } = useAuth();
-  const currentYear = new Date().getFullYear();
-
+  const destination = currentUser ? "/dashboard" : "/signup";
+  const action = currentUser ? "Open dashboard" : "Get started";
   return (
-    <div className="app-shell home-shell">
-      {/* Top Navigation */}
-      <nav className="top-nav" aria-label="Main navigation">
-        <div className="top-nav-inner">
-          <Link to="/" className="brand">
-            <div className="brand-icon">
-              <Heart className="brand-heart" />
-            </div>
-            <div className="brand-text">
-              <div className="brand-title">Sillah</div>
-              <div className="brand-subtitle">صلة - Family Health</div>
-            </div>
+    <div className="sl-home">
+      <a className="sl-skip" href="#main-content">
+        Skip to content
+      </a>
+      <header className="sl-header">
+        <nav className="sl-nav sl-width" aria-label="Main navigation">
+          <Link to="/" className="sl-brand" aria-label="Sillah home">
+            <span className="sl-brand-mark">
+              <Heart size={23} />
+            </span>
+            <strong>
+              Sillah<span lang="ar">صلة</span>
+            </strong>
           </Link>
-
-          <div className="home-nav-actions">
-            {currentUser ? (
-              <Link to="/dashboard" className="nav-link nav-link--active">
-                <LayoutDashboard className="nav-link-icon" />
-                Dashboard
+          <div className="sl-nav-links">
+            <a href="#features">Why Sillah</a>
+            <a href="#how-it-works">How it works</a>
+            <a href="#for-doctors">For doctors</a>
+          </div>
+          <div className="sl-nav-actions">
+            {!currentUser && (
+              <Link to="/login" className="sl-login">
+                Log in
               </Link>
-            ) : (
-              <>
-                <Link to="/login" className="nav-link">
-                  Login
-                </Link>
-                <Link to="/signup" className="nav-link nav-link--active">
-                  Sign up
-                </Link>
-              </>
             )}
+            <Link to={destination} className="sl-button sl-button-small">
+              {action}
+              <ArrowRight size={16} />
+            </Link>
+          </div>
+        </nav>
+      </header>
+      <main id="main-content">
+        <section className="sl-hero sl-width">
+          <div className="sl-hero-copy">
+            <p className="sl-eyebrow">
+              <span /> CONNECTED FAMILY HEALTH
+            </p>
+            <h1>
+              Health runs
+              <br />
+              in the family.
+              <br />
+              <em>So does care.</em>
+            </h1>
+            <p className="sl-lead">
+              Your family’s story can shape your health. Bring your history,
+              insights, and everyday care together with Sillah.
+            </p>
+            <div className="sl-hero-actions">
+              <Link to={destination} className="sl-button">
+                {currentUser ? action : "Start your health story"}
+                <ArrowRight size={18} />
+              </Link>
+              <a href="#how-it-works" className="sl-text-link">
+                Discover how it works <ArrowRight size={16} />
+              </a>
+            </div>
+            <p className="sl-hero-caption">
+              Built around you. Connected to the people who matter.
+            </p>
+          </div>
+          <ProductPreview />
+        </section>
+        <div className="sl-benefit-strip">
+          <div className="sl-width">
+            <span>
+              <Users /> Family history
+            </span>
+            <span>
+              <Activity /> Personal insights
+            </span>
+            <span>
+              <Stethoscope /> Connected care
+            </span>
+            <span>
+              <Heart /> Everyday wellbeing
+            </span>
           </div>
         </div>
-
-        <div className="prevention-strip">
-          <p className="prevention-strip-text">
-            Prevention First: Track risk early, stay informed, and protect your
-            family health.
-          </p>
-        </div>
-      </nav>
-
-      <main className="home-page">
-        <div className="home-container">
-          {/* Hero */}
-          <section className="home-hero">
-            <div className="brand-icon-large">
-              <Heart className="brand-heart-large" />
-            </div>
-            <p className="home-eyebrow">Preventive Family Health Platform</p>
-            <h1 className="home-title">
-              Your family's health story, connected.
-            </h1>
-            <p className="home-lead">
-              Sillah (صلة) means <strong>connection</strong>. It helps Saudi
-              families record their family health history, understand potential
-              hereditary heart health risks, and organize preventive care in one
-              place.
-            </p>
-            <div className="home-cta-row">
-              {currentUser ? (
-                <Link to="/dashboard" className="home-btn home-btn--primary">
-                  Go to Dashboard
-                  <ArrowRight className="home-btn-icon" />
-                </Link>
-              ) : (
-                <>
-                  <Link to="/signup" className="home-btn home-btn--primary">
-                    Get Started
-                    <ArrowRight className="home-btn-icon" />
-                  </Link>
-                  <Link to="/login" className="home-btn home-btn--secondary">
-                    I already have an account
-                  </Link>
-                </>
-              )}
-            </div>
-          </section>
-
-          {/* Features */}
-          <section className="home-section">
-            <h2 className="section-title home-section-title">
-              What you can do with Sillah
-            </h2>
-            <div className="home-features-grid">
-              {features.map((feature) => {
-                const { icon: Icon, title, text } = feature;
-                return (
-                  <div key={title} className="home-feature-card">
-                    <div className="home-feature-icon">
-                      <Icon />
-                    </div>
-                    <h3 className="home-feature-title">{title}</h3>
-                    <p className="home-feature-text">{text}</p>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-
-          {/* How it works */}
-          <section className="home-section">
-            <h2 className="section-title home-section-title">How it works</h2>
-            <div className="home-steps-grid">
-              {steps.map((step, index) => {
-                const { icon: Icon, title, text } = step;
-                return (
-                  <div key={title} className="home-step-card">
-                    <div className="home-step-number">{index + 1}</div>
-                    <Icon className="home-step-icon" />
-                    <h3 className="home-feature-title">{title}</h3>
-                    <p className="home-feature-text">{text}</p>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-
-          {/* Audience */}
-          <section className="home-section">
-            <h2 className="section-title home-section-title">
-              Built for patients and doctors
-            </h2>
-            <div className="home-audience-grid">
-              <div className="home-audience-card">
-                <Users className="home-audience-icon" />
-                <div>
-                  <h3 className="home-feature-title">
-                    Patients &amp; Families
-                  </h3>
-                  <p className="home-feature-text">
-                    Manage your family tree, personal health records,
-                    medications, and appointments, and see your hereditary risk
-                    assessment.
-                  </p>
-                </div>
-              </div>
-              <div className="home-audience-card">
-                <Stethoscope className="home-audience-icon" />
-                <div>
-                  <h3 className="home-feature-title">Healthcare Providers</h3>
-                  <p className="home-feature-text">
-                    Follow your patients, review their risk alerts and health
-                    records, and manage bookings from one portal.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Closing CTA */}
-          {!currentUser && (
-            <section className="home-closing">
-              <h2 className="home-closing-title">
-                Start protecting your family today
+        <section className="sl-section sl-width" id="features">
+          <div className="sl-section-heading">
+            <div>
+              <p className="sl-eyebrow">SEE THE BIGGER PICTURE</p>
+              <h2>
+                More connected history.
+                <br />
+                More informed care.
               </h2>
-              <p className="home-closing-text">
-                Bring your family history together and take the first step
-                toward informed care.
+            </div>
+            <p>
+              From the details you record to the decisions you make, keep what
+              matters close.
+            </p>
+          </div>
+          <div className="sl-feature-grid">
+            {features.map((feature) => {
+              const Icon = feature.icon;
+              return (
+                <article className="sl-feature" key={feature.label}>
+                  <span className="sl-feature-icon">
+                    <Icon size={24} />
+                  </span>
+                  <p className="sl-overline">{feature.label}</p>
+                  <h3>{feature.title}</h3>
+                  <p>{feature.text}</p>
+                </article>
+              );
+            })}
+          </div>
+          <div className="sl-tools">
+            <p>And the support you need, day to day.</p>
+            <span>
+              <Pill size={18} /> Medication tracking
+            </span>
+            <span>
+              <Bell size={18} /> Health alerts
+            </span>
+            <span>
+              <BookOpen size={18} /> Awareness hub
+            </span>
+          </div>
+        </section>
+        <section className="sl-how" id="how-it-works">
+          <div className="sl-width sl-section">
+            <div className="sl-centered">
+              <p className="sl-eyebrow">A SIMPLE PLACE TO START</p>
+              <h2>Your next chapter starts here.</h2>
+              <p>You don’t need every detail to take the first step.</p>
+            </div>
+            <div className="sl-steps">
+              {steps.map(([title, description], index) => (
+                <article key={title}>
+                  <span className="sl-step-number">0{index + 1}</span>
+                  <h3>{title}</h3>
+                  <p>{description}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+        <section className="sl-section sl-width" id="for-doctors">
+          <div className="sl-provider">
+            <div className="sl-provider-art" aria-hidden="true">
+              <div className="sl-provider-circle">
+                <Stethoscope size={60} strokeWidth={1.3} />
+              </div>
+              <span className="sl-provider-tag">
+                <Users size={17} /> A shared view of care
+              </span>
+            </div>
+            <div>
+              <p className="sl-eyebrow">FOR HEALTHCARE PROVIDERS</p>
+              <h2>
+                Understand the person.
+                <br />
+                Connect the history.
+              </h2>
+              <p>
+                Bring patient records, family health insights, and appointments
+                into one view. Sillah helps you stay connected to the people in
+                your care.
               </p>
-              <Link to="/signup" className="home-btn home-btn--light">
-                Create a free account
-                <ArrowRight className="home-btn-icon" />
+              <Link to={destination} className="sl-text-link">
+                {currentUser
+                  ? "Go to your dashboard"
+                  : "Join as a healthcare provider"}
+                <ArrowRight size={18} />
               </Link>
-            </section>
-          )}
-        </div>
+            </div>
+          </div>
+        </section>
+        <section className="sl-closing sl-width">
+          <div>
+            <p className="sl-eyebrow">
+              YOUR FAMILY. YOUR HEALTH. YOUR NEXT STEP.
+            </p>
+            <h2>
+              A healthier connection
+              <br />
+              starts with you.
+            </h2>
+          </div>
+          <Link to={destination} className="sl-button sl-button-light">
+            {currentUser ? action : "Create your account"}
+            <ArrowRight size={18} />
+          </Link>
+        </section>
       </main>
-
-      {/* Footer */}
-      <footer className="app-footer">
-        <div className="app-footer-bottom">
-          <p>&copy; {currentYear} Sillah. All rights reserved.</p>
+      <footer className="sl-footer sl-width">
+        <div className="sl-footer-top">
+          <div>
+            <Link to="/" className="sl-brand">
+              <span className="sl-brand-mark">
+                <Heart size={23} />
+              </span>
+              <strong>
+                Sillah<span lang="ar">صلة</span>
+              </strong>
+            </Link>
+            <p>Connected by family. Informed by history.</p>
+          </div>
+          <nav aria-label="Footer navigation">
+            <a href="#features">Why Sillah</a>
+            <a href="#how-it-works">How it works</a>
+            <Link to={currentUser ? "/dashboard" : "/login"}>
+              {currentUser ? "Dashboard" : "Log in"}
+            </Link>
+          </nav>
+        </div>
+        <div className="sl-footer-bottom">
+          <span>© {new Date().getFullYear()} Sillah. All rights reserved.</span>
+          <span>صلة — connection at the heart of care.</span>
         </div>
       </footer>
     </div>
